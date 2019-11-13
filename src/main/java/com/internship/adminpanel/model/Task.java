@@ -1,5 +1,6 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.enums.ComplexityEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,8 +38,8 @@ public class Task {
 
     @NotNull(message = "Complexity is required")
     @ManyToOne
-    @Column(name = "complx_id")
-    private Complexity complexity;
+    @Column(name = "complexity")
+    private ComplexityEnum complexity;
 
     @Value("true")
     @Column(name = "isEnabled")
