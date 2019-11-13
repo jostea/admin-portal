@@ -26,7 +26,6 @@ public class Task {
     @NotNull(message = "Title is required")
     private String title;
 
-
     @NotNull(message = "Description is required")
     private String description;
 
@@ -44,7 +43,7 @@ public class Task {
     private boolean isEnabled;
 
     @ManyToMany
-    @JoinTable(name = "task_stream", joinColumns = @JoinColumn(name = "task_id"),
+    @JoinTable(name = "task_stream_table", joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "stream_id"))
     private List<Stream> streams;
 

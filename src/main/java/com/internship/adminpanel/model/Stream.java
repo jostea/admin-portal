@@ -30,7 +30,7 @@ public class Stream {
     private Discipline discipline;
 
     @ManyToMany
-    @JoinTable(name = "task_stream", joinColumns = @JoinColumn(name = "stream_id"),
+    @JoinTable(name = "task_stream_table", joinColumns = @JoinColumn(name = "stream_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private List<Task> tasks;
 }
