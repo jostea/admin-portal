@@ -29,7 +29,7 @@ public class User {
 
     @NotNull(message = "Field is required")
     @Email(message = "Please provide a valid eMail")
-    @Column(name = "eMaile")
+    @Column(name = "eMail")
     private String email;
 
     @NotNull(message = "Field is required")
