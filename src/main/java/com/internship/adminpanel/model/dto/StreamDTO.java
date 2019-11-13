@@ -10,11 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StreamDTO {
 
+    private Long id;
+
     private String name;
 
-    String disciplineName;
+    private String disciplineName;
 
     public StreamDTO(Stream stream) {
+        this.id = stream.getId();
         this.name = stream.getName();
         this.disciplineName = stream.getDiscipline().getName();
     }

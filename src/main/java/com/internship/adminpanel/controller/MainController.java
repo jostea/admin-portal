@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     @GetMapping("/")
-    public String indexPage() {
-        return "index";
+    public String main() {
+        return "main";
     }
 
-    @GetMapping("streamView")
-    public String streamView() {
-        return "streamView";
+    @GetMapping("/landing")
+    public String landing() {
+        return "landing";
     }
 }

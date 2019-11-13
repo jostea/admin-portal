@@ -8,10 +8,10 @@
   <body>
         <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
             <div class="cutomnav">
-                <button href="">Users</button>
-                <button href="">Disciplines</button>
-                <button href="">Streams</button>
-                <button href="">Tasks</button>
+                <a href="">Users</a>
+                <a href="">Disciplines</a>
+                <a href="streamView">Streams</a>
+                <a href="">Tasks</a>
             </div>
             <hr>
             <div>

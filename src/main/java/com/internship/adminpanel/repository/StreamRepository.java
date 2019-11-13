@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface StreamRepository extends JpaRepository<Stream, Long> {
-
+    List<Stream> findStreamByNameContaining (String name);
 }
