@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -13,21 +14,19 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "stream")
+@Table(name = "stream_table")
 public class Stream {
+
     @Id
-    @Column(name = "stream_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long stream_id;
+    private Long id;
 
     @NotNull(message = "Stream name is required")
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "streamName")
-    private String streamName;
+    private String name;
 
     @NotNull(message = "Discipline is required")
     @ManyToOne
-    @Column(name = "discip_id")
+    @JoinColumn(name = "discipline_id")
     private Discipline discipline;
 
     @ManyToMany

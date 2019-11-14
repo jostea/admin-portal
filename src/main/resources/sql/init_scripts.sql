@@ -1,56 +1,64 @@
+drop table if exists task_stream_table;
+drop table if exists answer_option_table;
+drop table if exists stream_table;
+drop table if exists task_table;
+drop table if exists user_table_table;
+drop table if exists discipline_table;
+
 /* create table t_user */
-CREATE TABLE t_user
+CREATE TABLE user_table
 (
-    user_id  SERIAL PRIMARY KEY,
-    userName varchar(50)  NOT NULL,
-    eMail    varchar(255) NOT NULL,
-    pass     varchar(255) NOT NULL,
-    isActive boolean      NOT NULL DEFAULT true,
-    role     varchar(50)  NOT NULL
+    id        SERIAL PRIMARY KEY,
+    username  varchar(50)  NOT NULL,
+    email     varchar(255) NOT NULL,
+    password  varchar(255) NOT NULL,
+    is_active boolean      NOT NULL DEFAULT true,
+    role      varchar(50)  NOT NULL,
+    UNIQUE (username, email)
 );
 
 /* create table discipline */
-CREATE TABLE discipline
+CREATE TABLE discipline_table
 (
-    discipline_id SERIAL PRIMARY KEY,
-    disc_name     varchar(50) NOT NULL,
-    UNIQUE (disc_name)
+    id   SERIAL PRIMARY KEY,
+    name varchar(50) NOT NULL,
+    UNIQUE (name)
 );
 
 /* create table stream */
-CREATE TABLE stream
+CREATE TABLE stream_table
 (
-    stream_id  SERIAL PRIMARY KEY,
-    streamName varchar(50) NOT NULL,
-    discip_id  int         NOT NULL REFERENCES discipline (discipline_id)
+    id            SERIAL PRIMARY KEY,
+    name          varchar(50) NOT NULL,
+    discipline_id int         NOT NULL REFERENCES discipline_table (id)
 );
 
 
 /* create table task */
-CREATE TABLE task
+CREATE TABLE task_table
 (
-    task_id     SERIAL PRIMARY KEY,
+    id     SERIAL PRIMARY KEY,
     title       varchar(255) NOT NULL,
     description text         NOT NULL,
     task_type   varchar(255) NOT NULL,
     complexity  varchar(255) NOT NULL,
-    isEnabled   boolean      NOT NULL DEFAULT true
+    is_enabled   boolean      NOT NULL DEFAULT true
 );
 
 /* create many-to-many table task_stream */
-CREATE TABLE task_stream
+CREATE TABLE task_stream_table
 (
-    task_id   int NOT NULL REFERENCES task (task_id),
-    stream_id int NOT NULL REFERENCES stream (stream_id)
+    task_id   int NOT NULL REFERENCES task_table (id),
+    stream_id int NOT NULL REFERENCES stream_table (id)
 );
 
 /* create table answer_option */
-CREATE TABLE answer_option
+CREATE TABLE answer_option_table
 (
-    ao_id               SERIAL PRIMARY KEY,
-    task_id             int     NOT NULL REFERENCES task (task_id),
+    id                  SERIAL PRIMARY KEY,
+    task_id             int     NOT NULL REFERENCES task_table (id),
     answer_option_value text    NOT NULL,
-    isCorrect           boolean NOT NULL
+    is_correct          boolean NOT NULL
 );
 
 /*-----------------------------------*/
@@ -58,26 +66,30 @@ CREATE TABLE answer_option
 /*-----------------------------------*/
 
 /* populate discipline */
-INSERT INTO discipline(disc_name) VALUES ('APPLICATIONS_MANAGEMENT');
-INSERT INTO discipline(disc_name) VALUES ('DEVELOPMENT');
-INSERT INTO discipline(disc_name) VALUES ('TESTING');
+INSERT INTO discipline_table(name)
+VALUES ('APPLICATIONS_MANAGEMENT');
+INSERT INTO discipline_table(name)
+VALUES ('DEVELOPMENT');
+INSERT INTO discipline_table(name)
+VALUES ('TESTING');
 
 /* populate stream */
-INSERT INTO stream(streamname, discip_id)
-VALUES ('JAVA', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'APPLICATIONS_MANAGEMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('DEVOPS', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'APPLICATIONS_MANAGEMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('ANALYSTS', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'APPLICATIONS_MANAGEMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('JAVA', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'DEVELOPMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('DOT_NET', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'DEVELOPMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('WEB', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'DEVELOPMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('MOBILE', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'DEVELOPMENT'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('AUTOMATION_TESTING', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'TESTING'));
-INSERT INTO stream(streamname, discip_id)
-VALUES ('MANUAL_TESTING', (SELECT d.discipline_id FROM discipline d WHERE d.disc_name = 'TESTING'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('JAVA', (SELECT d.id FROM discipline_table d WHERE d.name = 'APPLICATIONS_MANAGEMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('DEVOPS', (SELECT d.id FROM discipline_table d WHERE d.name = 'APPLICATIONS_MANAGEMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('ANALYSTS', (SELECT d.id FROM discipline_table d WHERE d.name = 'APPLICATIONS_MANAGEMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('JAVA', (SELECT d.id FROM discipline_table d WHERE d.name = 'DEVELOPMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('DOT_NET', (SELECT d.id FROM discipline_table d WHERE d.name = 'DEVELOPMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('WEB', (SELECT d.id FROM discipline_table d WHERE d.name = 'DEVELOPMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('MOBILE', (SELECT d.id FROM discipline_table d WHERE d.name = 'DEVELOPMENT'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('AUTOMATION_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
+INSERT INTO stream_table(name, discipline_id)
+VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
+

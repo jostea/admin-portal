@@ -12,21 +12,20 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "answer_option")
+@Table(name = "answer_option_table")
 public class AnswersOption {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ao_id")
     private Long id;
 
-    @ManyToOne
-    @Column(name = "task_id")
-    private Task task;
-
-    @NotNull(message = "Answer is required")
+    @NotNull(message = "Answer text is required")
     @Column(name = "answer_option_value")
     private String answerOptionValue;
 
-    @Column(name = "isCorrect")
+    @Column(name = "is_correct")
     boolean isCorrect;
+
+    @ManyToOne
+    private Task task;
 }
