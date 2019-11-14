@@ -16,19 +16,17 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "task")
+@Table(name = "task_table")
 public class Task {
+
     @Id
-    @Column(name = "task_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull(message = "Title is required")
-    @Column(name = "title")
     private String title;
 
     @NotNull(message = "Description is required")
-    @Column(name = "description")
     private String description;
 
     @NotNull(message = "Type is required")
@@ -37,12 +35,11 @@ public class Task {
     private TypeEnum taskType;
 
     @NotNull(message = "Complexity is required")
-    @ManyToOne
-    @Column(name = "complexity")
+    @Enumerated(EnumType.STRING)
     private ComplexityEnum complexity;
 
     @Value("true")
-    @Column(name = "isEnabled")
+    @Column(name = "is_enabled")
     private boolean isEnabled;
 
     @ManyToMany
@@ -50,6 +47,6 @@ public class Task {
             inverseJoinColumns = @JoinColumn(name = "stream_id"))
     private List<Stream> streams;
 
-    @OneToMany
+    @OneToMany(mappedBy = "task")
     private List<AnswersOption> answersOptions;
 }
