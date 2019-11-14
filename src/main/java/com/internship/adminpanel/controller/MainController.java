@@ -1,4 +1,4 @@
-package com.internship.adminpanel;
+package com.internship.adminpanel.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,7 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/streams")
+    @GetMapping("streamView")
     public String streamView() {
         return "streamView";
     }

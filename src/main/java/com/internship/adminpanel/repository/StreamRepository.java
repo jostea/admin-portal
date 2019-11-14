@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface StreamRepository extends JpaRepository<Stream, Long> {
 
-    Stream findByStreamId(Long id);
 }

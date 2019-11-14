@@ -7,15 +7,66 @@
 </head>
 <body>
 <div>
+
+    <button onclick="getAllStreams()">Streams</button>
+    <br>
+    <label for="a"></label><input name="a" id="a">
+    <button onclick="getById(document.getElementById('a').value)">Get by Id</button>
+
     <table id="streamsTable">
         <thead>
         <tr>
             <th>Stream</th>
+            <th>Discipline</th>
         </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
-<script src="/js/streams.js"></script>
+<script>
+
+    function getById(val) {
+        $.ajax({
+            method: "GET",
+            url: "streamView/streams/" + val,
+            success: function (response) {
+                console.log(response);
+                showStream(response);
+            }
+        });
+    }
+
+    function showStream(data) {
+        let tbody = "";
+        tbody += "<tr>";
+        tbody += "<td>" + data.name + "</td>";
+        tbody += "<td>" + data.disciplineName + "</td>";
+        tbody += "</tr>";
+        $("#streamsTable tbody").html(tbody);
+    }
+
+
+    function getAllStreams() {
+        $.ajax({
+            method: "GET",
+            url: "streamView/streams/",
+            success: function (response) {
+                console.log(response);
+                fillTable(response);
+            }
+        });
+    }
+
+    function fillTable(data) {
+        let tbody = "";
+        for (let i = 0; i < data.length; i++) {
+            tbody += "<tr>";
+            tbody += "<td>" + data[i].name + "</td>";
+            tbody += "<td>" + data[i].disciplineName + "</td>";
+            tbody += "</tr>";
+        }
+        $("#streamsTable tbody").html(tbody);
+    }
+</script>
 </body>
 </html>
