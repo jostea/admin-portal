@@ -18,7 +18,7 @@ import java.util.List;
 public class Stream {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Stream name is required")

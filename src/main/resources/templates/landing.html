@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+      <html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://thymeleaf.org">
+      <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+        <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
+            <div class="cutomnav">
+                <button href="">Users</button>
+                <button href="">Disciplines</button>
+                <button href="">Streams</button>
+                <button href="">Tasks</button>
+            </div>
+            <hr>
+            <div>
+                <form method="post" th:action="@{/logout}">
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+
+  </body>
+</html>
