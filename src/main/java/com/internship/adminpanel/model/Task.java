@@ -20,11 +20,12 @@ import java.util.List;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Title is required")
     private String title;
+
 
     @NotNull(message = "Description is required")
     private String description;
