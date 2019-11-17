@@ -1,11 +1,11 @@
 package com.internship.adminpanel.model;
 
-import com.internship.adminpanel.model.enums.ComplexityEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.internship.adminpanel.model.enums.TypeEnum;
+import com.internship.adminpanel.model.enums.ComplexityEnum;
 import org.springframework.beans.factory.annotation.Value;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

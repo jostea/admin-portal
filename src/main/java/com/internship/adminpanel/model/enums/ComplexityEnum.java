@@ -12,7 +12,7 @@ public enum ComplexityEnum {
     }
 
     public static ComplexityEnum fromString(String par) {
-        for (ComplexityEnum val : ComplexityEnum.values()) {
+        for (ComplexityEnum val : values()) {
             if (val.complexity.equalsIgnoreCase(par)) {
                 return val;
             }
