@@ -2,7 +2,7 @@ drop table if exists task_stream_table;
 drop table if exists answer_option_table;
 drop table if exists stream_table;
 drop table if exists task_table;
-drop table if exists user_table_table;
+drop table if exists user_table;
 drop table if exists discipline_table;
 
 /* create table t_user */
@@ -14,7 +14,8 @@ CREATE TABLE user_table
     password  varchar(255) NOT NULL,
     is_active boolean      NOT NULL DEFAULT true,
     role      varchar(50)  NOT NULL,
-    UNIQUE (username, email)
+    UNIQUE (username),
+    UNIQUE (email)
 );
 
 /* create table discipline */
