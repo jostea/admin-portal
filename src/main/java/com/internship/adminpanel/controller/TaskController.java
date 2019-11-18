@@ -1,6 +1,6 @@
 package com.internship.adminpanel.controller;
 
-import com.internship.adminpanel.model.dto.StreamDTO;
+import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.discipline.DisciplineListDTO;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
 import com.internship.adminpanel.model.enums.TypeEnum;

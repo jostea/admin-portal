@@ -31,7 +31,8 @@ CREATE TABLE stream_table
 (
     id            SERIAL PRIMARY KEY,
     name          varchar(50) NOT NULL,
-    discipline_id int         NOT NULL REFERENCES discipline_table (id)
+    discipline_id int         NOT NULL REFERENCES discipline_table (id),
+    UNIQUE (name,discipline_id)
 );
 
 

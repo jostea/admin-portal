@@ -1,5 +1,4 @@
-package com.internship.adminpanel.model.dto;
-
+package com.internship.adminpanel.model.dto.stream;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,9 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StreamDTOFromUI {
-    private Long id;
 
-    private String streamName;
+    private String name;
 
-    private String disciplineName;
+    private Long disciplineId;
 }

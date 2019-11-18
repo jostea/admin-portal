@@ -3,6 +3,7 @@ package com.internship.adminpanel.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Stream {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Stream name is required")
+    @NotBlank(message = "Stream name is required")
     private String name;
 
     @NotNull(message = "Discipline is required")
