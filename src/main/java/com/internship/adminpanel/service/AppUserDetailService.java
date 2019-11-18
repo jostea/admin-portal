@@ -1,10 +1,9 @@
 package com.internship.adminpanel.service;
 
-import com.internship.adminpanel.model.UserPrincipal;
 import com.internship.adminpanel.model.User;
+import com.internship.adminpanel.model.UserPrincipal;
 import com.internship.adminpanel.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

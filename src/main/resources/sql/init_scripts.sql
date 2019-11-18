@@ -95,5 +95,5 @@ VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'T
 
 
 /* Insert the super admin */
-insert into user_table (username, email, password, role) values('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK', 'SUPER_ADMIN')
+-- insert into user_table (username, email, password, role) values('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK', 'SUPER_ADMIN')
 

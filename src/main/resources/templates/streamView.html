@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Streams</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/streams.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/stream.css">
+</head>
+<body>
+<div>
+
+    <table id="streamsTable">
+        <thead>
+        <tr>
+            <th>Stream</th>
+            <th>Discipline</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+    <label for="name-input"></label>
+    <input type="text" name="name-input" id="name-input"/>
+    <button onclick="findIdByName($('#name-input').val())">Find stream</button>
+    <button onclick="getAllStreams()">View All Streams</button>
+</div>
+</body>
+</html>
