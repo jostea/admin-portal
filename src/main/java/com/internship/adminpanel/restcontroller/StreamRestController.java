@@ -1,6 +1,5 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.internship.adminpanel.exception.EmptyListOfStreams;
 import com.internship.adminpanel.exception.StreamNotFound;
 import com.internship.adminpanel.model.dto.StreamDTO;
 import com.internship.adminpanel.service.StreamService;
@@ -12,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -51,5 +51,19 @@ public class StreamRestController {
             log.warn(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/streams/discipline/{discipline}")
+    public ResponseEntity<List<StreamDTO>>streamsByDiscipline(@PathVariable("discipline") String discipline){
+        ResponseEntity<List<StreamDTO>> responseEntity;
+        try{
+            List<StreamDTO> list = streamService.findAll().stream().filter(s -> s.getDisciplineName().equalsIgnoreCase(discipline)).collect(Collectors.toList());
+            responseEntity =  new ResponseEntity<>(list, HttpStatus.OK);
+            log.info("A set of streams was returned by the discipline name: " + discipline);
+        } catch (Exception e){
+            responseEntity =  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            log.error("Errow while getting stream by discipline name: " + discipline + "; stack trace: " + e.getStackTrace());
+        }
+        return responseEntity;
     }
 }

@@ -7,6 +7,10 @@ public enum ComplexityEnum {
 
     private String complexity;
 
+    public String getComplexity() {
+        return complexity;
+    }
+
     ComplexityEnum(String complexity) {
         this.complexity = complexity;
     }

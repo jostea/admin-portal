@@ -1,17 +1,21 @@
 package com.internship.adminpanel.model.enums;
 
 public enum TypeEnum {
+
     MULTI_CHOICE("Multi Choice"),
     SINGLE_CHOICE("Single Choice"),
     CUSTOM_QUESTION("Custom Question"),
     CODE_TASK("Code Task"),
     SQL_TASK("SQL Task");
 
-
     private String type;
 
     TypeEnum(String type) {
         this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public static TypeEnum fromString(String par) {
