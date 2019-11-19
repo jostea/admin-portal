@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-      <html xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:th="http://thymeleaf.org">
-      <head>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<head>
     <meta charset="utf-8">
     <title></title>
-  </head>
-  <body>
+</head>
+    <body>
         <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
             <div class="cutomnav">
-                <a href="">Users</a>
-                <a href="">Disciplines</a>
-                <a href="streamView">Streams</a>
-                <a href="">Tasks</a>
+                <button id="goUsers" href="">Users</button>
+                <button href="">Disciplines</button>
+                <button href="">Streams</button>
+                <button href="">Tasks</button>
             </div>
             <hr>
             <div>
@@ -21,5 +22,10 @@
             </div>
         </div>
 
-  </body>
+        <script>
+            $("#goUsers").on("click", function (event) {
+                window.location.href = "/userView/";
+            });
+        </script>
+    </body>
 </html>
