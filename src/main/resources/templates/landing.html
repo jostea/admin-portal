@@ -12,7 +12,7 @@
                 <button id="goUsers" href="">Users</button>
                 <button href="">Disciplines</button>
                 <button href="">Streams</button>
-                <button href="">Tasks</button>
+                <button id="goTasks" href="">Tasks</button>
             </div>
             <hr>
             <div>
@@ -25,6 +25,9 @@
         <script>
             $("#goUsers").on("click", function (event) {
                 window.location.href = "/userView/";
+            });
+            $("#goTasks").on("click", function (event) {
+                window.location.href = "/tasks/";
             });
         </script>
     </body>

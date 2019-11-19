@@ -1,9 +1,6 @@
 package com.internship.adminpanel.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,4 +23,10 @@ public class Discipline {
 
     @OneToMany(mappedBy = "discipline")
     private List<Stream> streams;
+
+    @Override
+    public String toString() {
+        return "Discipline{" +
+                "name=" + name;
+    }
 }

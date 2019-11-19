@@ -1,12 +1,14 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.dto.task.TaskInsertDTO;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
+import com.internship.adminpanel.model.enums.TypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.internship.adminpanel.model.enums.TypeEnum;
 import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -49,4 +51,12 @@ public class Task {
 
     @OneToMany(mappedBy = "task")
     private List<AnswersOption> answersOptions;
+
+    public Task(TaskInsertDTO dto){
+        this.setTitle(dto.getTitle());
+        this.setDescription(dto.getDescription());
+        this.setTaskType(dto.getTaskType());
+        this.setComplexity(dto.getComplexity());
+        this.setEnabled(dto.isEnabled());
+    }
 }

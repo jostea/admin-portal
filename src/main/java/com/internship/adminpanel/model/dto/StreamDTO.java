@@ -2,10 +2,12 @@ package com.internship.adminpanel.model.dto;
 
 import com.internship.adminpanel.model.Stream;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class StreamDTO {

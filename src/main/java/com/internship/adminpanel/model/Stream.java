@@ -1,9 +1,6 @@
 package com.internship.adminpanel.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -33,4 +30,12 @@ public class Stream {
     @JoinTable(name = "task_stream_table", joinColumns = @JoinColumn(name = "stream_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private List<Task> tasks;
+
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "name='" + name + '\'' +
+                ", tasks=" + tasks +
+                '}';
+    }
 }

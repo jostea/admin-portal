@@ -31,13 +31,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .disable()
+                .csrf().disable()
                 .httpBasic()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/landing").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .antMatchers("/tasks/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/userView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .and()
                 .formLogin()
