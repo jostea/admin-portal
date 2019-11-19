@@ -47,12 +47,10 @@ public class TaskController {
 
         //collection of disciplines
         List<DisciplineListDTO> disciplinesDTO = new ArrayList<>();
-        disciplinesDTO = disciplineService.getAll();
+        disciplinesDTO = disciplineService.getAll();    //TODO: modify to call new get All, which returns List<DisciplineDTO>
         model.addObject("disciplines", disciplinesDTO);
 
-        //[TODO] Needs to be redone when Stream Service will be approved; Need to retun only Streams associated with that Discipline
         //collection of streams
-        //TODO: it should be replace with streamSerice.getStreamsByDiscipline(DisciplineName)
         List<StreamDTO> streams  = new ArrayList<>();
         streams = streamService.findAll();
         model.addObject("streams", streams);
@@ -60,4 +58,30 @@ public class TaskController {
         return model;
     }
 
+    @GetMapping(value = "/editTask/{id}")
+    public ModelAndView editTask(){
+        ModelAndView model = new ModelAndView("/tasks/editTask");
+
+        //collection for complexitites dropdown
+        List<ComplexityEnum> complexities = new ArrayList<ComplexityEnum>();
+        complexities = Arrays.asList(ComplexityEnum.values());
+        model.addObject("complexities",complexities);
+
+        //collection for task-types dropdown
+        List<TypeEnum> taskTypes = new ArrayList<TypeEnum>();
+        taskTypes = Arrays.asList(TypeEnum.values());
+        model.addObject("task_types", taskTypes);
+
+        //collection of disciplines
+        List<DisciplineListDTO> disciplinesDTO = new ArrayList<>();
+        disciplinesDTO = disciplineService.getAll();    //TODO: modify to call new get All, which returns List<DisciplineDTO>
+        model.addObject("disciplines", disciplinesDTO);
+
+        //collection of streams
+        List<StreamDTO> streams  = new ArrayList<>();
+        streams = streamService.findAll();
+        model.addObject("streams", streams);
+
+        return model;
+    }
 }

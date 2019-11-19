@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StreamListDTO {
 
+    //TODO: REMOVE THIS DTO. INSTEAD OF THIS IS StreamDto
     private Long id;
     private String name;
 

@@ -19,7 +19,7 @@
         <div class="cutomnav">
             <button href="">Users</button>
             <button href="">Disciplines</button>
-            <button id="goStreams">Streams</button>
+            <button href="">Streams</button>
             <button id="goTasks" href="">Tasks</button>
         </div>
         <hr>
@@ -68,7 +68,7 @@
             let tbody = "";
             for (let i = 0; i < data.length; i++) {
                 tbody += "<tr>";
-                tbody += "<input type='hidden' value=' + data[i].id'>";
+                tbody += "<input type='hidden' value=" + data[i].id + ">";
                 tbody += "<td>" + (i+1) + "</td>";
                 tbody += "<td>" + data[i].title + "</td>";
                 tbody += "<td>" + data[i].type + "</td>";
@@ -90,8 +90,10 @@
             window.location.href = "/tasks/";
         });
 
-        $("#goStreams").on("click", function (event) {
-            window.location.href = "/streamView";
+        $("#tasks").on('click', '.editTask', function () {
+            let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+            alert(idTask)
+            window.location.href = "editTask/" + idTask;
         });
 
     </script>

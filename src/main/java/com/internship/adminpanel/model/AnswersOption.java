@@ -1,9 +1,11 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.dto.answer_option.AnswerOptionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -28,4 +30,10 @@ public class AnswersOption {
 
     @ManyToOne
     private Task task;
+
+    public AnswersOption(AnswerOptionDTO dto){
+        this.setAnswerOptionValue(dto.getAnswer());
+        this.setCorrect(dto.isCorrect());
+    }
+
 }
