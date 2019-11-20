@@ -5,38 +5,11 @@
 <head>
     <meta charset="utf-8">
     <title></title>
-  </head>
-  <body>
-        <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
-            <div class="cutomnav">
-                <button id="goUsers">Users</button>
-                <button id="goDisciplines">Disciplines</button>
-                <button id="goStreams">Streams</button>
-                <button id="goTasks">Tasks</button>
-            </div>
-            <hr>
-            <div>
-                <form method="post" th:action="@{/logout}">
-                    <button type="submit">Logout</button>
-                </form>
-            </div>
+</head>
+    <body>
+        <div th:replace="fragments/topnavbar :: navbar">
         </div>
-
-        <script>
-            $("#goStreams").on("click", function (event) {
-                window.location.href = "/streamView";
-            });
-
-            $("#goUsers").on("click", function (event) {
-                window.location.href = "/userView/";
-            });
-
-            $("#goTasks").on("click", function (event) {
-                window.location.href = "/tasks/";
-            });
-            $("#goDisciplines").on("click", function (event) {
-                window.location.href = "/disciplineView";
-            });
-        </script>
+        <h1>Landing Page</h1>
+        <script src="/js/navbar.js"></script>
     </body>
 </html>
