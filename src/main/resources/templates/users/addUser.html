@@ -7,15 +7,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
+    <div th:replace="fragments/topnavbar :: navbar">
+    </div>
     <form>
-        <label for="username">Name:</label>
-        <input required="required" type="text" id="username"/>
+        <form>
+            <label for="username">Username:</label>
+            <input required="required" type="text" id="username"/>
+        </form>
 
-        <label for="email">Surname:</label>
-        <input required="required" type="text" id="email"/>
+        <form>
+            <label for="email">Email:</label>
+            <input required="required" type="text" id="email"/>
+        </form>
 
         <button id="addUser">Add</button>
     </form>
     <script src="/js/users.js"></script>
+    <script src="/js/navbar.js"></script>
 </body>
 </html>

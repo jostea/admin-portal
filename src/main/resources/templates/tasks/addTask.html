@@ -20,7 +20,7 @@
 
         <!-- HEADER - NAVBAR -->
         <div class="cutomnav form-row row">
-            <button href="">Users</button>
+            <button id="goUsers" href="">Users</button>
             <button href="">Disciplines</button>
             <button href="">Streams</button>
             <button id="goTasks" href="">Tasks</button>
@@ -443,6 +443,10 @@
 
     $("#goTasks").on("click", function (event) {
         window.location.href = "/tasks/";
+    });
+
+    $("#goUsers").on("click", function (event) {
+        window.location.href = "/userView/";
     });
 
 </script>
