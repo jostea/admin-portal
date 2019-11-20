@@ -1,4 +1,4 @@
-function getAllDisciplines() {
+function getAllDisciplinesAdd() {
     $.ajax({
         method: "GET",
         url: "/discipline/disciplines",
@@ -23,7 +23,11 @@ function addStream() {
         data: JSON.stringify(prepareDataAdd()),
         contentType: "application/json",
         success: function () {
+            $("#name").val("");
             getAllStreams();
+        },
+        error: function (xhr) {
+                alert(xhr)
         }
     })
 }

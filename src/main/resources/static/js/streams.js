@@ -10,14 +10,23 @@ function deletedById(val) {
     });
 }
 
-function findIdByName(val) {
-    $.ajax({
-        method: "GET",
-        url: "/streamView/streams/name/" + val,
-        success: function (response) {
+function filterByName(val) {
+    if (val.trim()==="") {
+        getAllStreams();
+    } else {
+        $.ajax({
+            method: "GET",
+            url: "/streamView/streams/name/" + val,
+            success: function (response) {
                 fillTable(response);
-        }
-    });
+            }, error: function (xhr) {
+                if (xhr.status === 404) {
+                    alert("Nothing found");
+                    getAllStreams();
+                }
+            }
+        });
+    }
 }
 
 function getAllStreams() {
@@ -38,15 +47,29 @@ function edit(id) {
         contentType: "application/json",
         success: function () {
             getAllStreams();
+        },
+        error: function (jqXHR) {
+            alert(jqXHR.status)
         }
     });
 }
 
 let flagIdStream;
 
-function saveIdStream(par) {
-    flagIdStream = par;
-    getAllDisciplinesEdit();
+function saveIdStream(par1, par2, par3, par4) {
+    flagIdStream = par1;
+    let modalDiv = "<form>\n" +
+        "                        <label for=\"stream-input\">\n" +
+        "                            Name:\n" +
+        "                        </label>\n" +
+        "                        <input type=\"text\" id=\"stream-input\" value='" + par2 + "'/>\n" +
+        "                        <label for=\"editDisciplines\">Disciplines:</label>\n" +
+        "                        <select id=\"editDisciplines\">\n" +
+        "                               <option value=" + par4 + ">" + par3 + "</option>" +
+        "                        </select>\n" +
+        "                            <button type='button' onclick='getAllDisciplinesEdit()'>View</button> " +
+        "                    </form>";
+    $("#formInModal").html(modalDiv);
 }
 
 function fillTable(data) {
@@ -55,17 +78,21 @@ function fillTable(data) {
         tbody += "<tr>";
         tbody += "<td>" + data[i].name + "</td>";
         tbody += "<td>" + data[i].disciplineName + "</td>";
-        tbody +=
-            "<td>" + "<button type='button' " +
-            "onclick='deletedById(" + data[i].id + ");' " +
-            "class='btn'>" +
-            "Delete" +
-            "</button>" + "</td>";
         tbody += `<td><button type='button' class="btn btn-info " data-toggle="modal" data-target="#editModal" 
-                        onclick='saveIdStream(${data[i].id});'>Edit</button></td>`;
+                        onclick='saveIdStream(${data[i].id},"${data[i].name}","${data[i].disciplineName}",
+                        ${data[i].disciplineId});'>Edit</button></td>`;
+        tbody += `<td><button type='button' 
+                        onclick='confirmDeleteStream(${data[i].id});' class='btn' 
+                        data-target="#deleteModalStream"   data-toggle="modal">Delete</button></td>`;
         tbody += "</tr>";
     }
     $("#streamsTable tbody").html(tbody);
+}
+
+function confirmDeleteStream(par1) {
+    $("#confirm-delete-stream").on("click", function () {
+        deletedById(par1);
+    });
 }
 
 function getAllDisciplinesEdit() {

@@ -18,7 +18,10 @@ public class StreamDTO {
 
     private String disciplineName;
 
+    private Long disciplineId;
+
     public StreamDTO(Stream stream) {
+        this.disciplineId = stream.getDiscipline().getId();
         this.id = stream.getId();
         this.name = stream.getName();
         this.disciplineName = stream.getDiscipline().getName();
