@@ -1,11 +1,18 @@
 $(document).ready(getAllStreams());
 
-function deletedById(val) {
+let flagIdStream;
+let streamIdOnDL;
+
+function deleteStream(val) {
     $.ajax({
         method: "DELETE",
         url: "/streamView/streams/delete/" + val,
         success: function () {
             getAllStreams();
+        }, error(xhr) {
+            if (xhr.status === 400) {
+                alert("Couldn't delete this stream");
+            }
         }
     });
 }
@@ -35,6 +42,11 @@ function getAllStreams() {
         url: "/streamView/streams",
         success: function (response) {
             fillTable(response);
+        },
+        error(xhr) {
+            if (xhr.status === 400) {
+                alert("Couldn't get streams");
+            }
         }
     });
 }
@@ -47,14 +59,13 @@ function edit(id) {
         contentType: "application/json",
         success: function () {
             getAllStreams();
-        },
-        error: function (jqXHR) {
-            alert(jqXHR.status)
+        }, edit(xhr) {
+            if (xhr.status === 400) {
+                alert("Couldn't update stream");
+            }
         }
     });
 }
-
-let flagIdStream;
 
 function saveIdStream(par1, par2, par3, par4) {
     flagIdStream = par1;
@@ -89,10 +100,12 @@ function fillTable(data) {
     $("#streamsTable tbody").html(tbody);
 }
 
+
+$("#confirm-delete-stream-button").on("click", function () {
+    deleteStream(streamIdOnDL);
+});
 function confirmDeleteStream(par1) {
-    $("#confirm-delete-stream").on("click", function () {
-        deletedById(par1);
-    });
+    streamIdOnDL = par1;
 }
 
 function getAllDisciplinesEdit() {

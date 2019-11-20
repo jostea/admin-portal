@@ -48,7 +48,6 @@ public class DisciplineService {
     }
 
     public List<DisciplineDTO> filterByName(String name) throws DisciplineNotFound {
-
         List<DisciplineDTO> disciplineDTOList = new ArrayList<>();
         for (Discipline val : disciplineRepository.findDisciplineByNameContainingIgnoreCase(name)) {
             disciplineDTOList.add(new DisciplineDTO(val));
@@ -57,7 +56,11 @@ public class DisciplineService {
     }
 
     public void delete(Long id) {
-        disciplineRepository.deleteById(id);
+        try {
+            disciplineRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void edit(Long id, DisciplineDTO disciplineDTO) throws DisciplineNotFound {
