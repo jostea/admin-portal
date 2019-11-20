@@ -25,8 +25,8 @@ public class TaskListDTO {
     public TaskListDTO(Task taskEntity){
         this.setId(taskEntity.getId());
         this.setTitle(taskEntity.getTitle());
-        this.setType(taskEntity.getTaskType().toString());
-        this.setComplexity(taskEntity.getComplexity().toString());
+        this.setType(taskEntity.getTaskType().getType());
+        this.setComplexity(taskEntity.getComplexity().getComplexity());
         this.setIsEnabled(taskEntity.isEnabled());
     }
 

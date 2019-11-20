@@ -92,7 +92,6 @@
 
         $("#tasks").on('click', '.editTask', function () {
             let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
-            alert(idTask)
             window.location.href = "editTask/" + idTask;
         });
 

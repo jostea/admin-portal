@@ -57,7 +57,7 @@
                 <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
                 <div class="col-md-4">
                     <select id="complexity" class="form-control">
-                        <option value="0">Select complexity...</option>
+<!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
                         <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
                                 th:text="${complexityEnum.getComplexity()}"></option>
                     </select>
@@ -70,7 +70,7 @@
                 <label class="col-md-1 col-form-label" for="taskType">Task type</label>
                 <div class="col-md-4">
                     <select id="taskType" class="form-control">
-                        <option value="0">Select task type...</option>
+<!--                        <option value="0" selected disabled style="display: none">Select task type...</option>-->
                         <option th:each="typeEnum : ${task_types}" th:value="${typeEnum}"
                                 th:text="${typeEnum.getType()}"></option>
                     </select>
@@ -84,7 +84,7 @@
                     <label class="col-md-1 col-form-label" for="disciplines">Discipline: </label>
                     <div class="col-md-3">
                         <select id="disciplines" class="form-control">
-                            <option value="0">Select discipline...</option>
+                            <option value="0" selected disabled style="display: none">Select discipline...</option>
                             <option th:each="DisciplineListDTO : ${disciplines}" th:value="${DisciplineListDTO.getId()}"
                                     th:text="${DisciplineListDTO.getName()}"></option>
                         </select>
@@ -92,7 +92,6 @@
                 </div>
 
                 <!-- DROPDOWN STREAMS -->
-                <!-- TODO: Value should be stream id!!!!-->
                 <div>
                     <label class="col-md-1 col-form-label" for="streams">Stream:</label>
                     <div class="col-md-2">
@@ -237,6 +236,7 @@
                 return false;
             }
         });
+
         return result;
     }
 
@@ -265,7 +265,7 @@
         let selectedStreamId = elStream.options[elStream.selectedIndex].value;
 
         // If there are no already such combination of Discipline-Stream, then add to the view
-        if (checkDiscAndStreams(selectedDiscipline, selectedStream)) {
+        if (checkDiscAndStreams(selectedDiscipline, selectedStream) && selectedDisciplineId != '0') {
             let tbody = $("#disc_streams_selected tbody").html();
             tbody += "<tr>";
             tbody += "<input type='hidden' value =" + selectedDisciplineId + ">";
@@ -300,6 +300,10 @@
         tbody += "<td>" + "<button class='removeAnswerOption'> Remove </button>" + "</td>";
         tbody += "</tr>";
         $("#answerOptions tbody").html(tbody);
+
+        //reset text input for answer and flag isCorrect
+        $("#answer").val("");
+        $("#isCorrect").prop("checked", false);
     });
 
     //returns streams based on the discipline name provided
@@ -397,6 +401,8 @@
     }
 
     function prepareData() {
+        let tskType = $("#taskType").val();
+
         let listAnswers = [];
         listAnswers = readAnswerOptions();
 
@@ -410,10 +416,18 @@
             sel = false;
         }
 
-        if ($("#title").val() == ""){
+        if ($("#title").val() == "") {
             alert("Title is empty!");
-        } else if($("#descripiton").val() == ""){
+        } else if ($("#descripiton").val() == "") {
             alert("Description is empty!");
+        } else if ($("#complexity").val() == '0') {
+            alert("Please, specify complexity of task.");
+        } else if ($("#taskType").val() == "0") {
+            alert("Select complexity of task");
+        } else if (listStreams.length == 0) {
+            alert("There should be at least one combination of Discipline-Stream");
+        } else if (listAnswers.length < 2 && (tskType == "MULTI_CHOICE" || tskType == "SINGLE_CHOICE")) {
+            alert("There should be at least 2 answers for Single or Multi Choice type of question");
         } else {
             return {
                 title: $("#title").val(),

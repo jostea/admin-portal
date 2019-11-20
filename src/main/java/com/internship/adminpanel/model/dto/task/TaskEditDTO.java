@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.internship.adminpanel.model.AnswersOption;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.Task;
-import com.internship.adminpanel.model.dto.StreamDTO;
+import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.answer_option.AnswerOptionDTO;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
 import com.internship.adminpanel.model.enums.TypeEnum;

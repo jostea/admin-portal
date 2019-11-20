@@ -3,7 +3,7 @@ package com.internship.adminpanel.service;
 import com.internship.adminpanel.model.AnswersOption;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.Task;
-import com.internship.adminpanel.model.dto.StreamDTO;
+import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.answer_option.AnswerOptionDTO;
 import com.internship.adminpanel.model.dto.task.TaskEditDTO;
 import com.internship.adminpanel.model.dto.task.TaskInsertDTO;
@@ -97,7 +97,7 @@ public class TaskService {
         //-----------------------------
 
         //process & convert all AnswerOptionDTO in AnswerOption
-        //(part I)      - Get AnswerOptionDTO without ID and crate new AnswerOption entity for the current task ID
+        //(part I)      - Get AnswerOptionDTO without ID and create new AnswerOption entity for the current task ID
         //              - Add new AnswerOption entites to the listAnswerOptions
         //(part II)     - Get already existing AnswerOption by its ID which match to the ID arrived from view
         //              - Modify it
@@ -108,38 +108,13 @@ public class TaskService {
         List<AnswersOption> listNewAnswerOptions = new ArrayList<>();
 
         //(part I)
-        List<AnswerOptionDTO> listAOwithNoId = taskEditDTO.getAnswers()
-                                                    .stream()
-                                                    .filter(ao -> ao.getId() == null)
-                                                    .collect(Collectors.toList());
-        for (AnswerOptionDTO aoDTO : listAOwithNoId) {
-            AnswersOption newAO = new AnswersOption(aoDTO);
-            newAO.setTask(taskToEdit);
-            AnswersOption newAOReturnedFromDB = answersOptionRepository.saveAndFlush(newAO);
-            listNewAnswerOptions.add(newAOReturnedFromDB);
-        }
+        listNewAnswerOptions.addAll(createAndReturnNewAnswerOptions(taskEditDTO,taskToEdit));
 
         //(part II)
-        List<AnswerOptionDTO> listAOwithIDfromUI = taskEditDTO.getAnswers()
-                                                    .stream()
-                                                    .filter(ao -> ao.getId() != null)
-                                                    .collect(Collectors.toList());
-        for (AnswerOptionDTO dto : listAOwithIDfromUI){
-            AnswersOption answerToUpdate = answersOptionRepository.getOne(dto.getId());
-            answerToUpdate.setAnswerOptionValue(dto.getAnswer());
-            answerToUpdate.setCorrect(dto.isCorrect());
-            AnswersOption updatedAOfromDB = answersOptionRepository.saveAndFlush(answerToUpdate);
-            listNewAnswerOptions.add(updatedAOfromDB);
-        }
+        listNewAnswerOptions.addAll(modifyAndReturnExistingAnswerOptions(taskEditDTO));
 
         //(part III)
-        List<AnswersOption> listAOwithIDfromDB = taskToEdit.getAnswersOptions();
-        //if this ID is not in new list -> remove from answer_option_table
-        for (AnswersOption aoDB : listAOwithIDfromDB) {
-            if (!listNewAnswerOptions.contains(aoDB)){
-                answersOptionRepository.delete(aoDB);
-            }
-        }
+        deleteRemovedAnswerOptions(taskToEdit, listNewAnswerOptions);
 
         //(part IV)
         taskToEdit.setAnswersOptions(listNewAnswerOptions);
@@ -152,4 +127,52 @@ public class TaskService {
             return new TaskEditDTO(taskDB.get());
         else return new TaskEditDTO();
     }
+
+    //region PRIVATE METHODS TO PROCESS EDIT TASK
+
+    //methods to perform Part I of editTask public method
+    private List<AnswersOption> createAndReturnNewAnswerOptions(TaskEditDTO taskEditDTO, Task taskToEdit){
+        List<AnswersOption> listNewAnswerOptions = new ArrayList<>();
+        List<AnswerOptionDTO> listAOwithNoId = taskEditDTO.getAnswers()
+                .stream()
+                .filter(ao -> ao.getId() == null)
+                .collect(Collectors.toList());
+        for (AnswerOptionDTO aoDTO : listAOwithNoId) {
+            AnswersOption newAO = new AnswersOption(aoDTO);
+            newAO.setTask(taskToEdit);
+            AnswersOption newAOReturnedFromDB = answersOptionRepository.saveAndFlush(newAO);
+            listNewAnswerOptions.add(newAOReturnedFromDB);
+        }
+        return listNewAnswerOptions;
+    }
+
+    //methods to perform Part II of editTask public method
+    private List<AnswersOption> modifyAndReturnExistingAnswerOptions(TaskEditDTO taskEditDTO){
+        List<AnswersOption> listNewAnswerOptions = new ArrayList<>();
+        List<AnswerOptionDTO> listAOwithIDfromUI = taskEditDTO.getAnswers()
+                .stream()
+                .filter(ao -> ao.getId() != null)
+                .collect(Collectors.toList());
+        for (AnswerOptionDTO dto : listAOwithIDfromUI){
+            AnswersOption answerToUpdate = answersOptionRepository.getOne(dto.getId());
+            answerToUpdate.setAnswerOptionValue(dto.getAnswer());
+            answerToUpdate.setCorrect(dto.isCorrect());
+            AnswersOption updatedAOfromDB = answersOptionRepository.saveAndFlush(answerToUpdate);
+            listNewAnswerOptions.add(updatedAOfromDB);
+        }
+        return listNewAnswerOptions;
+    }
+
+    //methods to perform Part III of editTask public method
+    private void deleteRemovedAnswerOptions(Task taskToEdit, List<AnswersOption> listNewAnswerOptions){
+        List<AnswersOption> listAOwithIDfromDB = taskToEdit.getAnswersOptions();
+        //if this ID is not in new list -> remove from answer_option_table
+        for (AnswersOption aoDB : listAOwithIDfromDB) {
+            if (!listNewAnswerOptions.contains(aoDB)){
+                answersOptionRepository.delete(aoDB);
+            }
+        }
+    }
+    //endregion
+
 }

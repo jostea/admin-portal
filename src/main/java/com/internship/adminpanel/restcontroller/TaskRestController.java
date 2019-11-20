@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,14 +30,14 @@ public class TaskRestController {
     }
 
     @PostMapping("/addTask")
-    public ResponseEntity<String> saveTask(@RequestBody TaskInsertDTO task) {
+    public ResponseEntity<String> saveTask(@RequestBody TaskInsertDTO task, Authentication authentication) {
         try{
             taskService.addTask(task);
-            log.info("New task created: " + task.toString());
+            log.info("[User: " + authentication.getName() +"] created new task: " + task.toString());
             return new ResponseEntity<>("New task was created.", HttpStatus.OK);
         }
         catch (Exception e){
-            log.error("Error while trying to add new task: " + task.toString() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to add new task: " + task.toString() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>("New task was created.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -52,16 +53,15 @@ public class TaskRestController {
     }
 
     @PutMapping("/editTask")
-//    public ResponseEntity<String> editTask(@RequestBody TaskEditDTO task) {
-        public void editTask(@RequestBody TaskEditDTO task) {
+    public ResponseEntity<String> editTask(@RequestBody TaskEditDTO task, Authentication authentication) {
         try{
             taskService.editTask(task);
-            log.info("The task with ID  " + task.getId() + " was modified.");
-//            return new ResponseEntity<>(HttpStatus.OK);
+            log.info("[User: " + authentication.getName() + "] modified task with ID  " + task.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e){
-            log.error("Error while trying to update task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            log.error("[User: " + authentication.getName() + "]. Error while trying to update task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
