@@ -1,4 +1,4 @@
-package com.internship.adminpanel.model.dto;
+package com.internship.adminpanel.model.dto.stream;
 
 import com.internship.adminpanel.model.Stream;
 import lombok.AllArgsConstructor;

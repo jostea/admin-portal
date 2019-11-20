@@ -19,7 +19,7 @@
         <div class="cutomnav">
             <button href="">Users</button>
             <button href="">Disciplines</button>
-            <button href="">Streams</button>
+            <button id="goStreams">Streams</button>
             <button id="goTasks" href="">Tasks</button>
         </div>
         <hr>
@@ -88,6 +88,10 @@
 
         $("#goTasks").on("click", function (event) {
             window.location.href = "/tasks/";
+        });
+
+        $("#goStreams").on("click", function (event) {
+            window.location.href = "/streamView";
         });
 
     </script>

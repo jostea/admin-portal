@@ -5,14 +5,14 @@
 <head>
     <meta charset="utf-8">
     <title></title>
-</head>
-    <body>
+  </head>
+  <body>
         <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
             <div class="cutomnav">
-                <button id="goUsers" href="">Users</button>
-                <button href="">Disciplines</button>
-                <button href="">Streams</button>
-                <button id="goTasks" href="">Tasks</button>
+                <button id="goUsers">Users</button>
+                <button id="goDisciplines">Disciplines</button>
+                <button id="goStreams">Streams</button>
+                <button id="goTasks">Tasks</button>
             </div>
             <hr>
             <div>
@@ -23,6 +23,10 @@
         </div>
 
         <script>
+            $("#goStreams").on("click", function (event) {
+                window.location.href = "/streamView";
+            });
+
             $("#goUsers").on("click", function (event) {
                 window.location.href = "/userView/";
             });
