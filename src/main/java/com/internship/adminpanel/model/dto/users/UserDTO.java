@@ -12,10 +12,12 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
+    private boolean isActive;
 
     public UserDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
+        this.isActive = user.isActive();
     }
 }

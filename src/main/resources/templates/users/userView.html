@@ -8,21 +8,54 @@
     <link href="/css/user.css" type="text/css" rel="stylesheet">
 </head>
     <body>
+            <div th:replace="fragments/topnavbar :: navbar">
+            </div>
             <button th:if="${#request.isUserInRole('SUPER_ADMIN')}" id="addNewUser">Add new user</button>
             <div style="margin-top: 20px">
                 <div>
-                    <table id="usersTable">
-                        <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>username</th>
-                            <th>e-mail</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="view-users-div">
+                        <p>Here the users are displayed</p>
+                        <table id="usersTable">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="view-single-user-div">
+                        <p>Here a specific user is being displayed</p>
+                        <table id="singleUserTable">
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>e-mail</th>
+                                <th>Is active</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr></tr>
+                                <span id="edit-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"><button id='edit-user'>Edit User</button></span>
+                                <span id="enable-disable-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"></span>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="edit-user-div">
+                        <p>You are in the edit mode here</p>
+                        <table id="editUser">
+                            <thead>
+                            <tr>
+                                <th hidden>id</th>
+                                <th>Set new Username</th>
+                                <th>Set new E-mail</th>
+                                <th>Set new Password</th>
+                                <th>Hit to apply changes</th>
+                            <tbody></tbody>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
             <script src="/js/users.js"></script>
+            <script src="/js/navbar.js"></script>
     </body>
 </html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="/css/profile.css" type="text/css" rel="stylesheet">
+</head>
+    <body>
+    <div th:replace="fragments/topnavbar :: navbar">
+    </div>
+        <div id="main-div">
+            <table id="profileTable">
+                <thead>
+                <tr>
+                    <th hidden>id</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                <tbody></tbody>
+            </table>
+            <button id="goEditPassword">Edit Password</button>
+            <span></span>
+        </div>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/profile.js"></script>
+    </body>
+</html>

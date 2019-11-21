@@ -16,13 +16,8 @@
     <div>
 
         <!-- HEADER - NAVBAR -->
-        <div class="cutomnav">
-            <button href="">Users</button>
-            <button href="">Disciplines</button>
-            <button href="">Streams</button>
-            <button id="goTasks" href="">Tasks</button>
+        <div th:replace="fragments/topnavbar :: navbar">
         </div>
-        <hr>
 
         <p> <b> List of Tasks </b> </p>
             <button id="addTask">Add Task</button>
@@ -86,16 +81,14 @@
             window.location.href = "addTask";
         });
 
-        $("#goTasks").on("click", function (event) {
-            window.location.href = "/tasks/";
-        });
-
         $("#tasks").on('click', '.editTask', function () {
             let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
             window.location.href = "editTask/" + idTask;
         });
 
     </script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/profile.js"></script>
 </body>
 </html>
 

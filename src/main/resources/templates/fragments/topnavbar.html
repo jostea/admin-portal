@@ -1,0 +1,14 @@
+<div th:fragment="navbar">
+    <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
+        <div class="cutomnav">
+            <button id="goHome"><strong>Home</strong></button>
+            <button id="goUsers">Users</button>
+            <button href="">Disciplines</button>
+            <button id="goStreams">Streams</button>
+            <button id="goTasks">Tasks</button>
+            <button id="goProfile" style="position: absolute; right: 10%;"><b th:inline="text" class="user">[[${#httpServletRequest.remoteUser}]]</b></button>
+            <button style="position: absolute; right: 5%;" id="goLogout" type="submit">Logout</button>
+        </div>
+        <hr>
+    </div>
+</div>
