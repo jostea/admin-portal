@@ -19,13 +19,8 @@
     <div class="container">
 
         <!-- HEADER - NAVBAR -->
-        <div class="cutomnav form-row row">
-            <button href="">Users</button>
-            <button href="">Disciplines</button>
-            <button href="">Streams</button>
-            <button id="goTasks" href="">Tasks</button>
+        <div th:replace="fragments/topnavbar :: navbar">
         </div>
-        <hr>
 
 
         <div class="row">
@@ -523,11 +518,9 @@
         }
     }
 
-    $("#goTasks").on("click", function (event) {
-        window.location.href = "/tasks/";
-    });
-
 </script>
+<script src="/js/navbar.js"></script>
+<script src="/js/profile.js"></script>
 </body>
 </html>
 

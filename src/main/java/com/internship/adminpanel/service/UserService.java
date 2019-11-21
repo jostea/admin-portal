@@ -1,9 +1,11 @@
 package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.model.User;
+import com.internship.adminpanel.model.dto.profile.ProfileDTO;
 import com.internship.adminpanel.model.dto.users.UserDTO;
 import com.internship.adminpanel.model.dto.users.UserDTOFromUI;
 import com.internship.adminpanel.model.dto.users.UserDTOFromUIUpdate;
+import com.internship.adminpanel.model.enums.RoleEnum;
 import com.internship.adminpanel.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,8 @@ public class UserService {
     public List<UserDTO> getAll() {
         List<UserDTO> userDTOS = new ArrayList<>();
         for(User user : userRepository.findAll()) {
-            userDTOS.add(new UserDTO(user));
+            if (!user.getRole().equals(RoleEnum.SUPER_ADMIN))
+                userDTOS.add(new UserDTO(user));
         }
         return userDTOS;
     }
@@ -71,5 +74,9 @@ public class UserService {
         } else {
             log.error("User with id: " + id + " could not be disabled");
         }
+    }
+
+    public ProfileDTO findByUsername(String username) {
+        return new ProfileDTO(userRepository.findByUsername(username).get());
     }
 }

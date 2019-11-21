@@ -12,15 +12,8 @@
     <link type="text/css" rel="stylesheet" href="/css/stream.css">
 </head>
 <body>
-<div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}" id="stream-div">
-    <div class="cutomnav">
-        <button id="goUsers">Users</button>
-        <button id="goDisciplines">Disciplines</button>
-        <button id="goStreams">Streams</button>
-        <button id="goTasks">Tasks</button>
-    </div>
-    <hr>
-    <div>
+<div th:replace="fragments/topnavbar :: navbar">
+</div>
         <form method="post" th:action="@{/logout}">
             <button type="submit">Logout</button>
         </form>
@@ -119,16 +112,7 @@
         </div>
     </div>
 </div>
-<script>
-    $("#goStreams").on("click", function (event) {
-        window.location.href = "streamView";
-    });
-    $("#goUsers").on("click", function (event) {
-        window.location.href = "/userView/";
-    });
-    $("#goTasks").on("click", function (event) {
-        window.location.href = "/tasks/";
-    });
-</script>
+<script src="/js/navbar.js"></script>
+<script src="/js/profile.js"></script>
 </body>
 </html>
