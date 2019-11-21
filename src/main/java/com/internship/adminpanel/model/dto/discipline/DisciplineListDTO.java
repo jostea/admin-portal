@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DisciplineListDTO {
 
+    //TODO: REMOVE THIS DTO. INSTEAD OF THIS IS DisciplineDto
     private Long id;
     private String name;
 
