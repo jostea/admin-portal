@@ -1,5 +1,6 @@
 package com.internship.adminpanel.restcontroller;
 
+import com.internship.adminpanel.model.dto.task.TaskDisableDTO;
 import com.internship.adminpanel.model.dto.task.TaskEditDTO;
 import com.internship.adminpanel.model.dto.task.TaskInsertDTO;
 import com.internship.adminpanel.model.dto.task.TaskListDTO;
@@ -75,6 +76,27 @@ public class TaskRestController {
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
         } catch (Exception e){
             log.warn("[User: " + authentication.getName() + "]. Error while trying to view a task with ID: " + id + "; Stack Trace: " + e.getStackTrace());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/disableTask")
+    public ResponseEntity<TaskEditDTO> disableTask(@RequestBody TaskDisableDTO taskDisableDTO, Authentication authentication){
+        try{
+            taskService.disableTask(taskDisableDTO);
+            String action = "";
+            if (taskDisableDTO.isEnabled() == false){
+                action = " disabled ";
+            } else {
+                if (taskDisableDTO.isEnabled() == true){
+                    action = " enabled ";
+                }
+            }
+            log.info("[User: " + authentication.getName() + "]" + action + "task with ID  " + taskDisableDTO.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (Exception e){
+            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable task with ID: " + taskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

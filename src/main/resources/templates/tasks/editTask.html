@@ -7,20 +7,39 @@
     <meta charset="UTF-8">
     <title>Edit selected task (question) </title>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <body>
 <div>
 
-    <!-- HEADER - NAVBAR -->
-    <div th:replace="fragments/topnavbar :: navbar">
-    </div>
-
     <div class="container">
+
+        <!-- Modal To Display Different Messages -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body" style="text-align:center">
+                        <h3><strong>Task was successfully modified</strong></h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEADER - NAVBAR -->
+        <div th:replace="fragments/topnavbar :: navbar">
+        </div>
 
 
         <div class="row">
@@ -199,6 +218,12 @@
 
     $(document).ready(populatePage());
 
+    function showPopUp(title, message){
+        $("#myModal").find('h4').text(title);
+        $("#myModal").find('h3').text(message);
+        $("#myModal").modal('show');
+    }
+
     function populatePage(){
         let url_string = window.location.href.split('/');
         let taskId = url_string[url_string.length - 1];
@@ -273,11 +298,11 @@
         let selectedTaskType = elTaskType.options[elTaskType.selectedIndex].text;
 
         if (checkAnswerOptions() > 1 && selectedTaskType == "Single Choice") {
-            alert("For Single Choice question should be only 1 correct answer. Please check")
+            showPopUp('Error in Single Choice question', 'For Single Choice question should be only 1 correct answer. Please verify.');
         } else if (checkAnswerOptions() == 0 && selectedTaskType == "Single Choice"){
-            alert("Please specify correct answer for Single Choice type question")
+            showPopUp('Error in Single Choice question', 'Please specify correct answer for Single Choice type question.');
         } else if (checkAnswerOptions() == 0 && selectedTaskType == "Multi Choice"){
-            alert("There should be at least one correct answer for Multi Choice question")
+            showPopUp('Error in Multi Choice question', 'There should be at least one correct answer for Multi Choice question.');
         } else {
             $.ajax({
                 method: "PUT",
@@ -363,27 +388,31 @@
         // get the current answer option text
         let selectedAnswer = $("#answer").val();
 
-        // get true-false isCorrect value
-        let selIsCorrect;
-        let answerIsCorrect = document.getElementById("isCorrect");
-        if (answerIsCorrect.checked === true) {
-            selIsCorrect = true;
+        if (!selectedAnswer) {
+            showPopUp("Empty field", "Answer is empty. Please specify the answer.")
         } else {
-            selIsCorrect = false;
+            // get true-false isCorrect value
+            let selIsCorrect;
+            let answerIsCorrect = document.getElementById("isCorrect");
+            if (answerIsCorrect.checked === true) {
+                selIsCorrect = true;
+            } else {
+                selIsCorrect = false;
+            }
+
+            let tbody = $("#answerOptions tbody").html();
+            tbody += "<tr>";
+            tbody += "<input type='hidden' name='answerOptionId' value=''" + ">";
+            tbody += "<td>" + selectedAnswer + "</td>";
+            tbody += "<td>" + selIsCorrect + "</td>";
+            tbody += "<td>" + "<button class='removeAnswerOption'> Remove </button>" + "</td>";
+            tbody += "</tr>";
+            $("#answerOptions tbody").html(tbody);
+
+            //reset text input for answer and flag isCorrect
+            $("#answer").val("");
+            $("#isCorrect").prop("checked", false);
         }
-
-        let tbody = $("#answerOptions tbody").html();
-        tbody += "<tr>";
-        tbody += "<input type='hidden' name='answerOptionId' value=''" + ">";
-        tbody += "<td>" + selectedAnswer + "</td>";
-        tbody += "<td>" + selIsCorrect + "</td>";
-        tbody += "<td>" + "<button class='removeAnswerOption'> Remove </button>" + "</td>";
-        tbody += "</tr>";
-        $("#answerOptions tbody").html(tbody);
-
-        //reset text input for answer and flag isCorrect
-        $("#answer").val("");
-        $("#isCorrect").prop("checked", false);
     });
 
     //returns streams based on the discipline name provided
@@ -497,13 +526,13 @@
         }
 
         if ($("#title").val() == ""){
-            alert("Title is empty!");
+            showPopUp('No title', 'Title is empty! Please specify');
         } else if($("#descripiton").val() == ""){
-            alert("Description is empty!");
+            showPopUp('No Description', 'Description is empty! Please specify');
         } else if (listStreams.length == 0) {
-            alert("There should be at least one combination of Discipline-Stream");
+            showPopUp('No streams', 'Please specify at least one discipline and stream.');
         } else if (listAnswers.length < 2 && (tskType == "MULTI_CHOICE" || tskType == "SINGLE_CHOICE")) {
-            alert("There should be at least 2 answers for Single or Multi Choice type of question");
+            showPopUp('No enough answers', 'For type "Single Choice" or "Multi Choice" please specify at least 2 answer options.');
         } else {
             return {
                 id: $("#taskId").val(),
