@@ -47,7 +47,7 @@ public class StreamService {
     public List<StreamDTO> filterByName(String name) throws StreamNotFound {
         //Convert To StreamDTO Listed
         List<StreamDTO> streamDTOList = new ArrayList<>();
-        for (Stream val : streamRepository.findStreamByNameContaining(name.toUpperCase())) {
+        for (Stream val : streamRepository.findStreamByNameContainingIgnoreCase(name)) {
             streamDTOList.add(new StreamDTO(val));
         }
         if (streamDTOList.size() == 0)
@@ -70,7 +70,7 @@ public class StreamService {
                         .build());
     }
 
-    public void edit(Long id, StreamDTOFromUI streamUI) throws SQLException, DisciplineNotFound {
+    public void edit(Long id, StreamDTOFromUI streamUI) throws SQLException, DisciplineNotFound, StreamNotFound {
         Optional<Stream> streamOp = streamRepository.findById(id);
         Discipline discipline ;
         if (disciplineRepository.findById(streamUI.getDisciplineId()).isPresent()) {
@@ -83,6 +83,8 @@ public class StreamService {
             stream.setName(streamUI.getName());
             stream.setDiscipline(discipline);
             streamRepository.save(stream);
+        } else {
+            throw new StreamNotFound("Stream with id " + id + "didn't found");
         }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -46,12 +47,35 @@ public class DisciplineService {
         return disciplines;
     }
 
-    public DisciplineDTO findByName(String name) throws DisciplineNotFound {
-        if (disciplineRepository.findByName(name).isPresent())
-            return new DisciplineDTO(disciplineRepository.findByName(name).get());
-        else {
-            throw new DisciplineNotFound("Discipline with name '" + name + "' didn't found.");
+    public List<DisciplineDTO> filterByName(String name) throws DisciplineNotFound {
+        List<DisciplineDTO> disciplineDTOList = new ArrayList<>();
+        for (Discipline val : disciplineRepository.findDisciplineByNameContainingIgnoreCase(name)) {
+            disciplineDTOList.add(new DisciplineDTO(val));
         }
+        return disciplineDTOList;
+    }
 
+    public void delete(Long id) {
+        try {
+            disciplineRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void edit(Long id, DisciplineDTO disciplineDTO) throws DisciplineNotFound {
+        Optional<Discipline> disciplineOptional = disciplineRepository.findById(id);
+        if (disciplineOptional.isPresent()) {
+            Discipline discipline = disciplineOptional.get();
+            discipline.setName(disciplineDTO.getName());
+            disciplineRepository.save(discipline);
+        } else {
+            throw new DisciplineNotFound("The discipline with id:" + disciplineDTO.getId() + "didn't found.");
+        }
+    }
+
+    public void add(DisciplineDTO disciplineDTO) {
+        disciplineRepository.save(Discipline.builder()
+                .name(disciplineDTO.getName()).build());
     }
 }

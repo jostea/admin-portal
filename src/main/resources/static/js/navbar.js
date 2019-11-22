@@ -17,12 +17,17 @@ $("#goLogout").on("click", function () {
         }
     })
 });
+
 $("#goHome").on("click", function () {
     window.location.replace("/landing");
 });
 $("#goProfile").on("click", function () {
     window.location.replace("/profile")
 });
+$("#goDisciplines").on("click", function () {
+    window.location.replace("/disciplineView/");
+});
+
 
 
 
