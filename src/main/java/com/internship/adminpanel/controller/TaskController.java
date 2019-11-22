@@ -47,7 +47,7 @@ public class TaskController {
 
         //collection of disciplines
         List<DisciplineListDTO> disciplinesDTO = new ArrayList<>();
-        disciplinesDTO = disciplineService.getAll();    //TODO: modify to call new get All, which returns List<DisciplineDTO>
+        disciplinesDTO = disciplineService.getAll();
         model.addObject("disciplines", disciplinesDTO);
 
         //collection of streams
@@ -74,7 +74,7 @@ public class TaskController {
 
         //collection of disciplines
         List<DisciplineListDTO> disciplinesDTO = new ArrayList<>();
-        disciplinesDTO = disciplineService.getAll();    //TODO: modify to call new get All, which returns List<DisciplineDTO>
+        disciplinesDTO = disciplineService.getAll();
         model.addObject("disciplines", disciplinesDTO);
 
         //collection of streams
@@ -82,6 +82,40 @@ public class TaskController {
         streams = streamService.findAll();
         model.addObject("streams", streams);
 
+        return model;
+    }
+
+    @GetMapping(value = "/viewTask/{id}")
+    public ModelAndView viewTask() {
+        ModelAndView model = new ModelAndView("/tasks/viewTask");
+
+        //collection for complexitites dropdown
+        List<ComplexityEnum> complexities = new ArrayList<ComplexityEnum>();
+        complexities = Arrays.asList(ComplexityEnum.values());
+        model.addObject("complexities",complexities);
+
+        //collection for task-types dropdown
+        List<TypeEnum> taskTypes = new ArrayList<TypeEnum>();
+        taskTypes = Arrays.asList(TypeEnum.values());
+        model.addObject("task_types", taskTypes);
+
+        //collection of disciplines
+        List<DisciplineListDTO> disciplinesDTO = new ArrayList<>();
+        disciplinesDTO = disciplineService.getAll();
+        model.addObject("disciplines", disciplinesDTO);
+
+        //collection of streams
+        List<StreamDTO> streams  = new ArrayList<>();
+        streams = streamService.findAll();
+        model.addObject("streams", streams);
+
+        return model;
+    }
+
+
+    //TODO: use this private method in order to remove code duplication
+    private ModelAndView populateModelWithDropDowns(ModelAndView model){
+        //!!!!!
         return model;
     }
 }

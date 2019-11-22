@@ -42,9 +42,11 @@ public class TaskRestController {
         }
     }
 
+    //region EDIT_TASK
     @GetMapping("/editTask/{id}")
-    public ResponseEntity<TaskEditDTO> editTask(@PathVariable("id") Long id){
+    public ResponseEntity<TaskEditDTO> editTask(@PathVariable("id") Long id, Authentication authentication){
         try{
+            log.info("[User: " + authentication.getName() + "] requested a task to edit. Task with ID  " + id);
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
         } catch (Exception e){
             log.warn("Error while getting task with id: " + id);
@@ -61,6 +63,18 @@ public class TaskRestController {
         }
         catch (Exception e){
             log.error("[User: " + authentication.getName() + "]. Error while trying to update task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    //endregion
+
+    @GetMapping("/viewTask/{id}")
+    public ResponseEntity<TaskEditDTO> viewTask(@PathVariable("id") Long id, Authentication authentication){
+        try{
+            log.info("[User: " + authentication.getName() + "] viewed task with ID  " + id);
+            return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
+        } catch (Exception e){
+            log.warn("[User: " + authentication.getName() + "]. Error while trying to view a task with ID: " + id + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

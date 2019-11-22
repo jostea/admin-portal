@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <title>View selected task (question) </title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+<div>
+
+    <div class="container">
+
+        <!-- HEADER - NAVBAR -->
+        <div th:replace="fragments/topnavbar :: navbar">
+        </div>
+
+
+        <div class="row">
+            <h1>
+                <strong> View Task </strong>
+                <input id="taskId" type='hidden' value = ''>
+                <div class="form-row row">
+                    <a id="editTask" href="#" class="btn btn-primary a-btn-slide-text">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        <span><strong>Edit</strong></span>
+                    </a>
+                </div>
+            </h1>
+        </div>
+        <hr>
+
+        <form>
+            <div class="form-row row">
+                <label class="col-md-1 col-form-label" for="title">Title</label>
+                <div class="col-md-4">
+                    <input id="title" class="form-control" type="text" readonly="readonly">
+                </div>
+            </div>
+            <br/>
+
+            <div class="form-row row">
+                <label class="col-md-1 col-form-label" for="descripiton">Description</label>
+                <div class="col-md-4">
+                    <textarea id="descripiton" class="form-control" type="text" readonly="readonly"></textarea>
+                </div>
+            </div>
+            <br/>
+
+            <!-- DROPDOWN COMPLEXITIES -->
+            <div class="form-row row">
+                <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
+                <div class="col-md-4">
+                    <select id="complexity" class="form-control" readonly="readonly" disabled>
+<!--                        <option value="0">Select complexity...</option>-->
+                        <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                th:text="${complexityEnum.getComplexity()}"></option>
+                    </select>
+                </div>
+            </div>
+            <br/>
+
+            <!-- DROPDOWN TASK_TYPES -->
+            <div class="form-row row">
+                <label class="col-md-1 col-form-label" for="taskType">Task type</label>
+                <div class="col-md-4">
+                    <select id="taskType" class="form-control" readonly="readonly" disabled>
+<!--                        <option value="0">Select task type...</option>-->
+                        <option th:each="typeEnum : ${task_types}" th:value="${typeEnum}"
+                                th:text="${typeEnum.getType()}"></option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+
+            <br/>
+            <div class="form-row row">
+                <h5 class="alert alert-info">
+                    <strong>There are the following Disciplines and Streams attaches to this task:</strong>
+                </h5>
+            </div>
+
+            <div class="form-row row">
+                <table id="disc_streams_selected">
+                    <thead>
+                    <tr>
+                        <th> Nr</th>
+                        <th> Discipline</th>
+                        <th> Stream</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <br/>
+            <hr>
+
+            <div class="form-row row">
+                <div class="alert alert-danger">
+                    <strong>Task Status</strong>
+                </div>
+            </div>
+            <div class="form-row row">
+                <label class="col-form-label">Enable Task</label>
+                <input type="checkbox" id="isEnabled" name="activate" disabled>
+            </div>
+            <br/>
+            <hr>
+
+            <div class="form-row row">
+                <h5 class="alert alert-info">
+                    <strong>Answer options specified to the task:</strong>
+                </h5>
+            </div>
+            <div class="form-row row">
+                <table id="answerOptions">
+                    <thead>
+                    <tr>
+                        <th> Nr</th>
+                        <th> Answer</th>
+                        <th> Is Correct</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <br/>
+
+            <hr>
+
+        </form>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(populatePage());
+
+    function populatePage(){
+        let url_string = window.location.href.split('/');
+        let taskId = url_string[url_string.length - 1];
+        if (taskId >= 1){
+            $.ajax({
+                method: "GET",
+                url: "/tasksrest/viewTask/" + taskId,
+                success: function (response) {
+                    fillinForm(response);
+                }
+            })
+        }
+    }
+
+    //fill in page with the TaskDTO data read from
+    function fillinForm(data){
+        //process 'isEnabled' task flag
+        if (data.isEnabled === true){
+            $("#isEnabled").prop('checked', true);
+        }
+        if (data.isEnabled === false){
+            $("#isEnabled").prop('checked', false);
+        }
+        //process other stand-alone fields
+        $("#taskId").val(data.id);
+        $("#title").val(data.title);
+        $("#descripiton").val(data.description);
+        $("#complexity").val(data.complexity);
+        $("#taskType").val(data.taskType);
+
+        //separately fill in tables to display disciplines-stream and answeroptions
+        fillinDisciplinesStreams(data);
+        fillinAnswerOptions(data);
+    }
+
+    //populate table Disciplines-Streams with the data from DB
+    function fillinDisciplinesStreams(data) {
+        let tbody = $("#disc_streams_selected tbody").html();
+        let nrStreams = data.streams.length;
+        for (let i = 0; i < nrStreams; i++) {
+            tbody += "<tr>";
+            tbody += "<input type='hidden' value =''" + ">";
+            tbody += "<input type='hidden' value =" + data.streams[i].id + ">";
+            tbody += "<td>" + (i+1) + "</td>";
+            tbody += "<td>" + data.streams[i].disciplineName + "</td>";
+            tbody += "<td>" + data.streams[i].name + "</td>";
+            tbody += "</tr>";
+        }
+        $("#disc_streams_selected tbody").html(tbody);
+    }
+
+    //populate table Disciplines-Streams with the data from DB
+    function fillinAnswerOptions(data){
+        let tbody = $("#answerOptions tbody").html();
+        let nrAnswerOptions = data.answers.length;
+        for (let i = 0; i < nrAnswerOptions; i++) {
+            tbody += "<tr>";
+            tbody += "<input type='hidden' name='answerOptionId' value=" + data.answers[i].id + ">";
+            tbody += "<td>" + (i+1) + "</td>";
+            tbody += "<td>" + data.answers[i].answer + "</td>";
+            tbody += "<td>" + data.answers[i].isCorrect + "</td>";
+            tbody += "</tr>";
+        }
+        $("#answerOptions tbody").html(tbody);
+    }
+
+    //returns streams based on the discipline name provided
+    function getStreamsByDiscipline(discname) {
+        $.ajax({
+            method: "GET",
+            url: "/streamView/streams/discipline/" + discname,
+            success: function (response) {
+                populateStreamsDropdown(response);
+            }
+        });
+    }
+
+    //populate stream dropdown based on the data provided (filtered by discipline)
+    function populateStreamsDropdown(data) {
+        let tbody = $("#streams").html();
+        tbody = "";
+
+        for (let i = 0; i < data.length; i++) {
+            tbody += "<option value=" + data[i].id + ">";
+            tbody += data[i].name;
+            tbody += "</option>";
+        }
+        $("#streams").html(tbody);
+    }
+
+</script>
+<script src="/js/navbar.js"></script>
+<script src="/js/profile.js"></script>
+</body>
+</html>
+
