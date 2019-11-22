@@ -86,6 +86,11 @@
             window.location.href = "editTask/" + idTask;
         });
 
+        $("#tasks").on('click', '.viewTask', function () {
+            let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+            window.location.href = "viewTask/" + idTask;
+        });
+
     </script>
     <script src="/js/navbar.js"></script>
     <script src="/js/profile.js"></script>
