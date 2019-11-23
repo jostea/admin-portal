@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class UserRestController {
             return new ResponseEntity<>("You have succesfully saved a new user ", HttpStatus.OK);
         } catch (Exception e) {
             log.info("Error when trying to add a new user " + userDTOFromUI.getUsername() + ". Here is the Stack Trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>("Error while trying to add a new user ", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

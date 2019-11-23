@@ -48,30 +48,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-    public User(UserDTOFromUI userDTOFromUI) {
+    public User(UserDTOFromUI userDTOFromUI, String password) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.setUsername(userDTOFromUI.getUsername());
         this.setEmail(userDTOFromUI.getEmail());
-        this.setPassword(generatePassword());
+        this.setPassword(passwordEncoder.encode(password));
         this.setRole(RoleEnum.ADMIN);
         this.setActive(true);
-    }
-
-    private static String generatePassword() {
-        CharacterRule specialCharacterRule = new CharacterRule(new CharacterData() {
-            @Override
-            public String getErrorCode() {
-                return "SAMPLE_ERROR_CODE";
-            }
-
-            @Override
-            public String getCharacters() {
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*";
-            }
-        });
-        PasswordGenerator passwordGenerator = new PasswordGenerator();
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordGenerator.generatePassword(8, specialCharacterRule);
-        System.out.println(password);
-        return passwordEncoder.encode(password);
     }
 }

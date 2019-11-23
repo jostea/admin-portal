@@ -1,18 +1,11 @@
-table {
-    border-collapse: collapse;
+.btn {
+    margin: 3px;
 }
 
-table, th, td {
-    border: 1px solid black;
-}
-
-th {
-    height: 25px;
-    padding: 15px;
-}
-
-td {
-    min-width: 20px;
-    padding: 15px;
-    text-align: left;
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
 }

@@ -6,12 +6,14 @@
     <title>Profile</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="/css/profile.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
     <body>
     <div th:replace="fragments/topnavbar :: navbar">
     </div>
-        <div id="main-div">
-            <table id="profileTable">
+        <div id="main-div" class="container">
+            <h1>You are logged in as: </h1>
+            <table id="profileTable" class="table">
                 <thead>
                 <tr>
                     <th hidden>id</th>
@@ -19,8 +21,10 @@
                     <th>Role</th>
                 <tbody></tbody>
             </table>
-            <button id="goEditPassword">Edit Password</button>
-            <span></span>
+            <button id="goEditPassword" class="btn btn-default">Edit Password</button>
+            <div id="editPasswordSpan">
+                <div id="test"></div>
+            </div>
         </div>
 
     <script src="/js/navbar.js"></script>

@@ -59,24 +59,6 @@ $("#edit-user").on("click", function () {
     });
 });
 
-$("#addUser").on("click", function () {
-    $.ajax({
-        method: "POST",
-        url: "/users/add",
-        data: JSON.stringify(prepareDataToAddUser()),
-        contentType: "application/json",
-        success: function () {
-            window.location.replace("/users/");
-            getAllUsers();
-        },
-        error: function(xhr) {
-            if (xhr.status === 500) {
-                alert("Status code is 500, username or mail already exists");
-            }
-        }
-    })
-});
-
 function getAllUsers() {
     $(".view-single-user-div").hide();
     $(".view-users-div").show();
@@ -85,7 +67,12 @@ function getAllUsers() {
         method: "GET",
         url: "/users/all",
         success: function (response) {
-            fillTable(response);
+            if (response.length===0) {
+                $("#usersTable").hide();
+                $("#usersInfoParagraph").html("No users in the system yet");
+            } else if (response.length>0) {
+                fillTable(response);
+            }
         }
     });
 }
@@ -98,9 +85,9 @@ function fillTableForOne(data) {
     tbody += "<td>" + data.email + "</td>";
     tbody += "<td>" + data.active + "</td>";
     if (data.active) {
-        disable_button += "<button class='enable-disable-user'>Disable this user</button>"
+        disable_button += "<button class='enable-disable-user btn btn-danger'>Disable this user</button>"
     } else if(!data.active) {
-        disable_button += "<button class='enable-disable-user'>Enable this user</button>"
+        disable_button += "<button class='enable-disable-user btn btn-success'>Enable this user</button>"
     }
     $("#enable-disable-user-button").html(disable_button);
     $("#singleUserTable tbody tr").html(tbody);
@@ -108,40 +95,33 @@ function fillTableForOne(data) {
 
 function fillTable(data) {
     let tbody = "";
-    var user_counter = 1;
+    var order = 1;
     for (let i = 0; i < data.length; i++) {
         tbody += "<tr id='row" + data[i].id + "'>";
         tbody += "<td hidden class='db-id'>" + data[i].id + "</td>";
-        tbody += "<td>" + data[i].username + "</td>";
-        tbody += "<td><button class='view-user'>View</button></td>";
+        tbody += "<td>" + order + "</td>";
+        tbody += "<td><a class='view-user'>" + data[i].username + "</a></td>";
         tbody += "</tr>";
-        user_counter++;
+        order++;
     }
     $("#usersTable tbody").html(tbody);
 }
 
 function showUserDetails(data) {
     let tbody = "";
-    tbody += "<form method='post'>";
+    tbody += "<form>";
     tbody += "<tr id='row" + data.id + "'>";
     tbody += "<td hidden id='edit-db-id'>" + data.id + "</td>";
-    tbody += "<td><label for='edit-username'></label>" +
-        "<input type='text' id='edit-username' name='edit-username' value='" + data.username + "'></td>";
-    tbody += "<td><label for='edit-email'></label>" +
-        "<input type='text' id='edit-email' name='edit-email' value='" + data.email + "'></td>";
-    tbody += "<td><label for='edit-password'></label>" +
-        "<input type='text' id='edit-password' name='edit-password' placeholder='New Password Here'></td>";
-    tbody += "<td><button type='submit' class='edit-user-apply'>Apply Changes</button></td>";
+    tbody += "<tr><label for='edit-username'></label>" +
+        "<mark>Username:</mark> <input type='text' id='edit-username' name='edit-username' value='" + data.username + "'></tr>";
+    tbody += "<tr><label for='edit-email'></label>" +
+        "<mark>Email:</mark> <input type='text' id='edit-email' name='edit-email' value='" + data.email + "'></tr>";
+    tbody += "<tr><label for='edit-password'></label>" +
+        "<mark>Password:</mark> <input type='text' id='edit-password' name='edit-password' placeholder='New Password Here'></tr>";
+    tbody += "<tr><button type='submit' class='edit-user-apply btn btn-primary'>Apply Changes</button></tr>";
     tbody += "</tr>";
     tbody += "</form>";
     $("#editUser tbody").html(tbody);
-}
-
-function prepareDataToAddUser(){
-    return {
-        username: $("#username").val(),
-        email: $("#email").val()
-    }
 }
 
 function prepareDataToEditUser(){
