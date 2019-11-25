@@ -42,6 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/profile/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/streamView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/disciplineView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .antMatchers("/swagger-ui.html#/").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/")
