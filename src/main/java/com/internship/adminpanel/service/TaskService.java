@@ -5,6 +5,7 @@ import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.Task;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.answer_option.AnswerOptionDTO;
+import com.internship.adminpanel.model.dto.task.TaskDisableDTO;
 import com.internship.adminpanel.model.dto.task.TaskEditDTO;
 import com.internship.adminpanel.model.dto.task.TaskInsertDTO;
 import com.internship.adminpanel.model.dto.task.TaskListDTO;
@@ -68,6 +69,13 @@ public class TaskService {
             answersOption.setCorrect(answerDto.isCorrect());
             answersOptionRepository.save(answersOption);
         }
+    }
+
+    public void disableTask(TaskDisableDTO taskDisableDTO){
+        //Get Task from DB to disable_enable
+        Task taskToEdit = taskRepository.getOne(taskDisableDTO.getId());
+        taskToEdit.setEnabled(taskDisableDTO.isEnabled());
+        taskRepository.save(taskToEdit);
     }
 
     @Transactional
