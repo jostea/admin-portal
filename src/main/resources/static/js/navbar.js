@@ -5,9 +5,11 @@ $("#goUsers").on("click", function () {
 $("#goStreams").on("click", function () {
     window.location.href = "/streamView/";
 });
+
 $("#goTasks").on("click", function () {
     window.location.href = "/tasks/";
 });
+
 $("#goLogout").on("click", function () {
     $.ajax({
         method: "POST",
@@ -21,12 +23,19 @@ $("#goLogout").on("click", function () {
 $("#goHome").on("click", function () {
     window.location.replace("/landing");
 });
+
 $("#goProfile").on("click", function () {
     window.location.replace("/profile")
 });
+
 $("#goDisciplines").on("click", function () {
     window.location.replace("/disciplineView/");
 });
+
+$("#goSwagger").on("click", function () {
+    window.open("/swagger-ui.html#/",'_blank')
+});
+
 
 
 

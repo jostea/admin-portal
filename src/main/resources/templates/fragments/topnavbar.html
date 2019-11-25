@@ -5,27 +5,24 @@
                 <ul class="nav navbar-nav">
                     <li><a id="goHome">Home</a></li>
                     <li><a id="goUsers">Users</a></li>
-                    <li><a type="button">Disciplines</a></li>
+                    <li><a id="goDisciplines">Disciplines</a></li>
                     <li><a id="goStreams">Streams</a></li>
                     <li><a id="goTasks">Tasks</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a id="goProfile"><b th:inline="text" class="user">[[${#httpServletRequest.remoteUser}]]</b></a></li>
-                    <li><a id="goLogout">Logout</a></li>
+                    <li>
+                        <a>
+                            <button id="goSwagger" type="button" class="btn btn-success btn-xs" style="display: block">Swagger</button>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="goProfile"><b th:inline="text" class="user">[[${#httpServletRequest.remoteUser}]]</b></a>
+                    </li>
+                    <li>
+                        <a id="goLogout">Logout</a>
+                    </li>
                 </ul>
             </div>
         </nav>
-
-
-<!--        <div class="cutomnav">-->
-<!--            <button id="goHome"><strong>Home</strong></button>-->
-<!--            <button id="goUsers">Users</button>-->
-<!--            <button href="">Disciplines</button>-->
-<!--            <button id="goStreams">Streams</button>-->
-<!--            <button id="goTasks">Tasks</button>-->
-<!--            <button id="goProfile" style="position: absolute; right: 10%;"><b th:inline="text" class="user">[[${#httpServletRequest.remoteUser}]]</b></button>-->
-<!--            <button style="position: absolute; right: 5%;" id="goLogout" type="submit">Logout</button>-->
-<!--        </div>-->
-<!--        <hr>-->
     </div>
 </div>
