@@ -60,12 +60,12 @@ function addDiscipline() {
         data: JSON.stringify(prepareDataDisciplineAdd()),
         contentType: "application/json",
         success: function (response) {
-            getAllDisciplines()
+            getAllDisciplines();
             $("#discipline-input-add").val("");
-        }, error(xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't add discipline");
-            }
+        }, error(xhr,response) {
+            $("#discipline-input-add").val("");
+            if(xhr.status===400)
+            alert("Couldn't add this discipline.");
         }
     });
 }
@@ -108,7 +108,7 @@ function prepareDataDiscipline() {
 
 function prepareDataDisciplineAdd() {
     return {
-        name: $("#discipline-input-add").val()
+        name: $("#discipline-input-add").val().trim()
     }
 }
 

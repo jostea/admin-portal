@@ -3,42 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Streams</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="/css/stream.css">
 </head>
 <body>
 <div th:replace="fragments/topnavbar :: navbar">
 </div>
+<div class="container">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-4">
-    <label for="name-input"></label>
-    <input type="text" name="name-input" id="name-input"/>
-    <button onclick="filterByName($('#name-input').val())"
-            class="btn">Find stream
-    </button>
-    <button type="button" class="btn" onclick="getAllStreams()">Refresh</button>
-    <button type="button" class="btn" data-toggle="modal" data-target="#streamAddModal"
-            id="btn call-mdl-add" onclick="getAllDisciplinesAdd()">Add
-    </button>
-    <table  class="table table-hover" id="streamsTable">
-        <thead>
-        <tr>
-            <th>Stream</th>
-            <th>Discipline</th>
-            <th>Delete</th>
-            <th>Edit</th>
-        </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-    </table>
+        <div class="col-sm-12">
+            <label for="name-input"></label>
+            <input type="text" name="name-input" id="name-input"/>
+            <button onclick="filterByName($('#name-input').val())"
+                    class="btn">Find stream
+            </button>
+            <button type="button" class="btn" onclick="getAllStreams()">Refresh</button>
+            <button type="button" class="btn" data-toggle="modal" data-target="#streamAddModal"
+                    id="btn call-mdl-add" onclick="getAllDisciplinesAdd()">Add
+            </button>
+            <table class="table table-hover" id="streamsTable">
+                <thead>
+                <tr>
+                    <th>Stream</th>
+                    <th>Discipline</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
         </div>
     </div>
 </div>
-
+</div>
 <div class="container">
     <div class="modal fade" id="editModal" role="dialog">
         <div class="modal-dialog">

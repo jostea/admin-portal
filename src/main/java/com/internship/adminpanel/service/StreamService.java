@@ -29,7 +29,7 @@ public class StreamService {
         Optional<Stream> stream = streamRepository.findById(id);
         if (stream.isPresent())
             return new StreamDTO(stream.get());
-        throw new StreamNotFound("Requested stream was not found");
+        throw new StreamNotFound(id + "");
     }
 
     public List<StreamDTO> findAll() {
@@ -51,17 +51,17 @@ public class StreamService {
             streamDTOList.add(new StreamDTO(val));
         }
         if (streamDTOList.size() == 0)
-            throw new StreamNotFound("Requested stream was not found");
+            throw new StreamNotFound(name);
         return streamDTOList;
     }
 
-    public void addStream(StreamDTOFromUI streamUI) throws SQLException, DisciplineNotFound {
+    public void addStream(StreamDTOFromUI streamUI) throws DisciplineNotFound {
         Optional<Discipline> disciplineOp = disciplineRepository.findById(streamUI.getDisciplineId());
         Discipline discipline;
         if (disciplineOp.isPresent()) {
             discipline = disciplineOp.get();
         } else {
-            throw new DisciplineNotFound("Discipline with id '" + streamUI.getDisciplineId() + "' didn't found");
+            throw new DisciplineNotFound(streamUI.getDisciplineId() + "");
         }
         streamRepository.save(
                 Stream.builder()
@@ -70,21 +70,28 @@ public class StreamService {
                         .build());
     }
 
-    public void edit(Long id, StreamDTOFromUI streamUI) throws SQLException, DisciplineNotFound, StreamNotFound {
+    public void edit(Long id, StreamDTOFromUI streamUI, String nameOfUser) throws SQLException, DisciplineNotFound, StreamNotFound {
         Optional<Stream> streamOp = streamRepository.findById(id);
-        Discipline discipline ;
-        if (disciplineRepository.findById(streamUI.getDisciplineId()).isPresent()) {
-            discipline = disciplineRepository.findById(streamUI.getDisciplineId()).get();
+        Optional<Discipline> disciplineOptional = disciplineRepository.findById(streamUI.getDisciplineId());
+        Discipline discipline;
+        if (disciplineOptional.isPresent()) {
+            discipline = disciplineOptional.get();
+
         } else {
-            throw new DisciplineNotFound("Discipline with id '" + streamUI.getDisciplineId() + "' didn't found");
+            throw new DisciplineNotFound(streamUI.getDisciplineId() + "");
         }
         if (streamOp.isPresent()) {
+            String oldDisciplineName = streamOp.get().getDiscipline().getName();
+            String oldName = streamOp.get().getName();
             Stream stream = streamOp.get();
             stream.setName(streamUI.getName());
             stream.setDiscipline(discipline);
             streamRepository.save(stream);
+            log.info("Stream '" + oldName + "' has changed name to '" + streamUI.getName() + "'"
+                    + "and Discipline from '" + oldDisciplineName + "' to '" + discipline.getName()
+                    + "' by user '" + nameOfUser + "'");
         } else {
-            throw new StreamNotFound("Stream with id " + id + "didn't found");
+            throw new StreamNotFound( id + "");
         }
     }
 }

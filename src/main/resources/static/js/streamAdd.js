@@ -27,6 +27,7 @@ function addStream() {
             getAllStreams();
         },
         error: function (xhr, error) {
+            $("#name").val("");
             if (xhr.status === 400) {
                 alert("Couldn't add this stream");
             }
@@ -36,7 +37,7 @@ function addStream() {
 
 function prepareDataAdd() {
     return {
-        name: $("#name").val(),
+        name: $("#name").val().trim(),
         disciplineId: $("#disciplines").val()
     }
 }
