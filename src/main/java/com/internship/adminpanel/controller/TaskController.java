@@ -1,7 +1,7 @@
 package com.internship.adminpanel.controller;
 
-import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.discipline.DisciplineListDTO;
+import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
 import com.internship.adminpanel.model.enums.TypeEnum;
 import com.internship.adminpanel.service.DisciplineService;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -19,21 +18,20 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
     private final DisciplineService disciplineService;
     private final StreamService streamService;
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "/tasks")
     public String tasks() {
-        return "/tasks/tasks";
+        return "tasks/tasksView";
     }
 
-    @GetMapping(value = "/addTask")
+    @GetMapping(value = "/tasks/addTask")
     public ModelAndView addTask() {
-        ModelAndView model = new ModelAndView("/tasks/addTask");
+        ModelAndView model = new ModelAndView("tasks/addTask");
 
         //collection for complexitites dropdown
         List<ComplexityEnum> complexities = new ArrayList<ComplexityEnum>();
@@ -58,9 +56,9 @@ public class TaskController {
         return model;
     }
 
-    @GetMapping(value = "/editTask/{id}")
+    @GetMapping(value = "/tasks/editTask/{id}")
     public ModelAndView editTask(){
-        ModelAndView model = new ModelAndView("/tasks/editTask");
+        ModelAndView model = new ModelAndView("tasks/editTask");
 
         //collection for complexitites dropdown
         List<ComplexityEnum> complexities = new ArrayList<ComplexityEnum>();
@@ -85,9 +83,9 @@ public class TaskController {
         return model;
     }
 
-    @GetMapping(value = "/viewTask/{id}")
+    @GetMapping(value = "/tasks/viewTask/{id}")
     public ModelAndView viewTask() {
-        ModelAndView model = new ModelAndView("/tasks/viewTask");
+        ModelAndView model = new ModelAndView("tasks/viewTask");
 
         //collection for complexitites dropdown
         List<ComplexityEnum> complexities = new ArrayList<ComplexityEnum>();
@@ -115,7 +113,7 @@ public class TaskController {
 
     //TODO: use this private method in order to remove code duplication
     private ModelAndView populateModelWithDropDowns(ModelAndView model){
-        //!!!!!
+        //TODO
         return model;
     }
 }

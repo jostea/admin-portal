@@ -32,12 +32,11 @@ public class TaskRestController {
 
     @PostMapping("/addTask")
     public ResponseEntity<String> saveTask(@RequestBody TaskInsertDTO task, Authentication authentication) {
-        try{
+        try {
             taskService.addTask(task);
-            log.info("[User: " + authentication.getName() +"] created new task: " + task.toString());
+            log.info("[User: " + authentication.getName() + "] created new task: " + task.toString());
             return new ResponseEntity<>("New task was created.", HttpStatus.OK);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("[User: " + authentication.getName() + "]. Error while trying to add new task: " + task.toString() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>("New task was created.", HttpStatus.BAD_REQUEST);
         }
@@ -45,11 +44,11 @@ public class TaskRestController {
 
     //region EDIT_TASK
     @GetMapping("/editTask/{id}")
-    public ResponseEntity<TaskEditDTO> editTask(@PathVariable("id") Long id, Authentication authentication){
-        try{
+    public ResponseEntity<TaskEditDTO> editTask(@PathVariable("id") Long id, Authentication authentication) {
+        try {
             log.info("[User: " + authentication.getName() + "] requested a task to edit. Task with ID  " + id);
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.warn("Error while getting task with id: " + id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -57,12 +56,11 @@ public class TaskRestController {
 
     @PutMapping("/editTask")
     public ResponseEntity<String> editTask(@RequestBody TaskEditDTO task, Authentication authentication) {
-        try{
+        try {
             taskService.editTask(task);
             log.info("[User: " + authentication.getName() + "] modified task with ID  " + task.getId());
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("[User: " + authentication.getName() + "]. Error while trying to update task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -70,32 +68,29 @@ public class TaskRestController {
     //endregion
 
     @GetMapping("/viewTask/{id}")
-    public ResponseEntity<TaskEditDTO> viewTask(@PathVariable("id") Long id, Authentication authentication){
-        try{
+    public ResponseEntity<TaskEditDTO> viewTask(@PathVariable("id") Long id, Authentication authentication) {
+        try {
             log.info("[User: " + authentication.getName() + "] viewed task with ID  " + id);
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.warn("[User: " + authentication.getName() + "]. Error while trying to view a task with ID: " + id + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/disableTask")
-    public ResponseEntity<TaskEditDTO> disableTask(@RequestBody TaskDisableDTO taskDisableDTO, Authentication authentication){
-        try{
+    public ResponseEntity<TaskEditDTO> disableTask(@RequestBody TaskDisableDTO taskDisableDTO, Authentication authentication) {
+        try {
             taskService.disableTask(taskDisableDTO);
             String action = "";
-            if (taskDisableDTO.isEnabled() == false){
+            if (!taskDisableDTO.isEnabled()) {
                 action = " disabled ";
             } else {
-                if (taskDisableDTO.isEnabled() == true){
-                    action = " enabled ";
-                }
+                action = " enabled ";
             }
             log.info("[User: " + authentication.getName() + "]" + action + "task with ID  " + taskDisableDTO.getId());
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable task with ID: " + taskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

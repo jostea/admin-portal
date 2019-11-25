@@ -17,6 +17,10 @@
 <body>
 <div>
 
+    <!-- HEADER - NAVBAR -->
+    <div th:replace="fragments/topnavbar :: navbar">
+    </div>
+
     <div class="container">
 
         <!-- Modal To Display Different Messages -->
@@ -35,10 +39,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- HEADER - NAVBAR -->
-        <div th:replace="fragments/topnavbar :: navbar">
         </div>
 
         <div class="row">
@@ -162,6 +162,7 @@
             <div class="form-row row">
                 <h5 class="alert alert-warning">
                     <strong>Warning!</strong> Specify answer(s) based on the type of question. Mark the correct answer.
+                    <p>* for the types "Multi Choice" and "Single Choice" should be at least 2 answer options</p>
                 </h5>
             </div>
 

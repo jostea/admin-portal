@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <title>List of tasks in the system</title>
 
-    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
-    <link  rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <!--    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -14,53 +14,63 @@
 <body>
 
 <div>
-    <!-- Modal On Task Disable_Enable Action -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog modal-md">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-<!--                    <h4 class="modal-title"></h4>-->
-                </div>
-                <div class="modal-body" style="text-align:center">
-                    <h3><strong>Task was successfully modified</strong></h3>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <!-- HEADER - NAVBAR -->
     <div th:replace="fragments/topnavbar :: navbar">
     </div>
 
-    <p><b> List of Tasks </b></p>
-    <button id="addTask">Add Task</button>
-    <p>
+    <div class="container">
 
-    <table id="tasks" class="fixed_header">
-        <thead>
-        <tr>
-            <th> Nr</th>
-            <th> Title</th>
-            <th> Type</th>
-            <th> Complexity</th>
-            <th> Is Enabled</th>
-            <th> View</th>
-            <th> Edit</th>
-            <th> Delete</th>
-        </tr>
-        </thead>
-        <tbody>
+        <!-- Modal On Task Disable_Enable Action -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
 
-        </tbody>
-    </table>
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <!--                    <h4 class="modal-title"></h4>-->
+                    </div>
+                    <div class="modal-body" style="text-align:center">
+                        <h3><strong>Task was successfully modified</strong></h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
 
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="col-md-10">
+                <h3> List of Tasks </h3>
+            </div>
+            <div class="col-md-2">
+                <button id="addTask" type="button" class="btn btn-danger">Create Task</button>
+            </div>
+        </div>
+        <br>
+
+        <table id="tasks" class="fixed_header table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th> Nr</th>
+                <th> Title</th>
+                <th> Type</th>
+                <th> Complexity</th>
+                <th> Is Enabled</th>
+                <th> View</th>
+                <th> Edit</th>
+                <th> Activate</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+    </div>
 </div>
 
 
@@ -88,6 +98,7 @@
             contentType: "application/json",
             success: function () {
                 $("#myModal").modal('show');
+
                 async function sl() {
                     window.location.href = "/tasks/";
                 }
@@ -106,8 +117,8 @@
             tbody += "<td>" + data[i].type + "</td>";
             tbody += "<td>" + data[i].complexity + "</td>";
             tbody += "<td>" + data[i].isEnabled + "</td>";
-            tbody += "<td>" + "<button class='viewTask'> View </button>" + "</td>";
-            tbody += "<td>" + "<button class='editTask'> Edit </button>" + "</td>";
+            tbody += "<td>" + "<button class='viewTask btn btn-light'> View </button>" + "</td>";
+            tbody += "<td>" + "<button class='editTask btn btn-primary'> Edit </button>" + "</td>";
             if (data[i].isEnabled === true) {
                 tbody += "<td>" + "<button class='deleteTask btn btn-warning'>Disable</button>" + "</td>";
             } else {
