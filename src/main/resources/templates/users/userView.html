@@ -6,52 +6,60 @@
     <title>Users</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="/css/user.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
     <body>
             <div th:replace="fragments/topnavbar :: navbar">
             </div>
-            <button th:if="${#request.isUserInRole('SUPER_ADMIN')}" id="addNewUser">Add new user</button>
-            <div style="margin-top: 20px">
+            <div class="container">
                 <div>
-                    <div class="view-users-div">
-                        <p>Here the users are displayed</p>
-                        <table id="usersTable">
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                    <div>
+                        <div class="view-users-div">
+                            <div id="successMessage"></div>
+                            <h2>System Users</h2>
+                            <p id="usersInfoParagraph">Here are all the users displayed in the table below. To view a specific user's details just click the needed <i>username</i></p>
+                            <button th:if="${#request.isUserInRole('SUPER_ADMIN')}" id="addNewUser" class="btn btn-default">Add new user</button>
+                            <table id="usersTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Username</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
 
-                    <div class="view-single-user-div">
-                        <p>Here a specific user is being displayed</p>
-                        <table id="singleUserTable">
-                            <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>e-mail</th>
-                                <th>Is active</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                        <div class="view-single-user-div">
+                            <h2>View User Mode</h2>
+                            <table id="singleUserTable" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>e-mail</th>
+                                    <th>Is active</th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                 <tr></tr>
-                                <span id="edit-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"><button id='edit-user'>Edit User</button></span>
+                                <span id="edit-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"><button id='edit-user' class="btn btn-default">Edit User</button></span>
                                 <span id="enable-disable-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"></span>
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <div class="edit-user-div">
-                        <p>You are in the edit mode here</p>
-                        <table id="editUser">
-                            <thead>
-                            <tr>
-                                <th hidden>id</th>
-                                <th>Set new Username</th>
-                                <th>Set new E-mail</th>
-                                <th>Set new Password</th>
-                                <th>Hit to apply changes</th>
-                            <tbody></tbody>
-                            </tr>
-                            </thead>
-                        </table>
+                        <div class="edit-user-div">
+                            <h2>Edit User Mode</h2>
+                            <p>Hit the field you want to edit</p>
+                            <table id="editUser" class="table">
+                                <thead>
+                                <tr>
+                                    <th hidden>id</th>
+                                <tbody></tbody>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
