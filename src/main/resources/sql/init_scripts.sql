@@ -32,19 +32,19 @@ CREATE TABLE stream_table
     id            SERIAL PRIMARY KEY,
     name          varchar(50) NOT NULL,
     discipline_id int         NOT NULL REFERENCES discipline_table (id),
-    UNIQUE (name,discipline_id)
+    UNIQUE (name, discipline_id)
 );
 
 
 /* create table task */
 CREATE TABLE task_table
 (
-    id     SERIAL PRIMARY KEY,
+    id          SERIAL PRIMARY KEY,
     title       varchar(255) NOT NULL,
     description text         NOT NULL,
     task_type   varchar(255) NOT NULL,
     complexity  varchar(255) NOT NULL,
-    is_enabled   boolean      NOT NULL DEFAULT true
+    is_enabled  boolean      NOT NULL DEFAULT true
 );
 
 /* create many-to-many table task_stream */
@@ -61,6 +61,77 @@ CREATE TABLE answer_option_table
     task_id             int     NOT NULL REFERENCES task_table (id),
     answer_option_value text    NOT NULL,
     is_correct          boolean NOT NULL
+);
+
+
+
+/*--------------------------------------------------*/
+/* scripts for SQL_task and CODE_task functionality */
+/*--------------------------------------------------*/
+
+drop table if exists sql_stream_table;
+drop table if exists sql_task_table;
+drop table if exists sql_group_table;
+
+drop table if exists code_stream_table;
+drop table if exists correct_code_table;
+drop table if exists code_task_table;
+
+
+/* --- SQL task tables --- */
+
+CREATE TABLE sql_group_table
+(
+    id     SERIAL PRIMARY KEY,
+    name       varchar(255) NOT NULL,
+    image_path text         NOT NULL,
+    UNIQUE(name)
+);
+
+CREATE TABLE sql_task_table
+(
+    id     SERIAL PRIMARY KEY,
+    title       varchar(255) NOT NULL,
+    description text         NOT NULL,
+    complexity  varchar(255) NOT NULL,
+    is_enabled   boolean      NOT NULL DEFAULT true,
+    correct_statement text NOT NULL,
+    sql_group_id int NOT NULL REFERENCES sql_group_table (id)
+);
+
+CREATE TABLE sql_stream_table
+(
+    sql_task_id   int NOT NULL REFERENCES sql_task_table (id),
+    stream_id int NOT NULL REFERENCES stream_table (id)
+);
+
+
+
+/* --- Code task tables --- */
+
+CREATE TABLE code_task_table
+(
+    id     SERIAL PRIMARY KEY,
+    title       varchar(255) NOT NULL,
+    description text         NOT NULL,
+    complexity  varchar(255) NOT NULL,
+    technology  varchar(255) NOT NULL,
+    is_enabled   boolean      NOT NULL DEFAULT true,
+    signature text NOT NULL
+);
+
+CREATE TABLE correct_code_table
+(
+    id     SERIAL PRIMARY KEY,
+    code_task_id int NOT NULL REFERENCES code_task_table (id),
+    input text NOT NULL,
+    output text NOT NULL
+);
+
+CREATE TABLE code_stream_table
+(
+    code_task_id   int NOT NULL REFERENCES code_task_table (id),
+    stream_id int NOT NULL REFERENCES stream_table (id)
 );
 
 /*-----------------------------------*/
@@ -94,6 +165,11 @@ INSERT INTO stream_table(name, discipline_id)
 VALUES ('AUTOMATION_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
 INSERT INTO stream_table(name, discipline_id)
 VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
+
+/* Populate sql_group_table with some test data */
+INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #1', 'Path 1');
+INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #2', 'Path 2');
+INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #3', 'Path 3');
 
 
 /* Insert the super admin */

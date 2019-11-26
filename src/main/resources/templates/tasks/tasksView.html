@@ -47,19 +47,72 @@
                 <h3> List of Tasks </h3>
             </div>
             <div class="btn-toolbar col-md-5">
-                    <button id="addTask" type="button" class="btn btn-danger">Add Standard Task</button>
-                    <button id="addSqlTask" type="button" class="btn btn-danger">Add SQL Task</button>
-                    <button id="addCodeTask" type="button" class="btn btn-danger">Add Code Task</button>
+                <button id="addTask" type="button" class="btn btn-danger">Add Standard Task</button>
+                <button id="addSqlTask" type="button" class="btn btn-danger">Add SQL Task</button>
+                <button id="addCodeTask" type="button" class="btn btn-danger">Add Code Task</button>
             </div>
         </div>
+        <hr/>
         <br>
 
+        <!-- Table for GENERAL Tasks -->
+        <div class="row">
+            <div class="col-md-7">
+                <h4> General Tasks </h4>
+            </div>
+        </div>
         <table id="tasks" class="fixed_header table table-condensed table-hover">
             <thead>
             <tr>
                 <th> Nr</th>
                 <th> Title</th>
                 <th> Type</th>
+                <th> Complexity</th>
+                <th> Is Enabled</th>
+                <th> View</th>
+                <th> Edit</th>
+                <th> Activate</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <!-- Table for SQL Tasks-->
+        <div class="row">
+            <div class="col-md-7">
+                <h4> SQL Tasks </h4>
+            </div>
+        </div>
+        <table id="tasksSql" class="fixed_header table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th> Nr</th>
+                <th> Title</th>
+                <th> Complexity</th>
+                <th> Is Enabled</th>
+                <th> View</th>
+                <th> Edit</th>
+                <th> Activate</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <!-- Table for CODE Tasks-->
+        <div class="row">
+            <div class="col-md-7">
+                <h4> Code Tasks </h4>
+            </div>
+        </div>
+        <table id="tasksCode" class="fixed_header table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th> Nr</th>
+                <th> Title</th>
                 <th> Complexity</th>
                 <th> Is Enabled</th>
                 <th> View</th>
@@ -81,11 +134,22 @@
 
     //returns response with all tasks
     function getAllTasks() {
+
+        //fillin Table of General Tasks
         $.ajax({
             method: "GET",
             url: "/tasksrest/all",
             success: function (response) {
                 fillTasks(response);
+            }
+        });
+
+        //fillin Table of SQL Tasks
+        $.ajax({
+            method: "GET",
+            url: "/tasksrest/allSql",
+            success: function (response) {
+                fillSqlTasks(response);
             }
         });
     }
@@ -108,7 +172,7 @@
         })
     }
 
-    // dynamically fill in table with tasks
+    // dynamically fill in table with General Tasks
     function fillTasks(data) {
         let tbody = "";
         for (let i = 0; i < data.length; i++) {
@@ -135,6 +199,10 @@
 
     $("#addTask").on("click", function (event) {
         window.location.href = "addTask";
+    });
+
+    $("#addSqlTask").on("click", function (event) {
+        window.location.href = "addSqlTask";
     });
 
     $("#tasks").on('click', '.editTask', function () {
@@ -167,6 +235,30 @@
         }
         disable_enable_Task(data);
     });
+
+    // Process SQL Tasks
+    function fillSqlTasks(data) {
+        let tbody = "";
+        for (let i = 0; i < data.length; i++) {
+            tbody += "<tr>";
+            tbody += "<input type='hidden' value=" + data[i].id + ">";
+            tbody += "<td>" + (i + 1) + "</td>";
+            tbody += "<td>" + data[i].title + "</td>";
+            tbody += "<td>" + data[i].complexity + "</td>";
+            tbody += "<td>" + data[i].isEnabled + "</td>";
+            tbody += "<td>" + "<button class='viewSqlTask btn btn-light'> View </button>" + "</td>";
+            tbody += "<td>" + "<button class='editSqlTask btn btn-primary'> Edit </button>" + "</td>";
+            if (data[i].isEnabled === true) {
+                tbody += "<td>" + "<button class='deleteSqlTask btn btn-warning'>Disable</button>" + "</td>";
+            } else {
+                if ((data[i].isEnabled === false)) {
+                    tbody += "<td>" + "<button class='deleteSqlTask btn btn-success'>Enable</button>" + "</td>";
+                }
+            }
+            tbody += "</tr>";
+        }
+        $("#tasksSql tbody").html(tbody);
+    }
 
 </script>
 <script src="/js/navbar.js"></script>
