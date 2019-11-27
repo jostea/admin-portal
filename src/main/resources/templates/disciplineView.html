@@ -8,37 +8,39 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="/css/stream.css">
 </head>
 <body>
 <div th:replace="fragments/topnavbar :: navbar">
 </div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <label for="discipline-find"></label>
-            <input type="text" id="discipline-find"/>
-            <button onclick="findByNameDiscipline($('#discipline-find').val())"
-                    class="btn">Find discipline
-            </button>
-            <button type="button" class="btn" onclick="getAllDisciplines()">Refresh</button>
-            <button type="button" class="btn" data-toggle="modal" data-target="#disciplinesAddModal"
-                    id="btn call-mdl-add" onclick="">Add
-            </button>
-            <table class="table table-hover" id="disciplinesTable">
-                <thead>
-                <tr>
-                    <th>Discipline</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-                </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
+<div class="container">
+    <div id="alertDiscipline"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <label for="discipline-find"></label>
+                <input type="text" id="discipline-find"/>
+                <button onclick="findByNameDiscipline($('#discipline-find').val())"
+                        class="btn">Find discipline
+                </button>
+                <button type="button" class="btn" onclick="getAllDisciplines()">Refresh</button>
+                <button type="button" class="btn" data-toggle="modal" data-target="#disciplinesAddModal"
+                        id="btn call-mdl-add" onclick="">Add
+                </button>
+                <table class="table table-hover" id="disciplinesTable">
+                    <thead>
+                    <tr>
+                        <th>Discipline</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
+    </div>
 </div>
-
 <div class="container">
     <div class="modal fade" id="editModalDiscipline" role="dialog">
         <div class="modal-dialog">

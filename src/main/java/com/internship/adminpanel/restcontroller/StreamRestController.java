@@ -1,6 +1,8 @@
 package com.internship.adminpanel.restcontroller;
 
 import com.internship.adminpanel.exception.DisciplineNotFound;
+import com.internship.adminpanel.exception.EmptyName;
+import com.internship.adminpanel.exception.StreamHasTasks;
 import com.internship.adminpanel.exception.StreamNotFound;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
@@ -48,15 +50,19 @@ public class StreamRestController {
     }
 
     @DeleteMapping("/streams/delete/{id}")
-    public ResponseEntity<HttpStatus> deletedById(@PathVariable("id") Long id, Authentication authentication) {
+    public ResponseEntity<String> deletedById(@PathVariable("id") Long id, Authentication authentication) {
         try {
             streamService.deleteById(id);
             log.info("User '" + authentication.getName() + "' deleted stream with id " + id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Error when user '" + authentication.getName() + "'  delete stream;\nerror message:"
+        } catch (StreamHasTasks e) {
+            log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("This stream has tasks", HttpStatus.BAD_REQUEST);
+        } catch (StreamNotFound e) {
+            log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
+                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("This stream not found", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -95,8 +101,8 @@ public class StreamRestController {
 
     @ResponseBody
     @PutMapping("/stream/edit/{id}")
-    public ResponseEntity<HttpStatus> update(@PathVariable("id") Long id, @RequestBody StreamDTOFromUI streamDTOFromUI,
-                                                     Authentication authentication) {
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody StreamDTOFromUI streamDTOFromUI,
+                                         Authentication authentication) {
         try {
             streamService.edit(id, streamDTOFromUI, authentication.getName());
             log.info("User '" + authentication.getName() + "' edit stream with id " + id);
@@ -105,16 +111,16 @@ public class StreamRestController {
             log.error("Error when user '" + authentication.getName() + "' edit stream;\nerror message: " + e.getMessage()
                     + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("Error when user '" + authentication.getName() + "' update stream;\nerror message:"
-                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (EmptyName e) {
+            log.error("Error when user '" + authentication.getName() + "' edit stream with empty name;\nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("Stream name is required", HttpStatus.BAD_REQUEST);
         }
     }
 
     @ResponseBody
     @PostMapping("/stream/add")
-    public ResponseEntity<HttpStatus> addStream(@RequestBody StreamDTOFromUI streamDTOFromUI, Authentication authentication) {
+    public ResponseEntity<String> addStream(@RequestBody StreamDTOFromUI streamDTOFromUI, Authentication authentication) {
         try {
             streamService.addStream(streamDTOFromUI);
             log.info("User '" + authentication.getName() + "' add new stream '" + streamDTOFromUI.getName() + "'");
@@ -124,11 +130,15 @@ public class StreamRestController {
                     + "' add new stream because discipline didn't found;" +
                     "\nerror message: " + e.getMessage()
                     + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Discipline didn't specified", HttpStatus.NOT_FOUND);
+        } catch (EmptyName e) {
+            log.error("Error when user '" + authentication.getName() + "' add new stream with empty name;\nerror message:"
+                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("Stream name is required", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' add new stream;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("This stream already exist", HttpStatus.BAD_REQUEST);
         }
     }
 }

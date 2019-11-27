@@ -1,13 +1,20 @@
 package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.exception.DisciplineNotFound;
+import com.internship.adminpanel.exception.EmptyName;
+import com.internship.adminpanel.exception.StreamHasTasks;
 import com.internship.adminpanel.exception.StreamNotFound;
 import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.Stream;
+import com.internship.adminpanel.model.Task;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
 import com.internship.adminpanel.repository.DisciplineRepository;
 import com.internship.adminpanel.repository.StreamRepository;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,6 +31,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@Data
 @RunWith(MockitoJUnitRunner.class)
 public class StreamServiceTest {
 
@@ -40,7 +48,7 @@ public class StreamServiceTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void shouldAddStream() throws DisciplineNotFound, SQLException {
+    public void shouldAddStream() throws Exception {
         StreamDTOFromUI streamDTOFromUI = createStreamDTOFromUI();
         Discipline discipline = createDiscipline("awesomeDiscipline");
         Stream stream = createStreamFromDTOAndDiscipline(streamDTOFromUI, discipline);
@@ -54,26 +62,21 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldUpdateStream() throws StreamNotFound, DisciplineNotFound, SQLException {
+    public void shouldUpdateStream() throws Exception {
         Long id = 1L;
         StreamDTOFromUI streamDTOFromUI = createStreamDTOFromUI();
         Discipline discipline = createDiscipline("TestDiscipline");
-
         when(disciplineRepository.findById(streamDTOFromUI.getDisciplineId())).thenReturn(Optional.of(discipline));
-
         Stream stream = createStreamByNameAndDiscipline("TestStream", discipline);
-
         when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
-
         streamService.edit(id, streamDTOFromUI, "TestUser");
-
         verify(disciplineRepository).findById(streamDTOFromUI.getDisciplineId());
         verify(streamRepository).findById(id);
         verify(streamRepository).save(stream);
     }
 
     @Test
-    public void shouldFindAllStreams() {
+    public void shouldFindAllStreams() throws Exception {
         List<StreamDTO> expectedStreamList = new ArrayList<>();
         expectedStreamList.add(
                 createStreamDTOWithSpecificStreamAndDisciplineNames("TestStream1", "DisciplineTest1"));
@@ -92,7 +95,7 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldReturnListOfStreamSpecifiedByName() throws StreamNotFound {
+    public void shouldReturnListOfStreamSpecifiedByName() throws Exception {
         List<StreamDTO> expectedStreamList = new ArrayList<>();
         expectedStreamList.add(
                 createStreamDTOWithSpecificStreamAndDisciplineNames("TestStream2", "DisciplineTest2"));
@@ -104,6 +107,7 @@ public class StreamServiceTest {
         verify(streamRepository).findStreamByNameContainingIgnoreCase(name);
         assertThat(returnedStreamDTOList).isEqualTo(expectedStreamList);
     }
+
     @Test
     public void shouldFindStreamById() throws StreamNotFound {
         Long id = 1L;
@@ -116,10 +120,51 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldDeleteStream() {
+    public void shouldDeleteStream() throws Exception {
         Long id = 1L;
+        List<Task> taskList = new ArrayList<>();
+        Stream stream = Stream.builder()
+                .name("TestStream")
+                .discipline(createDiscipline("TestDiscipline"))
+                .tasks(taskList)
+                .build();
+        when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
         streamService.deleteById(id);
+        verify(streamRepository).findById(id);
         verify(streamRepository).deleteById(id);
+    }
+
+    @Test
+    public void shouldThrowExceptionEmptyNameWhileEditStream() throws EmptyName, SQLException, DisciplineNotFound, StreamNotFound {
+        exception.expect(EmptyName.class);
+        exception.expectMessage("");
+        Long id = 1L;
+        StreamDTOFromUI streamDTOFromUI = StreamDTOFromUI.builder()
+                .disciplineId(1L).name("")
+                .build();
+        Discipline discipline = createDiscipline("TestDiscipline");
+        Stream stream = createStreamByNameAndDiscipline("TestStream", discipline);
+
+        when(disciplineRepository.findById(streamDTOFromUI.getDisciplineId())).thenReturn(Optional.of(discipline));
+        when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
+
+        streamService.edit(id, streamDTOFromUI, "TestUser");
+        verify(disciplineRepository).findById(streamDTOFromUI.getDisciplineId());
+        verify(streamRepository).findById(id);
+    }
+
+    @Test
+    public void shouldThrowExceptionEmptyNameWhileAddStream() throws DisciplineNotFound, EmptyName, Exception {
+        exception.expect(EmptyName.class);
+        exception.expectMessage("");
+        StreamDTOFromUI streamDTOFromUI = StreamDTOFromUI.builder()
+                .name("")
+                .disciplineId(1L)
+                .build();
+        Discipline discipline = createDiscipline("Labood");
+        when(disciplineRepository.findById(streamDTOFromUI.getDisciplineId())).thenReturn(Optional.of(discipline));
+        streamService.addStream(streamDTOFromUI);
+        verify(disciplineRepository).findById(streamDTOFromUI.getDisciplineId());
     }
 
     @Test
@@ -132,7 +177,7 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhileSearchingStreamByName() throws StreamNotFound {
+    public void shouldThrowExceptionWhileSearchingStreamByName() throws Exception {
         List<Stream> streamList = new ArrayList<>();
         String name = "TestName";
         exception.expect(StreamNotFound.class);
@@ -142,7 +187,7 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionStreamNotFoundWhileEditStream() throws StreamNotFound, DisciplineNotFound, SQLException {
+    public void shouldThrowExceptionStreamNotFoundWhileEditStream() throws Exception {
         Long id = 1L;
         exception.expect(StreamNotFound.class);
         exception.expectMessage(id + "");
@@ -154,7 +199,19 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionDisciplineNotFoundWhileEditStream() throws DisciplineNotFound, SQLException, StreamNotFound {
+    public void shouldThrowExceptionDisciplineNotFoundWhileEditStream() throws DisciplineNotFound, SQLException, StreamNotFound, EmptyName {
+        Long id = 1L;
+        StreamDTOFromUI streamDTOFromUI = createStreamDTOFromUI();
+        String username = "TestUsername";
+        exception.expect(DisciplineNotFound.class);
+        exception.expectMessage(id + "");
+        when(disciplineRepository.findById(streamDTOFromUI.getDisciplineId())).thenReturn(Optional.empty());
+        streamService.edit(id, streamDTOFromUI, username);
+    }
+
+
+    @Test
+    public void shouldThrowExceptionWhileEditStream() throws DisciplineNotFound, SQLException, StreamNotFound, EmptyName {
         Long id = 1L;
         StreamDTOFromUI streamDTOFromUI = createStreamDTOFromUI();
         String username = "TestUsername";
@@ -165,7 +222,63 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionDisciplineNotFoundWhileAddNewStream() throws DisciplineNotFound {
+    public void shouldThrowExceptionStreamNotFoundWhileDeleteStream() throws StreamNotFound, StreamHasTasks {
+        Long id = 1L;
+        exception.expect(StreamNotFound.class);
+        exception.expectMessage(id + "");
+        when(streamRepository.findById(id)).thenReturn(Optional.empty());
+        streamService.deleteById(id);
+        verify(streamRepository).findById(id);
+    }
+
+    @Test
+    public void shouldThrowExceptionWhileDeleteStreamWithExistingTask() throws StreamNotFound, StreamHasTasks {
+        exception.expect(StreamHasTasks.class);
+        Long id = 1L;
+        List<Task> taskList = new ArrayList<>();
+        taskList.add(Task.builder()
+                .title("TestTask1")
+                .build());
+        taskList.add(Task.builder()
+                .title("TestTask2")
+                .build());
+        Stream stream = Stream.builder()
+                .name("TestStream")
+                .discipline(createDiscipline("TestDiscipline"))
+                .tasks(taskList)
+                .build();
+        when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
+        streamService.deleteById(id);
+        verify(streamRepository).findById(id);
+        verify(streamRepository).deleteById(id);
+    }
+
+    @Test
+    public void shouldThrowExceptionWhileDeleteByIdAndOptionalIsEmpty() throws Exception {
+        exception.expect(Exception.class);
+        Long id = 1L;
+        when(streamRepository.findById(id)).thenReturn(Optional.empty());
+        streamService.deleteById(id);
+        verify(streamRepository).findById(id);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldReturnedExceptionWhileFindById() throws Exception {
+        String name = "Cat";
+        doThrow(new Exception()).when(streamRepository).findStreamByNameContainingIgnoreCase(name);
+        streamService.filterByName(name);
+        verify(streamRepository).findStreamByNameContainingIgnoreCase(name);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhileGetAllStreams() throws Exception {
+        doThrow(new Exception()).when(streamRepository).findAll();
+        streamService.findAll();
+        verify(streamRepository).findAll();
+    }
+
+    @Test
+    public void shouldThrowExceptionDisciplineNotFoundWhileAddNewStream() throws Exception {
         Long id=1L;
         exception.expect(DisciplineNotFound.class);
         exception.expectMessage(id+"");
@@ -173,6 +286,17 @@ public class StreamServiceTest {
         when(disciplineRepository.findById(streamDTOFromUI.getDisciplineId())).thenReturn(Optional.empty());
         streamService.addStream(streamDTOFromUI);
     }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhileAddNewStream() throws Exception {
+        StreamDTOFromUI streamDTOFromUI = createStreamDTOFromUI();
+        Stream stream = createStreamByNameAndDiscipline("Chiort", createDiscipline("Lysyi"));
+        doThrow(new Exception()).when(streamRepository).save(stream);
+        streamService.addStream(streamDTOFromUI);
+        verify(streamRepository).save(stream);
+    }
+
+
     private StreamDTO createStreamDTOWithSpecificStreamAndDisciplineNames(String streamName, String disciplineName) {
         return StreamDTO.builder()
                 .id(1L)
@@ -188,6 +312,7 @@ public class StreamServiceTest {
                 .discipline(discipline)
                 .build();
     }
+
 
     private StreamDTOFromUI createStreamDTOFromUI() {
         return StreamDTOFromUI.builder()

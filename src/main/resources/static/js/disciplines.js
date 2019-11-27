@@ -14,6 +14,7 @@ function getElementsFromUi(par1, par2) {
 }
 
 function fillTableDiscipline(data) {
+    $("#alertDiscipline").html("");
     let tbody = "";
     for (let i = 0; i < data.length; i++) {
         tbody += "<tr>";
@@ -45,10 +46,8 @@ function deleteDiscipline(par) {
         url: "/discipline/delete/" + par,
         success: function () {
             getAllDisciplines();
-        }, error(xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't delete discipline");
-            }
+        }, error(response) {
+            $("#alertDiscipline").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     });
 }
@@ -62,10 +61,9 @@ function addDiscipline() {
         success: function (response) {
             getAllDisciplines();
             $("#discipline-input-add").val("");
-        }, error(xhr,response) {
+        }, error(response) {
             $("#discipline-input-add").val("");
-            if(xhr.status===400)
-            alert("Couldn't add this discipline.");
+            $("#alertDiscipline").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     });
 }
@@ -76,10 +74,9 @@ function getAllDisciplines() {
         url: "/discipline/disciplines",
         success: function (response) {
             fillTableDiscipline(response);
-        }, error(xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't delete view discipline");
-            }
+        }, error() {
+            $("#alertDiscipline").html(`<div class="alert alert-danger" role="alert"><p> Couldn't view discipline </p></div>`);
+
         }
     });
 }
@@ -92,10 +89,8 @@ function editDiscipline(id) {
         contentType: "application/json",
         success: function (response) {
             getAllDisciplines();
-        }, error(xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't update discipline");
-            }
+        }, error(response) {
+            $("#alertDiscipline").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     });
 }

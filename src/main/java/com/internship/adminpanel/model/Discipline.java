@@ -3,6 +3,7 @@ package com.internship.adminpanel.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Discipline {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Discipline name is required")
+    @NotBlank(message = "Discipline name is required")
     private String name;
 
     @OneToMany(mappedBy = "discipline")

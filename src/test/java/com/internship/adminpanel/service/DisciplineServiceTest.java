@@ -1,6 +1,7 @@
 package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.exception.DisciplineNotFound;
+import com.internship.adminpanel.exception.EmptyName;
 import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.dto.discipline.DisciplineDTO;
 import com.internship.adminpanel.repository.DisciplineRepository;
@@ -32,7 +33,7 @@ public class DisciplineServiceTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void shouldFindAllDiscipline() {
+    public void shouldFindAllDiscipline() throws Exception {
         List<DisciplineDTO> expectedDisciplineList = new ArrayList<>();
         expectedDisciplineList.add(new DisciplineDTO(createDiscipline("TestDiscipline1")));
         expectedDisciplineList.add(new DisciplineDTO(createDiscipline("TestDiscipline2")));
@@ -73,14 +74,14 @@ public class DisciplineServiceTest {
     }
 
     @Test
-    public void shouldDeleteDiscipline() {
+    public void shouldDeleteDiscipline() throws Exception {
         Long id = 1L;
         disciplineService.delete(id);
         verify(disciplineRepository).deleteById(id);
     }
 
     @Test
-    public void shouldUpdateStream() throws DisciplineNotFound {
+    public void shouldUpdateStream() throws DisciplineNotFound, EmptyName {
         Long id = 1L;
         Discipline mockedDiscipline = createDiscipline("TestDiscipline");
         DisciplineDTO disciplineDTO = createDisciplineDTO("TestDisciplineUpdated");
@@ -92,7 +93,7 @@ public class DisciplineServiceTest {
     }
 
     @Test
-    public void shouldSaveDiscipline() {
+    public void shouldSaveDiscipline() throws Exception {
         DisciplineDTO disciplineDTO = createDisciplineDTO("NewDisciplineTest");
         Discipline discipline = createDisciplineFromDTO(disciplineDTO);
         disciplineService.add(disciplineDTO);
@@ -106,10 +107,50 @@ public class DisciplineServiceTest {
         exception.expectMessage(id + "");
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
         disciplineService.findById(id);
+        verify(disciplineRepository).findById(id);
     }
 
+    @Test(expected = EmptyName.class)
+    public void shouldThrowExceptionEmptyNameWhileEditDiscipline() throws DisciplineNotFound, EmptyName {
+        Long id = 1L;
+        DisciplineDTO disciplineDTO = createDisciplineDTO("");
+        Discipline discipline = createDiscipline("TestName");
+        when(disciplineRepository.findById(id)).thenReturn(Optional.of(discipline));
+        disciplineService.edit(id, disciplineDTO, null);
+        verify(disciplineRepository).findById(id);
+    }
+
+    @Test(expected = EmptyName.class)
+    public void shouldThrowExceptionEmptyNameWhileAddDiscipline() throws Exception {
+        DisciplineDTO disciplineDTO = createDisciplineDTO("");
+        disciplineService.add(disciplineDTO);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhileAddDiscipline() throws Exception {
+        DisciplineDTO disciplineDTO = createDisciplineDTO("TestDisciplineDTO");
+        Discipline discipline = createDisciplineFromDTO(disciplineDTO);
+        doThrow(new Exception()).when(disciplineRepository).save(discipline);
+        disciplineService.add(disciplineDTO);
+        verify(disciplineRepository).save(discipline);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhileDeleteDiscipline() throws Exception {
+        Long id = 1L;
+        doThrow(new Exception()).when(disciplineService).delete(id);
+        disciplineService.delete(id);
+        verify(disciplineRepository).deleteById(id);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhileGetAllDisciplines() throws Exception {
+        when(disciplineRepository.findAll()).thenThrow(new Exception());
+        disciplineService.getAllDisciplines();
+        verify(disciplineRepository).findAll();
+    }
     @Test
-    public void shouldThrowExceptionWhileEditDiscipline() throws DisciplineNotFound {
+    public void shouldThrowExceptionWhileEditDiscipline() throws DisciplineNotFound, EmptyName {
         Long id = 1L;
         exception.expect(DisciplineNotFound.class);
         exception.expectMessage(id + "");

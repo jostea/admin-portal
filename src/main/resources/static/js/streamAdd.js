@@ -26,11 +26,9 @@ function addStream() {
             $("#name").val("");
             getAllStreams();
         },
-        error: function (xhr, error) {
+        error: function (response) {
             $("#name").val("");
-            if (xhr.status === 400) {
-                alert("Couldn't add this stream");
-            }
+            $("#alertStream").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     })
 }
