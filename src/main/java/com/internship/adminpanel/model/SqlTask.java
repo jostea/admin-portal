@@ -58,5 +58,4 @@ public class SqlTask {
         this.setEnabled(sqlTaskInsertDTO.isEnabled());
         this.setCorrectStatement(sqlTaskInsertDTO.getCorrectStatement());
     }
-
 }

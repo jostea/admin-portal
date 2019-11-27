@@ -57,15 +57,6 @@
             </div>
             <br/>
 
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="descripiton">Description</label>
-                <div class="col-md-4">
-                    <textarea id="descripiton" class="form-control" type="text"
-                              placeholder="Task Desciption"></textarea>
-                </div>
-            </div>
-            <br/>
-
             <!-- DROPDOWN COMPLEXITIES -->
             <div class="form-row row">
                 <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
@@ -92,9 +83,14 @@
             </div>
             <br/>
 
-            <div class="container">
-                <img th:src="Scheme1.png" class="img-thumbnail" alt="Cinque Terre">
+            <div class="form-row row">
+                <label class="col-md-1 col-form-label" for="descripiton">Description</label>
+                <div class="col-md-11">
+                    <textarea id="descripiton" class="form-control" type="text"
+                              placeholder="Task Desciption"></textarea>
+                </div>
             </div>
+            <br/>
 
             <div class="form-row row">
                 <!-- DROPDOWN DISCIPLINES -->
@@ -324,7 +320,7 @@
             sel = false;
         }
 
-        // get Id of SQL
+        // get Id of SQL Group
         let elSqlGroup = document.getElementById("sqlGroup");
         let selectedSqlGroupText = elSqlGroup.options[elSqlGroup.selectedIndex].text;
         let selectedSqlGroupId = elSqlGroup.options[elSqlGroup.selectedIndex].value;

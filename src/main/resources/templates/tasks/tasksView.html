@@ -260,6 +260,11 @@
         $("#tasksSql tbody").html(tbody);
     }
 
+    $("#tasksSql").on('click', '.editSqlTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        window.location.href = "editSqlTask/" + idTask;
+    });
+
 </script>
 <script src="/js/navbar.js"></script>
 <script src="/js/profile.js"></script>
