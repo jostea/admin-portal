@@ -5,7 +5,7 @@
 <head>
 
     <meta charset="UTF-8">
-    <title> And new standard task (question) </title>
+    <title> And new sql task </title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
@@ -43,7 +43,7 @@
 
         <div class="row">
             <h1>
-                <strong>Add New Standard Task</strong>
+                <strong>Add New SQL Task</strong>
             </h1>
         </div>
         <hr>
@@ -79,18 +79,22 @@
             </div>
             <br/>
 
-            <!-- DROPDOWN TASK_TYPES -->
+            <!-- DROPDOWN SQL_GROUPS -->
             <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="taskType">Task type</label>
+                <label class="col-md-1 col-form-label" for="sqlGroup">Sql Group</label>
                 <div class="col-md-4">
-                    <select id="taskType" class="form-control">
-                        <!--                        <option value="0" selected disabled style="display: none">Select task type...</option>-->
-                        <option th:each="typeEnum : ${task_types}" th:value="${typeEnum}"
-                                th:text="${typeEnum.getType()}"></option>
+                    <select id="sqlGroup" class="form-control">
+                        <option value="0" disabled style="display:none">Select Sql Group...</option>
+                        <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
+                                th:text="${SqlGroupDTO.getName()}"></option>
                     </select>
                 </div>
             </div>
-            <hr>
+            <br/>
+
+            <div class="container">
+                <img th:src="Scheme1.png" class="img-thumbnail" alt="Cinque Terre">
+            </div>
 
             <div class="form-row row">
                 <!-- DROPDOWN DISCIPLINES -->
@@ -158,52 +162,25 @@
             <br/>
             <hr>
 
-            <!-- ANSWER OPTIONS -->
+            <!-- SQL STATEMENT WARNING -->
             <div class="form-row row">
                 <h5 class="alert alert-warning">
-                    <strong>Warning!</strong> Specify answer(s) based on the type of question. Mark the correct answer.
-                    <p>* for the types "Multi Choice" and "Single Choice" should be at least 2 answer options</p>
+                    <strong>Warning!</strong> Specify the SQL Statement, which generates the correct result (expected to
+                    be provided by candidate).
                 </h5>
             </div>
 
-            <!-- SPECIFY AND ADD NEW ANSWER, MARK AS CORRECT/INCORRECT -->
-            <div id="divAnswerOptions" class="form-row row">
-                <label class="col-md-1 col-form-label">Answer:</label>
-                <div class="col-md-4">
-                    <textarea id="answer" class="form-control" type="text" placeholder="Text of answer"></textarea>
+            <!-- SQL STATEMENT ITSELF -->
+            <div id="divSqlStatement" class="form-row row">
+                <label class="col-md-2 col-form-label">SQL Statement</label>
+                <div class="col-md-10">
+                    <textarea id="sqlStatement" class="form-control" type="text" placeholder="SQL Statement"></textarea>
                 </div>
-                <div class="col-md-1">
-                    <input type="checkbox" id="isCorrect" name="activate">
-                    <label class="col-form-label">Is Correct</label>
-                </div>
-                <div class="col-md-2">
-                    <button id="addAnswerOption" type="submit" class="btn btn-primary">Add Answer</button>
-                </div>
-                <br/>
             </div>
-            <div class="form-row row">
-                <h5 class="alert alert-info">
-                    <strong>Info!</strong> Answer options specified to the task:
-                </h5>
-            </div>
-            <div class="form-row row">
-                <table id="answerOptions">
-                    <thead>
-                    <tr>
-                        <th> Answer</th>
-                        <th> Is Correct</th>
-                        <th> Remove</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <br/>
 
             <hr>
             <div class="form-row row">
-                <button id="addTask" type="submit" class="btn btn-primary">Create</button>
+                <button id="addSqlTask" type="submit" class="btn btn-primary">Create</button>
             </div>
 
         </form>
@@ -214,36 +191,26 @@
 
     $(document).ready();
 
-    function showPopUp(title, message){
+    function showPopUp(title, message) {
         $("#myModal").find('h4').text(title);
         $("#myModal").find('h3').text(message);
         $("#myModal").modal('show');
     }
 
-    $("#addTask").on("click", function (event) {
+    $("#addSqlTask").on("click", function (event) {
         event.preventDefault();
-
-        // get selected task_type
-        let elTaskType = document.getElementById("taskType");
-        let selectedTaskType = elTaskType.options[elTaskType.selectedIndex].text;
-
-        if (checkAnswerOptions() > 1 && selectedTaskType == "Single Choice") {
-            showPopUp('Error in Single Choice question', 'For Single Choice question should be only 1 correct answer. Please verify.');
-        } else if (checkAnswerOptions() == 0 && selectedTaskType == "Single Choice") {
-            showPopUp('Error in Single Choice question', 'Please specify correct answer for Single Choice type question.');
-        } else if (checkAnswerOptions() == 0 && selectedTaskType == "Multi Choice") {
-            showPopUp('Error in Multi Choice question', 'There should be at least one correct answer for Multi Choice question.');
-        } else {
-            $.ajax({
-                method: "POST",
-                url: "/tasksrest/addTask",
-                data: JSON.stringify(prepareData()),
-                contentType: "application/json",
-                success: function () {
-                    location.href = "/tasks/";
-                }
-            })
-        }
+        $.ajax({
+            method: "POST",
+            url: "/tasksrest/addSqlTask",
+            data: JSON.stringify(prepareData()),
+            contentType: "application/json",
+            success: function () {
+                location.href = "/tasks/";
+            },
+            error: function (response) {
+                showPopUp("Error while creating SQL Task", response.responseText);
+            }
+        })
     });
 
     // Function to check if there is already exists selected combination Discipline-Stream
@@ -299,38 +266,6 @@
         }
     });
 
-    $("#addAnswerOption").on("click", function (event) {
-        event.preventDefault();
-
-        // get the current answer option text
-        let selectedAnswer = $("#answer").val();
-
-        if (!selectedAnswer) {
-            showPopUp("Empty field", "Answer is empty. Please specify the answer.")
-        } else {
-            // get true-false isCorrect value
-            let selIsCorrect;
-            let answerIsCorrect = document.getElementById("isCorrect");
-            if (answerIsCorrect.checked === true) {
-                selIsCorrect = true;
-            } else {
-                selIsCorrect = false;
-            }
-
-            let tbody = $("#answerOptions tbody").html();
-            tbody += "<tr>";
-            tbody += "<td>" + selectedAnswer + "</td>";
-            tbody += "<td>" + selIsCorrect + "</td>";
-            tbody += "<td>" + "<button class='removeAnswerOption'> Remove </button>" + "</td>";
-            tbody += "</tr>";
-            $("#answerOptions tbody").html(tbody);
-
-            //reset text input for answer and flag isCorrect
-            $("#answer").val("");
-            $("#isCorrect").prop("checked", false);
-        }
-    });
-
     //returns streams based on the discipline name provided
     function getStreamsByDiscipline(discname) {
         $.ajax({
@@ -370,69 +305,17 @@
         getStreamsByDiscipline(selectedDiscipline);
     });
 
-    //Enabled or disable button Add Answer based on the Task_Type selected
-    $("#taskType").change(function (event) {
-        event.preventDefault();
-
-        //disable button "Add Answer Option" if task type != MultiChoice OR Single_Choice
-        // get selected task_type
-        let elTaskType = document.getElementById("taskType");
-        let selectedTaskType = elTaskType.options[elTaskType.selectedIndex].text;
-        if (selectedTaskType == "Single Choice" || selectedTaskType == "Multi Choice") {
-            $("#addAnswerOption").prop('disabled', false);
-        } else {
-            $("#addAnswerOption").prop('disabled', true);
-            $("#answerOptions > tbody").html("");    //clear table with answer options
-        }
-    });
-
     // Remove the respective row from the table with "Disciplines-Streams"
     $("#disc_streams_selected").on('click', '.removeDiscStream', function x() {
         $(this).closest('tr').remove();
     });
 
-    // Remove the respective row from the table with "Answer Options"
-    $("#answerOptions").on('click', '.removeAnswerOption', function x() {
-        $(this).closest('tr').remove();
-    });
-
-    function checkAnswerOptions() {
-        let trues = [];
-        $("#answerOptions > tbody > tr > td").each(function (i, el) {
-            let value = $(this).text();
-            trues.push(value.valueOf());
-        })
-        let counter = 0;
-        trues.forEach(function (item) {
-            if (item == "true") {
-                counter = counter + 1;
-            }
-        })
-        return counter;
-    }
-
-    function readAnswerOptions() {
-        //collection of objects with fields "name" and "isCorrect"
-        //as specified in AnswerOptionDTO
-        let answersList = [];
-        $('#answerOptions').find('tbody').find('tr').each(function (i, el) {
-            let answerDto = {
-                answer: $(this).find('td').eq(0).text(),
-                isCorrect: $(this).find('td').eq(1).text()
-            }
-            answersList.push(answerDto);
-        });
-        return answersList;
-    }
-
     function prepareData() {
-        let tskType = $("#taskType").val();
-
-        let listAnswers = [];
-        listAnswers = readAnswerOptions();
-
+        //read stream ids
         let listStreams = getStreamIds();
         let listStreamIntegers = listStreams.map(v => parseInt(v, 10));
+
+        //read isEnabled data
         let sel;
         let checkBox = document.getElementById("isEnabled");
         if (checkBox.checked === true) {
@@ -441,27 +324,29 @@
             sel = false;
         }
 
+        // get Id of SQL
+        let elSqlGroup = document.getElementById("sqlGroup");
+        let selectedSqlGroupText = elSqlGroup.options[elSqlGroup.selectedIndex].text;
+        let selectedSqlGroupId = elSqlGroup.options[elSqlGroup.selectedIndex].value;
+
+
         if ($("#title").val() == "") {
             showPopUp('No title', 'Title is empty! Please specify');
         } else if ($("#descripiton").val() == "") {
             showPopUp('No Description', 'Description is empty! Please specify');
         } else if ($("#complexity").val() == '0') {
             showPopUp('No Complexity', 'Complexity field is empty! Please specify');
-        } else if ($("#taskType").val() == "0") {
-            showPopUp('No Task Type', 'Please specify type of the task.');
         } else if (listStreams.length == 0) {
             showPopUp('No streams', 'Please specify at least one discipline and stream.');
-        } else if (listAnswers.length < 2 && (tskType == "MULTI_CHOICE" || tskType == "SINGLE_CHOICE")) {
-            showPopUp('No enough answers', 'For type "Single Choice" or "Multi Choice" please specify at least 2 answer options.');
         } else {
             return {
                 title: $("#title").val(),
                 description: $("#descripiton").val(),
-                taskType: $("#taskType").val(),
                 complexity: $("#complexity").val(),
                 isEnabled: sel,
+                correctStatement: $("#sqlStatement").val(),
                 streams: listStreamIntegers,
-                answers: listAnswers
+                sqlGroupId: selectedSqlGroupId
             }
         }
     }

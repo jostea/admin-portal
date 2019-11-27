@@ -1,9 +1,7 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.internship.adminpanel.model.dto.task.TaskDisableDTO;
-import com.internship.adminpanel.model.dto.task.TaskEditDTO;
-import com.internship.adminpanel.model.dto.task.TaskInsertDTO;
-import com.internship.adminpanel.model.dto.task.TaskListDTO;
+import com.internship.adminpanel.model.dto.task.*;
+import com.internship.adminpanel.service.SqlTaskService;
 import com.internship.adminpanel.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +20,20 @@ import java.util.List;
 public class TaskRestController {
 
     private final TaskService taskService;
+    private final SqlTaskService sqlTaskService;
 
     @GetMapping("/all")
     public ResponseEntity<List<TaskListDTO>> getAllTasks() {
         ArrayList<TaskListDTO> list = new ArrayList<TaskListDTO>();
         list = (ArrayList<TaskListDTO>) taskService.getAll();
         return new ResponseEntity<List<TaskListDTO>>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/allSql")
+    public ResponseEntity<List<SqlTaskListDTO>> getAllSqlTasks() {
+        ArrayList<SqlTaskListDTO> list;
+        list = (ArrayList<SqlTaskListDTO>) sqlTaskService.getAll();
+        return new ResponseEntity<List<SqlTaskListDTO>>(list, HttpStatus.OK);
     }
 
     @PostMapping("/addTask")
@@ -38,7 +44,19 @@ public class TaskRestController {
             return new ResponseEntity<>("New task was created.", HttpStatus.OK);
         } catch (Exception e) {
             log.error("[User: " + authentication.getName() + "]. Error while trying to add new task: " + task.toString() + "; Stack Trace: " + e.getStackTrace());
-            return new ResponseEntity<>("New task was created.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error while creating new task", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/addSqlTask")
+    public ResponseEntity<String> saveSqlTask(@RequestBody SqlTaskInsertDTO sqlTaskInsertDTO, Authentication authentication){
+        try{
+            sqlTaskService.addSqlTask(sqlTaskInsertDTO);
+            log.info("[User: " + authentication.getName() + "] created new SQL task: " + sqlTaskInsertDTO.toString());
+            return new ResponseEntity<>("New SQL task was created.", HttpStatus.OK);
+        } catch (Exception e){
+            log.error("[User: " + authentication.getName() + "]. Error while trying to add new SQ: task: " + sqlTaskInsertDTO.toString() + "; Stack Trace: " + e.getStackTrace());
+            return new ResponseEntity<>("Error while creating new SQL task", HttpStatus.BAD_REQUEST);
         }
     }
 

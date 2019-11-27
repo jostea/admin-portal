@@ -48,7 +48,7 @@ public class TaskService {
         Task task = new Task(taskDto);
 
         List<Stream> listStreamsToPersist = new ArrayList<>();
-        //create a collation of Streams to persist
+        //create a collection of Streams to persist
         for (Long streamID : taskDto.getStreams()) {
             //get Stream object
             Stream stream = new Stream();

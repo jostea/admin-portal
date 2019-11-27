@@ -23,8 +23,6 @@ public enum TypeEnum {
             if (val.type.equalsIgnoreCase(par))
                 return val;
         }
-
-
         return null;
     }
 }
