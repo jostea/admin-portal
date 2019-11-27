@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +38,10 @@ public class UserRestController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<String> editUserPut(@RequestBody UserDTOFromUIUpdate userDTOFromUIUpdate, @PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
             userService.updateById(userDTOFromUIUpdate, id);
+            log.info(authentication.getName() + " has updated user " + userDTOFromUIUpdate.getUsername());
             return new ResponseEntity<>("User edited successfully", HttpStatus.OK);
         } catch (Exception e) {
             log.info(userDTOFromUIUpdate.getUsername() + " could not be updated. Stack Trace: " + Arrays.toString(e.getStackTrace()));

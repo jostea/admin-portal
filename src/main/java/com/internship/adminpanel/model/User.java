@@ -29,7 +29,7 @@ public class User {
     private Long id;
 
     @NotNull(message = "Field is required")
-    @Length(max = 50, message = "Max size is 50")
+    @Length(min = 6, max = 50, message = "Min size is 6, Max size is 50")
     private String username;
 
     @NotNull(message = "Field is required")

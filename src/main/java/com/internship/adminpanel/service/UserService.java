@@ -10,18 +10,12 @@ import com.internship.adminpanel.model.enums.RoleEnum;
 import com.internship.adminpanel.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.PasswordGenerator;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityExistsException;
-import javax.validation.ConstraintViolationException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +63,6 @@ public class UserService {
                 local.get().setPassword(passwordEncoder.encode(userDTOFromUIUpdate.getPassword()));
             }
             userRepository.save(local.get());
-            log.info("Main admin has updated user " + userDTOFromUIUpdate.getUsername());
         } else {
             log.error("Unable to update " + userDTOFromUIUpdate.getUsername());
         }
