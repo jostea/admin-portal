@@ -36,34 +36,20 @@ $(".view-users-div").on("click", ".view-user", function () {
 $("#editUser").on("click", ".edit-user-apply", function () {
     var val = this.parentNode.parentElement.querySelector("#edit-db-id").textContent;
     $("#editUserMessage").html("");
-    if($("#edit-username").val() && $("#edit-email").val() && !(/\s/.test($("#edit-username").val()))) {
-        if (validateEmail($("#edit-email").val())) {
-            if ($("#edit-username").val().length >= 6) {
-                if (document.querySelector("#edit-password").value === "" || document.querySelector("#edit-password").value.length >= 8) {
-                    $.ajax({
-                        method: "PUT",
-                        url: "/users/edit/" + val,
-                        data: JSON.stringify(prepareDataToEditUser()),
-                        contentType: "application/json",
-                        success: function () {
-                            getAllUsers();
-                            $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User <b>" + $("#edit-username").val() + "</b> has been edited successfully</p></div>")
-                        },
-                        error: function (response) {
-                            $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Failed to edit. Looks like the credentials you're trying to set are already present in the system</p></div>")
-                        }
-                    });
-                } else  {
-                    $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Password too short, min eight characters</p></div>")
-                }
-            } else {
-                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Username must contain at least six characters</p></div>")
+    if (editRequestValidation()) {
+        $.ajax({
+            method: "PUT",
+            url: "/users/edit/" + val,
+            data: JSON.stringify(prepareDataToEditUser()),
+            contentType: "application/json",
+            success: function () {
+                getAllUsers();
+                $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User <b>" + $("#edit-username").val() + "</b> has been edited successfully</p></div>")
+            },
+            error: function (response) {
+                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Failed to edit. Looks like the credentials you're trying to set are already present in the system</p></div>")
             }
-        } else {
-            $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Looks like you have provided an invalid email</p></div>");
-        }
-    } else {
-        $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>You cannot leave any field empty or add whitespaces</p></div>")
+        });
     }
 });
 
@@ -181,6 +167,27 @@ function validateEmail(mail)
     if (/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(mail))
     {
         return true;
+    }
+    return false;
+}
+
+function editRequestValidation() {
+    if($("#edit-username").val() && $("#edit-email").val() && !(/\s/.test($("#edit-username").val()))) {
+        if (validateEmail($("#edit-email").val())) {
+            if ($("#edit-username").val().length >= 6) {
+                if (document.querySelector("#edit-password").value === "" || document.querySelector("#edit-password").value.length >= 8) {
+                    return true;
+                } else  {
+                    $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Password too short, min eight characters</p></div>")
+                }
+            } else {
+                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Username must contain at least six characters</p></div>")
+            }
+        } else {
+            $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Looks like you have provided an invalid email</p></div>");
+        }
+    } else {
+        $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>You cannot leave any field empty or add whitespaces</p></div>")
     }
     return false;
 }

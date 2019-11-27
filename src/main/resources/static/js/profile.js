@@ -63,3 +63,7 @@ function prepareDataToEditPassword() {
     }
 }
 
+function validatePasswords(passold, passnew, passrep) {
+
+}
+
