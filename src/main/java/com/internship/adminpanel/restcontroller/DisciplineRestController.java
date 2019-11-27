@@ -35,7 +35,7 @@ public class DisciplineRestController {
 
     @ResponseBody
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> add(@RequestBody DisciplineDTO disciplineDTO, Authentication authentication) {
+    public ResponseEntity<String> add(@RequestBody DisciplineDTO disciplineDTO, Authentication authentication) {
         try {
             disciplineService.add(disciplineDTO);
             log.info("User '" + authentication.getName() + "' add new discipline '" + disciplineDTO.getName() + "'");
@@ -49,16 +49,16 @@ public class DisciplineRestController {
 
     @ResponseBody
     @PutMapping("/update/{id}")
-    public ResponseEntity<HttpStatus> edit(@PathVariable("id") Long id, @RequestBody DisciplineDTO disciplineDTO,
-                                           Authentication authentication) {
+    public ResponseEntity<String> edit(@PathVariable("id") Long id, @RequestBody DisciplineDTO disciplineDTO,
+                                       Authentication authentication) {
         try {
-            disciplineService.edit(id, disciplineDTO);
-            log.info("User '" + authentication.getName() + "' edit new discipline '" + disciplineDTO.getName() + "'");
+            disciplineService.edit(id, disciplineDTO, authentication.getName());
+            log.info("User '" + authentication.getName() + "' edit  discipline '" + disciplineDTO.getName() + "'");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DisciplineNotFound e) {
             log.error("Error when user '" + authentication.getName() + "' edit  discipline with id '" + id + "'; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

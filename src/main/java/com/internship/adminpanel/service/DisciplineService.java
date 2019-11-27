@@ -36,7 +36,7 @@ public class DisciplineService {
     public DisciplineDTO findById(Long id) throws DisciplineNotFound {
         if (disciplineRepository.findById(id).isPresent())
             return new DisciplineDTO(disciplineRepository.findById(id).get());
-        throw new DisciplineNotFound("Requested discipline was not found");
+        throw new DisciplineNotFound(id + "");
     }
 
     public List<DisciplineDTO> getAllDisciplines() {
@@ -56,26 +56,27 @@ public class DisciplineService {
     }
 
     public void delete(Long id) {
-        try {
             disciplineRepository.deleteById(id);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+
     }
 
-    public void edit(Long id, DisciplineDTO disciplineDTO) throws DisciplineNotFound {
+    public void edit(Long id, DisciplineDTO disciplineDTO, String username) throws DisciplineNotFound {
         Optional<Discipline> disciplineOptional = disciplineRepository.findById(id);
         if (disciplineOptional.isPresent()) {
+            String oldDisciplineName = disciplineOptional.get().getName();
             Discipline discipline = disciplineOptional.get();
             discipline.setName(disciplineDTO.getName());
             disciplineRepository.save(discipline);
+            log.info("Discipline '" + oldDisciplineName + "' has been changed to '" + disciplineDTO.getName()
+                    + "' by user '" + username + "'");
         } else {
-            throw new DisciplineNotFound("The discipline with id:" + disciplineDTO.getId() + "didn't found.");
+            throw new DisciplineNotFound(disciplineDTO.getId() + " ");
         }
     }
 
     public void add(DisciplineDTO disciplineDTO) {
         disciplineRepository.save(Discipline.builder()
-                .name(disciplineDTO.getName()).build());
+                .name(disciplineDTO.getName())
+                .build());
     }
 }

@@ -59,7 +59,7 @@ function edit(id) {
         contentType: "application/json",
         success: function () {
             getAllStreams();
-        }, edit(xhr) {
+        }, error: function (xhr) {
             if (xhr.status === 400) {
                 alert("Couldn't update stream");
             }
