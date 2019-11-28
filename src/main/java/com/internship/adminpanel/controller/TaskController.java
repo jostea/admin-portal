@@ -79,6 +79,19 @@ public class TaskController {
         return model;
     }
 
+    @GetMapping(value = "/tasks/viewSqlTask/{id}")
+    public ModelAndView viewSqlTask() {
+        ModelAndView model = new ModelAndView("tasks/viewSqlTask");
+        model = populateModelWithDropDowns(model);
+
+        //add to the model SqlGroup options
+        List<SqlGroupDTO> sqlGroupDTOs;
+        sqlGroupDTOs = sqlGroupService.getAll();
+        model.addObject("sqlgroups", sqlGroupDTOs);
+
+        return model;
+    }
+
     private ModelAndView populateModelWithDropDowns(ModelAndView model) {
         //collection for complexitites dropdown
         List<ComplexityEnum> complexities;

@@ -131,10 +131,28 @@ public class TaskRestController {
             } else {
                 action = " enabled ";
             }
-            log.info("[User: " + authentication.getName() + "]" + action + "task with ID  " + taskDisableDTO.getId());
+            log.info("[User: " + authentication.getName() + "]" + action + "Standard Task with ID  " + taskDisableDTO.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable task with ID: " + taskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable Standard Task with ID: " + taskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/disableSqlTask")
+    public ResponseEntity<SqlTaskEditDTO> disableSqlTask(@RequestBody SqlTaskDisableDTO sqlTaskDisableDTO, Authentication authentication) {
+        try {
+            sqlTaskService.disableTask(sqlTaskDisableDTO);
+            String action = "";
+            if (!sqlTaskDisableDTO.isEnabled()) {
+                action = " disabled ";
+            } else {
+                action = " enabled ";
+            }
+            log.info("[User: " + authentication.getName() + "]" + action + "SQL Task with ID  " + sqlTaskDisableDTO.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable SQL Task with ID: " + sqlTaskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
