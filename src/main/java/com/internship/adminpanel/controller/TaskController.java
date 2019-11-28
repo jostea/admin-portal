@@ -59,6 +59,19 @@ public class TaskController {
         return model;
     }
 
+    @GetMapping(value = "/tasks/editSqlTask/{id}")
+    public ModelAndView editSqlTask() {
+        ModelAndView model = new ModelAndView("tasks/editSqlTask");
+        model = populateModelWithDropDowns(model);
+
+        //add to the model SqlGroup options
+        List<SqlGroupDTO> sqlGroupDTOs;
+        sqlGroupDTOs = sqlGroupService.getAll();
+        model.addObject("sqlgroups", sqlGroupDTOs);
+
+        return model;
+    }
+
     @GetMapping(value = "/tasks/viewTask/{id}")
     public ModelAndView viewTask() {
         ModelAndView model = new ModelAndView("tasks/viewTask");

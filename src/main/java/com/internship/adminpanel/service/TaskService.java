@@ -92,7 +92,7 @@ public class TaskService {
 
         //process & convert all StreamDTO in Stream
         //by StreamDto.getId() get the collection of Stream entities from DB
-        //and assign them to the Task beign updated
+        //and assign them to the Task being updated
         List<Stream> listNewStreams = new ArrayList<>();
         for (StreamDTO streamDto : taskEditDTO.getStreams()) {
             Stream streamDB = streamRepository.findById(streamDto.getId()).get();
@@ -106,7 +106,7 @@ public class TaskService {
 
         //process & convert all AnswerOptionDTO in AnswerOption
         //(part I)      - Get AnswerOptionDTO without ID and create new AnswerOption entity for the current task ID
-        //              - Add new AnswerOption entites to the listAnswerOptions
+        //              - Add new AnswerOption entities to the listAnswerOptions
         //(part II)     - Get already existing AnswerOption by its ID which match to the ID arrived from view
         //              - Modify it
         //              - Get modified existing AnswerOption and add to the listAnswerOptions

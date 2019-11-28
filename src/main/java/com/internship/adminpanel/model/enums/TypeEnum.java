@@ -4,9 +4,7 @@ public enum TypeEnum {
 
     MULTI_CHOICE("Multi Choice"),
     SINGLE_CHOICE("Single Choice"),
-    CUSTOM_QUESTION("Custom Question"),
-    CODE_TASK("Code Task"),
-    SQL_TASK("SQL Task");
+    CUSTOM_QUESTION("Custom Question");
 
     private String type;
 

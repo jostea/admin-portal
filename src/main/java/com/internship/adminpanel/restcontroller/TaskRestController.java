@@ -24,16 +24,16 @@ public class TaskRestController {
 
     @GetMapping("/all")
     public ResponseEntity<List<TaskListDTO>> getAllTasks() {
-        ArrayList<TaskListDTO> list = new ArrayList<TaskListDTO>();
+        ArrayList<TaskListDTO> list;
         list = (ArrayList<TaskListDTO>) taskService.getAll();
-        return new ResponseEntity<List<TaskListDTO>>(list, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/allSql")
     public ResponseEntity<List<SqlTaskListDTO>> getAllSqlTasks() {
         ArrayList<SqlTaskListDTO> list;
         list = (ArrayList<SqlTaskListDTO>) sqlTaskService.getAll();
-        return new ResponseEntity<List<SqlTaskListDTO>>(list, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping("/addTask")
@@ -49,12 +49,12 @@ public class TaskRestController {
     }
 
     @PostMapping("/addSqlTask")
-    public ResponseEntity<String> saveSqlTask(@RequestBody SqlTaskInsertDTO sqlTaskInsertDTO, Authentication authentication){
-        try{
+    public ResponseEntity<String> saveSqlTask(@RequestBody SqlTaskInsertDTO sqlTaskInsertDTO, Authentication authentication) {
+        try {
             sqlTaskService.addSqlTask(sqlTaskInsertDTO);
             log.info("[User: " + authentication.getName() + "] created new SQL task: " + sqlTaskInsertDTO.toString());
             return new ResponseEntity<>("New SQL task was created.", HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("[User: " + authentication.getName() + "]. Error while trying to add new SQ: task: " + sqlTaskInsertDTO.toString() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>("Error while creating new SQL task", HttpStatus.BAD_REQUEST);
         }
@@ -64,7 +64,7 @@ public class TaskRestController {
     @GetMapping("/editTask/{id}")
     public ResponseEntity<TaskEditDTO> editTask(@PathVariable("id") Long id, Authentication authentication) {
         try {
-            log.info("[User: " + authentication.getName() + "] requested a task to edit. Task with ID  " + id);
+            log.info("[User: " + authentication.getName() + "] requested a General Task to edit. Task with ID  " + id);
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
         } catch (Exception e) {
             log.warn("Error while getting task with id: " + id);
@@ -79,8 +79,33 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] modified task with ID  " + task.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to update task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to edit General Task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    //endregion
+
+    //region EDIT_SQL_TASK
+    @GetMapping("/editSqlTask/{id}")
+    public ResponseEntity<SqlTaskEditDTO> editSqlTask(@PathVariable("id") Long id, Authentication authentication) {
+        try {
+            log.info("[User: " + authentication.getName() + "] requested a SQL Task to edit. Task with ID  " + id);
+            return new ResponseEntity<>(sqlTaskService.findById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            log.warn("Error while getting task with id: " + id);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/editSqlTask")
+    public ResponseEntity<String> editTask(@RequestBody SqlTaskEditDTO sqlTaskEditDTO, Authentication authentication) {
+        try{
+            sqlTaskService.editTask(sqlTaskEditDTO);
+            log.info("[User: " + authentication.getName() + "] modified task with ID  " + sqlTaskEditDTO.getId());
+            return new ResponseEntity<>("SQL Task " + sqlTaskEditDTO.getTitle() + " was successfully modified.", HttpStatus.OK);
+        } catch (Exception e){
+            log.error("[User: " + authentication.getName() + "]. Error while trying to edit SQL Task with ID: " + sqlTaskEditDTO.getId() + "\nMessage: " + e.getMessage() + "; \nStack Trace: " + e.getStackTrace());
+            return new ResponseEntity<>("Error while modifying SQL task", HttpStatus.BAD_REQUEST);
         }
     }
     //endregion

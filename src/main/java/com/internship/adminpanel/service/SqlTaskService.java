@@ -3,6 +3,8 @@ package com.internship.adminpanel.service;
 import com.internship.adminpanel.model.SqlGroup;
 import com.internship.adminpanel.model.SqlTask;
 import com.internship.adminpanel.model.Stream;
+import com.internship.adminpanel.model.dto.stream.StreamDTO;
+import com.internship.adminpanel.model.dto.task.SqlTaskEditDTO;
 import com.internship.adminpanel.model.dto.task.SqlTaskInsertDTO;
 import com.internship.adminpanel.model.dto.task.SqlTaskListDTO;
 import com.internship.adminpanel.repository.SqlGroupRepository;
@@ -65,5 +67,64 @@ public class SqlTaskService {
         }
         sqlTaskRepository.save(taskSql);
     }
+
+    public SqlTaskEditDTO findById(Long id) {
+        Optional<SqlTask> taskDB = sqlTaskRepository.findById(id);
+        if (taskDB.isPresent())
+            return new SqlTaskEditDTO(taskDB.get());
+        else return new SqlTaskEditDTO();
+    }
+
+    @Transactional
+    public void editTask(SqlTaskEditDTO sqlTaskEditDTO) throws Exception {
+        SqlTask sqlTaskToEdit = new SqlTask(sqlTaskEditDTO);
+
+        //set new collection of Streams
+        sqlTaskToEdit = setStreamsToSqlTask(sqlTaskToEdit, sqlTaskEditDTO.getStreams());
+
+        //set SqlGroup if it's id exists
+        sqlTaskToEdit = setSqlGroupToSqlTask(sqlTaskEditDTO.getSqlGroupDTO().getId(), sqlTaskToEdit);
+
+        //save edited SQL Task object
+        try {
+            sqlTaskRepository.save(sqlTaskToEdit);
+        } catch (Exception e) {
+            log.warn("Error while updating SQL Task with id " + sqlTaskEditDTO.getId());
+            throw new Exception("Error while updating SQL Task with title [" + sqlTaskEditDTO.getTitle());
+        }
+    }
+
+
+    //region PRIVATE METHODS-HELPERS
+
+    //set SQL_GROUP to a SQL_TASK
+    private SqlTask setSqlGroupToSqlTask(Long idGroup, SqlTask sqlTask) throws Exception {
+        Optional<SqlGroup> sqlGroupOptional = sqlGroupRepository.findById(idGroup);
+        SqlGroup sqlGroupToApply;
+        if (sqlGroupOptional.isPresent()) {
+            sqlGroupToApply = sqlGroupOptional.get();
+            sqlTask.setSqlGroup(sqlGroupToApply);
+            return sqlTask;
+        } else {
+            log.warn("SQL Group with id [" + idGroup + "] was not found.");
+            throw new Exception("SQL Task with the title [" + idGroup + "] was not found in DB");
+        }
+    }
+
+    //set Stream to a SQL_TASK
+    private SqlTask setStreamsToSqlTask(SqlTask sqlTask, List<StreamDTO> streamsDTO) {
+        List<Stream> listNewStreams = new ArrayList<>();
+        for (StreamDTO streamDto : streamsDTO) {
+            Optional<Stream> streamOptional = streamRepository.findById(streamDto.getId());
+            if (streamOptional.isPresent()) {
+                Stream streamDB = streamOptional.get();
+                listNewStreams.add(streamDB);
+            }
+        }
+        sqlTask.setStreams(listNewStreams);
+        return sqlTask;
+    }
+
+    //endregion
 
 }
