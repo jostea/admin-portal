@@ -77,23 +77,7 @@ public class SqlTaskService {
 
     @Transactional
     public void editTask(SqlTaskEditDTO sqlTaskEditDTO) throws Exception {
-        //Get SQL Task from DB to edit
-        Optional<SqlTask> sqlTaskOptional = sqlTaskRepository.findById(sqlTaskEditDTO.getId());
-        SqlTask sqlTaskToEdit;
-
-        if (sqlTaskOptional.isPresent()) {
-            sqlTaskToEdit = sqlTaskOptional.get();
-
-            //set new SQL Task properties to be modified
-            sqlTaskToEdit.setTitle(sqlTaskEditDTO.getTitle());
-            sqlTaskToEdit.setDescription(sqlTaskEditDTO.getDescription());
-            sqlTaskToEdit.setComplexity(sqlTaskEditDTO.getComplexity());
-            sqlTaskToEdit.setEnabled(sqlTaskEditDTO.isEnabled());
-            sqlTaskToEdit.setCorrectStatement(sqlTaskEditDTO.getCorrectStatement());
-        } else {
-            log.warn("SQL Task with id [" + sqlTaskEditDTO.getId() + "] was not found");
-            throw new Exception("SQL Task with the title [" + sqlTaskEditDTO.getTitle() + "] was not found in DB");
-        }
+        SqlTask sqlTaskToEdit = new SqlTask(sqlTaskEditDTO);
 
         //set new collection of Streams
         sqlTaskToEdit = setStreamsToSqlTask(sqlTaskToEdit, sqlTaskEditDTO.getStreams());
@@ -102,9 +86,13 @@ public class SqlTaskService {
         sqlTaskToEdit = setSqlGroupToSqlTask(sqlTaskEditDTO.getSqlGroupDTO().getId(), sqlTaskToEdit);
 
         //save edited SQL Task object
-        sqlTaskRepository.save(sqlTaskToEdit);
+        try {
+            sqlTaskRepository.save(sqlTaskToEdit);
+        } catch (Exception e) {
+            log.warn("Error while updating SQL Task with id " + sqlTaskEditDTO.getId());
+            throw new Exception("Error while updating SQL Task with title [" + sqlTaskEditDTO.getTitle());
+        }
     }
-
 
 
     //region PRIVATE METHODS-HELPERS

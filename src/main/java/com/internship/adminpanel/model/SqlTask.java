@@ -1,5 +1,6 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.dto.task.SqlTaskEditDTO;
 import com.internship.adminpanel.model.dto.task.SqlTaskInsertDTO;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
 import lombok.AllArgsConstructor;
@@ -50,12 +51,22 @@ public class SqlTask {
     @ManyToOne
     private SqlGroup sqlGroup;
 
-    //copy constructor from DTO
-    public SqlTask(SqlTaskInsertDTO sqlTaskInsertDTO){
+    //copy constructor from SqlInsertDTO
+    public SqlTask(SqlTaskInsertDTO sqlTaskInsertDTO) {
         this.setTitle(sqlTaskInsertDTO.getTitle());
         this.setDescription(sqlTaskInsertDTO.getDescription());
         this.setComplexity(sqlTaskInsertDTO.getComplexity());
         this.setEnabled(sqlTaskInsertDTO.isEnabled());
         this.setCorrectStatement(sqlTaskInsertDTO.getCorrectStatement());
+    }
+
+    //copy constructor from SqlEditDTO
+    public SqlTask(SqlTaskEditDTO sqlTaskEditDTO) {
+        this.setId(sqlTaskEditDTO.getId());
+        this.setTitle(sqlTaskEditDTO.getTitle());
+        this.setDescription(sqlTaskEditDTO.getDescription());
+        this.setComplexity(sqlTaskEditDTO.getComplexity());
+        this.setEnabled(sqlTaskEditDTO.isEnabled());
+        this.setCorrectStatement(sqlTaskEditDTO.getCorrectStatement());
     }
 }
