@@ -1,5 +1,6 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.dto.task.CodeTaskDTOFromUI;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
 import com.internship.adminpanel.model.enums.TechnologyEnum;
 import lombok.AllArgsConstructor;
@@ -52,4 +53,14 @@ public class CodeTask {
 
     @OneToMany(mappedBy = "codeTask")
     private List<CorrectCode> correctCodes;
+
+    public CodeTask(CodeTaskDTOFromUI codeTaskDTOFromUI) {
+        this.title = codeTaskDTOFromUI.getTitle();
+        this.description = codeTaskDTOFromUI.getDescription();
+        this.signature = codeTaskDTOFromUI.getSignature();
+        this.technology = codeTaskDTOFromUI.getTechnology();
+        this.isEnabled = codeTaskDTOFromUI.isEnabled();
+        this.correctCodes = codeTaskDTOFromUI.getCorrectCodes();
+        this.complexity = codeTaskDTOFromUI.getComplexity();
+    }
 }

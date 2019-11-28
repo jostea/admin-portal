@@ -4,6 +4,7 @@ import com.internship.adminpanel.model.dto.discipline.DisciplineListDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.task.SqlGroupDTO;
 import com.internship.adminpanel.model.enums.ComplexityEnum;
+import com.internship.adminpanel.model.enums.TechnologyEnum;
 import com.internship.adminpanel.model.enums.TypeEnum;
 import com.internship.adminpanel.service.DisciplineService;
 import com.internship.adminpanel.service.SqlGroupService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
@@ -90,6 +92,32 @@ public class TaskController {
         model.addObject("sqlgroups", sqlGroupDTOs);
 
         return model;
+    }
+
+    @GetMapping("tasks/addCodeTask")
+    public ModelAndView addCodeTask() throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/tasks/addCodeTask");
+        populateModelWithDropDownsAddCodeTask(modelAndView);
+        return modelAndView;
+    }
+
+    private void populateModelWithDropDownsAddCodeTask(ModelAndView modelAndView) throws Exception {
+        List<ComplexityEnum> complexities;
+        complexities = Arrays.asList(ComplexityEnum.values());
+        modelAndView.addObject("complexities", complexities);
+
+        List<DisciplineListDTO> disciplinesDTO;
+        disciplinesDTO = disciplineService.getAll();
+        modelAndView.addObject("disciplines", disciplinesDTO);
+
+        List<StreamDTO> streams;
+        streams = streamService.findAll();
+        modelAndView.addObject("streams", streams);
+
+        List<TechnologyEnum> technologies;
+        technologies = Arrays.asList(TechnologyEnum.values());
+        modelAndView.addObject("technologies", technologies);
     }
 
     private ModelAndView populateModelWithDropDowns(ModelAndView model) {

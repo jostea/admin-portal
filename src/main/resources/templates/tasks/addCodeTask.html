@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <title> And new code task </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">-->
+    <link type="text/css" rel="stylesheet" href="/css/codeTask.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
+</head>
+
+    <body>
+            <!-- HEADER - NAVBAR -->
+            <div th:replace="fragments/topnavbar :: navbar">
+            </div>
+
+            <div class="container">
+                    <!-- Modal To Display Different Messages -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body" style="text-align:center">
+                                    <h3><strong>Task was successfully modified</strong></h3>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="addCodeTaskFirstPart">
+                        <div class="row">
+                            <h1>
+                                <strong>Add New Code Task</strong>
+                            </h1>
+                        </div>
+                        <hr>
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="title">Title</label>
+                                <div class="col-md-4">
+                                    <input id="title" class="form-control" type="text" placeholder="Task Title" required="required">
+                                </div>
+                            </div>
+                            <br/>
+
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="descripiton">Description</label>
+                                <div class="col-md-4">
+                                <textarea id="descripiton" class="form-control" type="text"
+                                          placeholder="Task Desciption" required="required"></textarea>
+                                </div>
+                            </div>
+                            <br/>
+
+                            <!-- DROPDOWN COMPLEXITY -->
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
+                                <div class="col-md-4">
+                                    <select id="complexity" class="form-control">
+                                        <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                                th:text="${complexityEnum.getComplexity()}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+
+                            <!-- DROPDOWN TECNOLOGY -->
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="technology">Technology</label>
+                                <div class="col-md-4">
+                                    <select id="technology" class="form-control">
+                                        <option th:each="technologyEnum : ${technologies}" th:value="${technologyEnum}"
+                                                th:text="${technologyEnum.getType()}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="form-row row">
+                                <!-- DROPDOWN DISCIPLINES -->
+                                <div>
+                                    <label class="col-md-1 col-form-label" for="disciplines">Discipline: </label>
+                                    <div class="col-md-3">
+                                        <select id="disciplines" class="form-control">
+                                            <option value="0" selected disabled style="display: none">Select discipline...</option>
+                                            <option th:each="DisciplineListDTO : ${disciplines}" th:value="${DisciplineListDTO.getId()}"
+                                                    th:text="${DisciplineListDTO.getName()}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- DROPDOWN STREAMS -->
+                                <div>
+                                    <label class="col-md-1 col-form-label" for="streams">Stream:</label>
+                                    <div class="col-md-2">
+                                        <select id="streams" class="form-control">
+                                            <option th:each="StreamDTO : ${streams}" th:value="${StreamDTO.getId()}"
+                                                    th:text="${StreamDTO.getName()}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button id="addDiscStream" type="submit" class="btn btn-primary">Add</button>
+                                </div>
+                                <br/>
+                            </div>
+                            <br/>
+                            <div class="form-row row">
+                                <h5 class="alert alert-info">
+                                    <strong>Info!</strong> There are the following Disciplines and Streams attaches to this task:
+                                </h5>
+                            </div>
+
+                            <div class="form-row row">
+                                <div class="col-md-6">
+                                    <table class="table table-bordered" id="disc_streams_selected">
+                                        <thead>
+                                        <tr>
+                                            <th> Discipline</th>
+                                            <th> Stream</th>
+                                            <th> Remove</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="form-row row">
+                                <div class="alert alert-danger">
+                                    <strong>Attention!</strong> Disabled task will not appear in test cases!
+                                </div>
+                            </div>
+                            <div class="form-row row">
+                                <label class="col-form-label">Enable Task</label>
+                                <input type="checkbox" id="isEnabledCode" name="activate">
+                            </div>
+                    </div>
+
+                    <div id="addCodeTaskSecondPart panel panel-primary">
+                        <h3>Set Task Method Signature</h3>
+                        <form class="form-inline">
+                            <form class="form-group">
+                                <label for="methodReturn">Return Type: </label>
+                                <select id="methodReturn" class="form-control" required="required">
+
+                                </select>
+                            </form>
+
+                            <form class="form-group">
+                                <label for="methodName">Name: </label>
+                                <input id="methodName" class="form-control" type="text" placeholder="Method Name" required="required">
+                            </form>
+
+                            <label for="numberOfArgs">Number of args: </label>
+                            <select id="numberOfArgs" class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                            </select>
+                        </form>
+                        <button id="addArgs" class="btn btn-primary">Add Arguments</button>
+                    </div>
+
+                    <div id="addCodeTaskThirdPart">
+
+                    </div>
+
+                    <div id="addCodeTaskFourthPart">
+                        <div id="insertAnswers"></div>
+                        <div id="showSubmitted row">
+                            <div class="col-md-6">
+                                <table class="table table-bordered" id="correctAnswersTable">
+                                    <thead>
+                                    <th>Input</th>
+                                    <th>Output</th>
+                                    <th>Cancel</th>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="ajaxCodeTask" class="btn btn-default" type="submit">Add Task</button>
+                        </div>
+                    </div>
+            </div>
+        <script src="/js/navbar.js"></script>
+        <script src="/js/profile.js"></script>
+        <script src="/js/codeTasks.js"></script>
+    </body>
+</html>
+

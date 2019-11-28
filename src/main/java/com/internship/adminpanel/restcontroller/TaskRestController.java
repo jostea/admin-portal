@@ -1,6 +1,7 @@
 package com.internship.adminpanel.restcontroller;
 
 import com.internship.adminpanel.model.dto.task.*;
+import com.internship.adminpanel.service.CodeTaskService;
 import com.internship.adminpanel.service.AssetsStorageService;
 import com.internship.adminpanel.service.SqlGroupService;
 import com.internship.adminpanel.service.SqlTaskService;
@@ -9,13 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,7 @@ public class TaskRestController {
     private final SqlTaskService sqlTaskService;
     private final SqlGroupService sqlGroupService;
     private final AssetsStorageService assetsStorageService;
+    private final CodeTaskService codeTaskService;
 
     @GetMapping("/all")
     public ResponseEntity<List<TaskListDTO>> getAllTasks() {
@@ -190,6 +189,16 @@ public class TaskRestController {
         } catch (Exception e){
             log.warn("Error while getting stream Nr of tasks for stream id = " + streamId + ", taskType = " + taskType + ", complexity = " + complexity);
             return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/addCodeTask")
+    public ResponseEntity<String> addCodeTask(@RequestBody CodeTaskDTOFromUI codeTaskDTOFromUI) {
+        try {
+            codeTaskService.saveTask(codeTaskDTOFromUI);
+            return new ResponseEntity<>("Task added successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

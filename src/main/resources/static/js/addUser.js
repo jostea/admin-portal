@@ -49,6 +49,9 @@ function addUserRequestValidation() {
     if($("#username-add").val() && $("#email-add").val() && !(/\s/.test($("#username-add").val()))) {
         if (validateEmail($("#email-add").val())) {
             if ($("#username-add").val().length>=6) {
+                return true;
+            } else $("#saveMessage").html("<div class='alert alert-danger' role='alert'><p>Username must contain at least six characters</p></div>")
+            if ($("#username-add").val().length>=6) {
                 if (/^[a-z.\-_!#]+$/.test($("#username-add").val())) {
                     if (repetitionTest($("#username-add").val())) {
                         return true;

@@ -1,0 +1,40 @@
+#addCodeTaskSecondPart {
+    background: #ecf0ee;
+    padding: 20px;
+}
+
+#addCodeTaskThirdPart {
+    background: #ecf0ee;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#addArgs {
+    margin-top: 5px;
+}
+
+#ajaxCodeTask {
+    margin: 15px;
+}
+
+#submitArgs {
+    margin-top: 10px;
+}
+
+#insertAnswers {
+    background: #eef2f0;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#addCodeTaskFourthPart {
+    margin-bottom: 20px;
+}
+
+#argOutput {
+    margin-bottom: 10px;
+}
+
+body {
+    margin-bottom: 40px;
+}

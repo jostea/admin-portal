@@ -14,10 +14,9 @@
             </div>
             <div class="container">
                 <div>
+                    <div id="successMessage"></div>
                     <div>
                         <div class="view-users-div">
-                            <div th:if="${param.added}"><div class='alert alert-success' role='alert'><p>User has been successfully added</p></div></div>
-                            <div id="successMessage"></div>
                             <h2>System Users</h2>
                             <p id="usersInfoParagraph">Here are all the users displayed in the tables below. To view a specific user's details just click the needed <i>username</i></p>
                             <button th:if="${#request.isUserInRole('SUPER_ADMIN')}" id="addNewUser" class="btn btn-default">Add new user</button>
