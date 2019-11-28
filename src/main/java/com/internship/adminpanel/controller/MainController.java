@@ -1,5 +1,7 @@
 package com.internship.adminpanel.controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -8,8 +10,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class MainController {
 
     @GetMapping("/")
-    public String main() {
-        return "main";
+    public ModelAndView main() {
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal().equals("anonymousUser")) {
+            modelAndView.setViewName("main");
+        } else {
+            modelAndView.setViewName("redirect:/landing");
+        }
+        return modelAndView;
     }
 
     @GetMapping("/landing")

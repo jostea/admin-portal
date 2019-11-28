@@ -9,3 +9,15 @@ input {
     box-sizing: border-box;
     border: none;
 }
+
+#usersTableDisabled th {
+    background: rgba(255, 0, 0, 0.1);
+}
+
+#usersTableEnabled th {
+    background: rgba(0, 255, 0, 0.1);
+}
+
+#addNewUser {
+    margin: 10px;
+}

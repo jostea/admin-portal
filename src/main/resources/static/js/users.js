@@ -13,12 +13,13 @@ $(".view-single-user-div").on("click", '.enable-disable-user',  function() {
             contentType: "application/json",
             success: function () {
                 getAllUsers();
+                $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User's activity has been successfully changed</p></div>")
             }
         });
     }
 });
 
-$("#usersTable").on("click", ".view-user", function () {
+$(".view-users-div").on("click", ".view-user", function () {
     $(".view-single-user-div").show();
     $(".view-users-div").hide();
     $(".edit-user-div").hide();
@@ -34,15 +35,22 @@ $("#usersTable").on("click", ".view-user", function () {
 
 $("#editUser").on("click", ".edit-user-apply", function () {
     var val = this.parentNode.parentElement.querySelector("#edit-db-id").textContent;
-    $.ajax({
-        method: "PUT",
-        url: "/users/edit/" + val,
-        data: JSON.stringify(prepareDataToEditUser()),
-        contentType: "application/json",
-        success: function () {
-            getAllUsers();
-        }
-    });
+    $("#editUserMessage").html("");
+    if (editRequestValidation()) {
+        $.ajax({
+            method: "PUT",
+            url: "/users/edit/" + val,
+            data: JSON.stringify(prepareDataToEditUser()),
+            contentType: "application/json",
+            success: function () {
+                getAllUsers();
+                $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User <b>" + $("#edit-username").val() + "</b> has been edited successfully</p></div>")
+            },
+            error: function (response) {
+                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Failed to edit. Looks like the credentials you're trying to set are already present in the system</p></div>")
+            }
+        });
+    }
 });
 
 $("#edit-user").on("click", function () {
@@ -68,7 +76,8 @@ function getAllUsers() {
         url: "/users/all",
         success: function (response) {
             if (response.length===0) {
-                $("#usersTable").hide();
+                $("#usersTableEnabled").hide();
+                $("#usersTableDisabled").hide();
                 $("#usersInfoParagraph").html("No users in the system yet");
             } else if (response.length>0) {
                 fillTable(response);
@@ -83,7 +92,7 @@ function fillTableForOne(data) {
     tbody += "<td hidden id='db-id-edit'>" + data.id + "</td>";
     tbody += "<td>" + data.username + "</td>";
     tbody += "<td>" + data.email + "</td>";
-    tbody += "<td>" + data.active + "</td>";
+    tbody += "<td>" + yesNoVal(data.active) + "</td>";
     if (data.active) {
         disable_button += "<button class='enable-disable-user btn btn-danger'>Disable this user</button>"
     } else if(!data.active) {
@@ -94,17 +103,31 @@ function fillTableForOne(data) {
 }
 
 function fillTable(data) {
-    let tbody = "";
-    var order = 1;
+    let tbodyEnabled = "";
+    let tbodyDisabled = "";
     for (let i = 0; i < data.length; i++) {
-        tbody += "<tr id='row" + data[i].id + "'>";
-        tbody += "<td hidden class='db-id'>" + data[i].id + "</td>";
-        tbody += "<td>" + order + "</td>";
-        tbody += "<td><a class='view-user'>" + data[i].username + "</a></td>";
-        tbody += "</tr>";
-        order++;
+        if (data[i].active) {
+            tbodyEnabled += "<tr id='row" + data[i].id + "'>";
+            tbodyEnabled += "<td hidden class='db-id'>" + data[i].id + "</td>";
+            tbodyEnabled += "<td><a class='view-user'>" + data[i].username + "</a></td>";
+            tbodyEnabled += "</tr>";
+        } else {
+            tbodyDisabled += "<tr id='row" + data[i].id + "'>";
+            tbodyDisabled += "<td hidden class='db-id'>" + data[i].id + "</td>";
+            tbodyDisabled += "<td><a class='view-user'>" + data[i].username + "</a></td>";
+            tbodyDisabled += "</tr>";
+        }
     }
-    $("#usersTable tbody").html(tbody);
+    if (tbodyEnabled === "") {
+        $("#usersTableEnabled tbody").html("No enabled users yet");
+    } else {
+        $("#usersTableEnabled tbody").html(tbodyEnabled);
+    }
+    if (tbodyDisabled === "") {
+        $("#usersTableDisabled tbody").html("No disabled users yet");
+    } else {
+        $("#usersTableDisabled tbody").html(tbodyDisabled);
+    }
 }
 
 function showUserDetails(data) {
@@ -130,4 +153,41 @@ function prepareDataToEditUser(){
         email: $("#edit-email").val(),
         password: document.querySelector("#edit-password").value
     }
+}
+
+function yesNoVal(val) {
+    if (val) {
+        return "Yes";
+    }
+    return "No";
+}
+
+function validateEmail(mail)
+{
+    if (/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(mail))
+    {
+        return true;
+    }
+    return false;
+}
+
+function editRequestValidation() {
+    if($("#edit-username").val() && $("#edit-email").val() && !(/\s/.test($("#edit-username").val()))) {
+        if (validateEmail($("#edit-email").val())) {
+            if ($("#edit-username").val().length >= 6) {
+                if (document.querySelector("#edit-password").value === "" || document.querySelector("#edit-password").value.length >= 8) {
+                    return true;
+                } else  {
+                    $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Password too short, min eight characters</p></div>")
+                }
+            } else {
+                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Username must contain at least six characters</p></div>")
+            }
+        } else {
+            $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Looks like you have provided an invalid email</p></div>");
+        }
+    } else {
+        $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>You cannot leave any field empty or add whitespaces</p></div>")
+    }
+    return false;
 }

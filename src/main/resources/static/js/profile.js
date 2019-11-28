@@ -14,23 +14,25 @@ $("#editPasswordSpan").on("click", "#edit-password-apply", function () {
     var passnew = document.querySelector("#edit-password-new").value;
     var passrep = document.querySelector("#edit-password-repeat").value;
     if(passrep === passnew) {
-        var val = document.querySelector("#goProfile").textContent;
-        $.ajax({
-            method: "PUT",
-            url: "/profile/" + val,
-            data: JSON.stringify(prepareDataToEditPassword()),
-            contentType: "application/json",
-            success: function () {
-                window.location.replace("/landing");
-            },
-            error: function (response) {
-                alert(response.responseText);
-                window.location.replace("/landing");
-            }
-        });
+        if (passnew.length >=8) {
+            var val = document.querySelector("#goProfile").textContent;
+            $.ajax({
+                method: "PUT",
+                url: "/profile/" + val,
+                data: JSON.stringify(prepareDataToEditPassword()),
+                contentType: "application/json",
+                success: function () {
+                    window.location.replace("/landing");
+                },
+                error: function (response) {
+                    $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>");
+                }
+            });
+        } else {
+            $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>New password should contain at least 8 characters</p></div>");
+        }
     } else {
-        alert("New passwords don't match");
-        window.location.replace("/profile");
+        $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>New passwords don't match</p></div>")
     }
 });
 
@@ -59,5 +61,9 @@ function prepareDataToEditPassword() {
         oldPassword: $("#edit-password-old").val(),
         newPassword: $("#edit-password-new").val()
     }
+}
+
+function validatePasswords(passold, passnew, passrep) {
+
 }
 

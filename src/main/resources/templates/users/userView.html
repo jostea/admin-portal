@@ -15,19 +15,35 @@
                 <div>
                     <div>
                         <div class="view-users-div">
+                            <div th:if="${param.added}"><div class='alert alert-success' role='alert'><p>User has been successfully added</p></div></div>
                             <div id="successMessage"></div>
                             <h2>System Users</h2>
-                            <p id="usersInfoParagraph">Here are all the users displayed in the table below. To view a specific user's details just click the needed <i>username</i></p>
+                            <p id="usersInfoParagraph">Here are all the users displayed in the tables below. To view a specific user's details just click the needed <i>username</i></p>
                             <button th:if="${#request.isUserInRole('SUPER_ADMIN')}" id="addNewUser" class="btn btn-default">Add new user</button>
-                            <table id="usersTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Username</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table id="usersTableEnabled" class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Enabled</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <table id="usersTableDisabled" class="table table-striped col-md-6">
+                                            <thead>
+                                            <tr>
+                                                <th>Disabled</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="view-single-user-div">
@@ -49,6 +65,7 @@
                         </div>
 
                         <div class="edit-user-div">
+                            <div id="editUserMessage"></div>
                             <h2>Edit User Mode</h2>
                             <p>Hit the field you want to edit</p>
                             <table id="editUser" class="table">

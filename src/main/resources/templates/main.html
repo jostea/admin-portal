@@ -9,7 +9,7 @@
 </head>
   <body>
       <div class="login-form-container">
-          <div id="errorMessage"></div>
+          <div th:if="${param.error}" id="errorMessage"><div class='alert alert-danger' role='alert'><p>Wrong password or username or the user is disabled. Contact the main administrator if you have further issues!</p></div></div>
           <div th:if="!(${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')})" class="log-form" style="position: center">
               <h2>Login to your account</h2>
               <form th:action="@{/}" method="post">
