@@ -173,5 +173,5 @@ INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #3', 'Path 3');
 
 
 /* Insert the super admin */
--- insert into user_table (username, email, password, role) values('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK', 'SUPER_ADMIN')
+insert into user_table (username, email, password, role) values('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK', 'SUPER_ADMIN')
 

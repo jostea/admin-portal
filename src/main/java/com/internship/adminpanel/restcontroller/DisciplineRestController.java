@@ -1,6 +1,7 @@
 package com.internship.adminpanel.restcontroller;
 
 import com.internship.adminpanel.exception.DisciplineNotFound;
+import com.internship.adminpanel.exception.EmptyName;
 import com.internship.adminpanel.model.dto.discipline.DisciplineDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.service.DisciplineService;
@@ -40,6 +41,10 @@ public class DisciplineRestController {
             disciplineService.add(disciplineDTO);
             log.info("User '" + authentication.getName() + "' add new discipline '" + disciplineDTO.getName() + "'");
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (EmptyName e) {
+            log.error("Error when user '" + authentication.getName() + "' add  discipline with empty name; error message: " + e.getMessage()
+                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
+            return new ResponseEntity<>("Discipline name is required", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' add  discipline; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
@@ -55,15 +60,19 @@ public class DisciplineRestController {
             disciplineService.edit(id, disciplineDTO, authentication.getName());
             log.info("User '" + authentication.getName() + "' edit  discipline '" + disciplineDTO.getName() + "'");
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (EmptyName e) {
+            log.error("Error when user '" + authentication.getName() + "' update discipline with empty name; error message: " + e.getMessage()
+                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
+            return new ResponseEntity<>("Discipline name is required", HttpStatus.BAD_REQUEST);
         } catch (DisciplineNotFound e) {
             log.error("Error when user '" + authentication.getName() + "' edit  discipline with id '" + id + "'; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id, Authentication authentication) {
+    public ResponseEntity<String> delete(@PathVariable("id") Long id, Authentication authentication) {
         try {
             disciplineService.delete(id);
             log.info("User '" + authentication.getName() + "' deleted discipline with id " + id);
@@ -71,7 +80,7 @@ public class DisciplineRestController {
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' delete  discipline with id '" + id + "'; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Discipline has streams",HttpStatus.BAD_REQUEST);
         }
     }
 

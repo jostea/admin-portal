@@ -9,10 +9,8 @@ function deleteStream(val) {
         url: "/streamView/streams/delete/" + val,
         success: function () {
             getAllStreams();
-        }, error(xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't delete this stream");
-            }
+        }, error(response) {
+            $("#alertStream").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     });
 }
@@ -26,10 +24,9 @@ function filterByName(val) {
             url: "/streamView/streams/name/" + val,
             success: function (response) {
                 fillTable(response);
-            }, error: function (xhr) {
-                if (xhr.status === 404) {
-                    alert("Nothing found");
-                    getAllStreams();
+            }, error: function (response) {
+                if (response.status === 404) {
+                    $("#alertStream").html(`<div class="alert alert-danger" role="alert"><p>Nothing found</p></div>`);
                 }
             }
         });
@@ -43,9 +40,9 @@ function getAllStreams() {
         success: function (response) {
             fillTable(response);
         },
-        error(xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't get streams");
+        error(response) {
+            if (response.status === 400) {
+                $("#alertStream").html(`<div class="alert alert-danger" role="alert"><p>Couldn't get streams</p></div>`);
             }
         }
     });
@@ -59,10 +56,8 @@ function edit(id) {
         contentType: "application/json",
         success: function () {
             getAllStreams();
-        }, error: function (xhr) {
-            if (xhr.status === 400) {
-                alert("Couldn't update stream");
-            }
+        }, error: function (response) {
+            $("#alertStream").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     });
 }
@@ -84,6 +79,7 @@ function saveIdStream(par1, par2, par3, par4) {
 }
 
 function fillTable(data) {
+    $("#alertStream").html("");
     let tbody = "";
     for (let i = 0; i < data.length; i++) {
         tbody += "<tr>";

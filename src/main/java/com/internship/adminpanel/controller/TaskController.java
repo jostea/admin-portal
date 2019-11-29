@@ -110,8 +110,12 @@ public class TaskController {
 
         //collection of streams
         List<StreamDTO> streams;
-        streams = streamService.findAll();
-        model.addObject("streams", streams);
+        try {
+            streams = streamService.findAll();
+            model.addObject("streams", streams);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
         return model;
     }
