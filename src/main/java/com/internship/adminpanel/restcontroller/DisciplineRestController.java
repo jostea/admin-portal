@@ -7,6 +7,7 @@ import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.service.DisciplineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -45,6 +46,10 @@ public class DisciplineRestController {
             log.error("Error when user '" + authentication.getName() + "' add  discipline with empty name; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
             return new ResponseEntity<>("Discipline name is required", HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Error when user '" + authentication.getName() + "' add  discipline; error message: " + e.getMessage()
+                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
+            return new ResponseEntity<>("Discipline '" + disciplineDTO.getName() + "' already exist", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' add  discipline; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
