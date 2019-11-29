@@ -154,7 +154,7 @@
         });
     }
 
-    //disable or enable task
+    //disable or enable Standard Task
     function disable_enable_Task(data) {
         //modify one task
         $.ajax({
@@ -164,7 +164,6 @@
             contentType: "application/json",
             success: function () {
                 $("#myModal").modal('show');
-
                 async function sl() {
                     window.location.href = "/tasks/";
                 }
@@ -264,6 +263,49 @@
         let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
         window.location.href = "editSqlTask/" + idTask;
     });
+
+    $("#tasksSql").on('click', '.viewSqlTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        window.location.href = "viewSqlTask/" + idTask;
+    });
+
+    $("#tasksSql").on('click', '.deleteSqlTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        let enable;
+        if (this.innerHTML === 'Disable') {
+            this.innerHTML = 'Enable';
+            this.classList.replace('btn-warning', 'btn-success');
+            enable = false;
+        } else {
+            if (this.innerHTML === 'Enable') {
+                this.innerHTML = 'Disable';
+                this.classList.replace('btn-success', 'btn-warning');
+                enable = true;
+            }
+        }
+        let data = {
+            id: idTask,
+            isEnabled: enable
+        }
+        disable_enable_SqlTask(data);
+    });
+
+    //disable or enable Standard Task
+    function disable_enable_SqlTask(data) {
+        //modify one task
+        $.ajax({
+            method: "PUT",
+            url: "/tasksrest/disableSqlTask",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function () {
+                $("#myModal").modal('show');
+                async function sl() {
+                    window.location.href = "/tasks/";
+                }
+            }
+        })
+    }
 
 </script>
 <script src="/js/navbar.js"></script>

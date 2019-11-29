@@ -4,9 +4,7 @@ import com.internship.adminpanel.model.SqlGroup;
 import com.internship.adminpanel.model.SqlTask;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
-import com.internship.adminpanel.model.dto.task.SqlTaskEditDTO;
-import com.internship.adminpanel.model.dto.task.SqlTaskInsertDTO;
-import com.internship.adminpanel.model.dto.task.SqlTaskListDTO;
+import com.internship.adminpanel.model.dto.task.*;
 import com.internship.adminpanel.repository.SqlGroupRepository;
 import com.internship.adminpanel.repository.SqlTaskRepository;
 import com.internship.adminpanel.repository.StreamRepository;
@@ -92,6 +90,13 @@ public class SqlTaskService {
             log.warn("Error while updating SQL Task with id " + sqlTaskEditDTO.getId());
             throw new Exception("Error while updating SQL Task with title [" + sqlTaskEditDTO.getTitle());
         }
+    }
+
+    public void disableTask(SqlTaskDisableDTO sqlTaskDisableDTO){
+        //Get Task from DB to disable_enable
+        SqlTask taskToEdit = sqlTaskRepository.getOne(sqlTaskDisableDTO.getId());
+        taskToEdit.setEnabled(sqlTaskDisableDTO.isEnabled());
+        sqlTaskRepository.save(taskToEdit);
     }
 
 

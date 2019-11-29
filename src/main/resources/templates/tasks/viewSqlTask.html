@@ -5,12 +5,13 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>View selected task (question) </title>
-
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
-    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
+    <title> View SQL task </title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
+
 </head>
 
 <body>
@@ -22,11 +23,28 @@
 
     <div class="container">
 
+        <!-- Modal To Display Different Messages -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body" style="text-align:center">
+                        <h3><strong>Task was successfully modified</strong></h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <h1>
-                <strong> View Task </strong>
-                <input id="taskId" type='hidden' value = ''>
+                <strong>View SQL Task</strong>
+                <input id="taskId" type='hidden' value=''>
             </h1>
         </div>
         <hr>
@@ -35,7 +53,7 @@
             <div class="form-row row">
                 <label class="col-md-1 col-form-label" for="title">Title</label>
                 <div class="col-md-4">
-                    <input id="title" class="form-control" type="text" readonly="readonly">
+                    <input id="title" class="form-control" type="text" placeholder="Task Title" readonly="readonly">
                 </div>
             </div>
             <br/>
@@ -45,7 +63,7 @@
                 <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
                 <div class="col-md-4">
                     <select id="complexity" class="form-control" readonly="readonly" disabled>
-<!--                        <option value="0">Select complexity...</option>-->
+                        <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
                         <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
                                 th:text="${complexityEnum.getComplexity()}"></option>
                     </select>
@@ -53,14 +71,14 @@
             </div>
             <br/>
 
-            <!-- DROPDOWN TASK_TYPES -->
+            <!-- DROPDOWN SQL_GROUPS -->
             <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="taskType">Task type</label>
+                <label class="col-md-1 col-form-label" for="sqlGroup">Sql Group</label>
                 <div class="col-md-4">
-                    <select id="taskType" class="form-control" readonly="readonly" disabled>
-<!--                        <option value="0">Select task type...</option>-->
-                        <option th:each="typeEnum : ${task_types}" th:value="${typeEnum}"
-                                th:text="${typeEnum.getType()}"></option>
+                    <select id="sqlGroup" class="form-control" readonly="readonly" disabled>
+                        <option value="0" disabled style="display:none">Select Sql Group...</option>
+                        <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
+                                th:text="${SqlGroupDTO.getName()}"></option>
                     </select>
                 </div>
             </div>
@@ -69,15 +87,26 @@
             <div class="form-row row">
                 <label class="col-md-1 col-form-label" for="descripiton">Description</label>
                 <div class="col-md-11">
-                    <textarea id="descripiton" class="form-control" type="text" readonly="readonly"></textarea>
+                    <textarea id="descripiton" class="form-control" type="text" placeholder="Task Desciption"
+                              readonly="readonly"></textarea>
                 </div>
             </div>
             <br/>
+
+            <!-- SQL STATEMENT ITSELF -->
+            <div id="divSqlStatement" class="form-row row">
+                <label class="col-md-1 col-form-label">SQL Statement</label>
+                <div class="col-md-11">
+                    <textarea id="sqlStatement" class="form-control" type="text" placeholder="SQL Statement" readonly="readonly"></textarea>
+                </div>
+            </div>
+
             <hr>
 
+            <br/>
             <div class="form-row row">
                 <h5 class="alert alert-info">
-                    <strong>There are the following Disciplines and Streams attaches to this task:</strong>
+                    <strong>Info!</strong> There are the following Disciplines and Streams attaches to this task:
                 </h5>
             </div>
 
@@ -85,7 +114,6 @@
                 <table id="disc_streams_selected">
                     <thead>
                     <tr>
-                        <th> Nr</th>
                         <th> Discipline</th>
                         <th> Stream</th>
                     </tr>
@@ -100,7 +128,7 @@
 
             <div class="form-row row">
                 <div class="alert alert-danger">
-                    <strong>Task Status</strong>
+                    <strong>Attention!</strong> Disabled task will not appear in test cases!
                 </div>
             </div>
             <div class="form-row row">
@@ -108,28 +136,6 @@
                 <input type="checkbox" id="isEnabled" name="activate" disabled>
             </div>
             <br/>
-            <hr>
-
-            <div class="form-row row">
-                <h5 class="alert alert-info">
-                    <strong>Answer options specified to the task:</strong>
-                </h5>
-            </div>
-            <div class="form-row row">
-                <table id="answerOptions">
-                    <thead>
-                    <tr>
-                        <th> Nr</th>
-                        <th> Answer</th>
-                        <th> Is Correct</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <br/>
-
             <hr>
 
         </form>
@@ -140,13 +146,19 @@
 
     $(document).ready(populatePage());
 
-    function populatePage(){
+    function showPopUp(title, message) {
+        $("#myModal").find('h4').text(title);
+        $("#myModal").find('h3').text(message);
+        $("#myModal").modal('show');
+    }
+
+    function populatePage() {
         let url_string = window.location.href.split('/');
         let taskId = url_string[url_string.length - 1];
-        if (taskId >= 1){
+        if (taskId >= 1) {
             $.ajax({
                 method: "GET",
-                url: "/tasksrest/viewTask/" + taskId,
+                url: "/tasksrest/editSqlTask/" + taskId,
                 success: function (response) {
                     fillinForm(response);
                 }
@@ -154,13 +166,13 @@
         }
     }
 
-    //fill in page with the TaskDTO data read from
-    function fillinForm(data){
+    //fill in page with the SqlTaskDTO data read from
+    function fillinForm(data) {
         //process 'isEnabled' task flag
-        if (data.isEnabled === true){
+        if (data.isEnabled === true) {
             $("#isEnabled").prop('checked', true);
         }
-        if (data.isEnabled === false){
+        if (data.isEnabled === false) {
             $("#isEnabled").prop('checked', false);
         }
         //process other stand-alone fields
@@ -168,11 +180,11 @@
         $("#title").val(data.title);
         $("#descripiton").val(data.description);
         $("#complexity").val(data.complexity);
-        $("#taskType").val(data.taskType);
+        $("#sqlStatement").val(data.correctStatement);
+        $("#sqlGroup").val(data.sqlGroupDTO.id);
 
-        //separately fill in tables to display disciplines-stream and answeroptions
+        //separately fill in tables to display disciplines-stream
         fillinDisciplinesStreams(data);
-        fillinAnswerOptions(data);
     }
 
     //populate table Disciplines-Streams with the data from DB
@@ -183,38 +195,11 @@
             tbody += "<tr>";
             tbody += "<input type='hidden' value =''" + ">";
             tbody += "<input type='hidden' value =" + data.streams[i].id + ">";
-            tbody += "<td>" + (i+1) + "</td>";
             tbody += "<td>" + data.streams[i].disciplineName + "</td>";
             tbody += "<td>" + data.streams[i].name + "</td>";
             tbody += "</tr>";
         }
         $("#disc_streams_selected tbody").html(tbody);
-    }
-
-    //populate table Disciplines-Streams with the data from DB
-    function fillinAnswerOptions(data){
-        let tbody = $("#answerOptions tbody").html();
-        let nrAnswerOptions = data.answers.length;
-        for (let i = 0; i < nrAnswerOptions; i++) {
-            tbody += "<tr>";
-            tbody += "<input type='hidden' name='answerOptionId' value=" + data.answers[i].id + ">";
-            tbody += "<td>" + (i+1) + "</td>";
-            tbody += "<td>" + data.answers[i].answer + "</td>";
-            tbody += "<td>" + data.answers[i].isCorrect + "</td>";
-            tbody += "</tr>";
-        }
-        $("#answerOptions tbody").html(tbody);
-    }
-
-    //returns streams based on the discipline name provided
-    function getStreamsByDiscipline(discname) {
-        $.ajax({
-            method: "GET",
-            url: "/streamView/streams/discipline/" + discname,
-            success: function (response) {
-                populateStreamsDropdown(response);
-            }
-        });
     }
 
     //populate stream dropdown based on the data provided (filtered by discipline)

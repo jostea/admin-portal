@@ -92,6 +92,24 @@
             </div>
             <br/>
 
+            <!-- SQL STATEMENT WARNING -->
+            <div class="form-row row">
+                <h5 class="alert alert-warning">
+                    <strong>Attention!</strong> Specify the SQL Statement, which generates the correct result (expected to
+                    be provided by candidate).
+                </h5>
+            </div>
+
+            <!-- SQL STATEMENT ITSELF -->
+            <div id="divSqlStatement" class="form-row row">
+                <label class="col-md-1 col-form-label">SQL Statement</label>
+                <div class="col-md-11">
+                    <textarea id="sqlStatement" class="form-control" type="text" placeholder="SQL Statement"></textarea>
+                </div>
+            </div>
+            <br>
+            <hr>
+
             <div class="form-row row">
                 <!-- DROPDOWN DISCIPLINES -->
                 <div>
@@ -108,7 +126,7 @@
                 <!-- DROPDOWN STREAMS -->
                 <div>
                     <label class="col-md-1 col-form-label" for="streams">Stream:</label>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <select id="streams" class="form-control">
                             <option th:each="StreamDTO : ${streams}" th:value="${StreamDTO.getId()}"
                                     th:text="${StreamDTO.getName()}">
@@ -152,30 +170,13 @@
                 </div>
             </div>
             <div class="form-row row">
-                <label class="col-form-label">Enable Task</label>
+                <label class="col-form-label" style="margin-right: 10px">Enable Task</label>
                 <input type="checkbox" id="isEnabled" name="activate">
             </div>
             <br/>
-            <hr>
-
-            <!-- SQL STATEMENT WARNING -->
-            <div class="form-row row">
-                <h5 class="alert alert-warning">
-                    <strong>Warning!</strong> Specify the SQL Statement, which generates the correct result (expected to
-                    be provided by candidate).
-                </h5>
-            </div>
-
-            <!-- SQL STATEMENT ITSELF -->
-            <div id="divSqlStatement" class="form-row row">
-                <label class="col-md-2 col-form-label">SQL Statement</label>
-                <div class="col-md-10">
-                    <textarea id="sqlStatement" class="form-control" type="text" placeholder="SQL Statement"></textarea>
-                </div>
-            </div>
 
             <hr>
-            <div class="form-row row">
+            <div class="form-row row" style="margin-bottom: 100px">
                 <button id="addSqlTask" type="submit" class="btn btn-primary">Create</button>
             </div>
 
