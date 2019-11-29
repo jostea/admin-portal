@@ -44,42 +44,49 @@
         <div class="row">
             <h1>
                 <strong>Edit SQL Task</strong>
-                <input id="taskId" type='hidden' value = ''>
+                <input id="taskId" type='hidden' value=''>
             </h1>
         </div>
         <hr>
 
         <form>
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="title">Title</label>
-                <div class="col-md-4">
-                    <input id="title" class="form-control" type="text" placeholder="Task Title">
-                </div>
-            </div>
-            <br/>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="title">Title</label>
+                        <div class="col-md-4">
+                            <input id="title" class="form-control" type="text" placeholder="Task Title">
+                        </div>
+                    </div>
+                    <br/>
 
-            <!-- DROPDOWN COMPLEXITIES -->
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
-                <div class="col-md-4">
-                    <select id="complexity" class="form-control">
-                        <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
-                        <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
-                                th:text="${complexityEnum.getComplexity()}"></option>
-                    </select>
-                </div>
-            </div>
-            <br/>
+                    <!-- DROPDOWN COMPLEXITIES -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="complexity">Complexity</label>
+                        <div class="col-md-4">
+                            <select id="complexity" class="form-control">
+                                <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
+                                <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                        th:text="${complexityEnum.getComplexity()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
 
-            <!-- DROPDOWN SQL_GROUPS -->
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="sqlGroup">Sql Group</label>
-                <div class="col-md-4">
-                    <select id="sqlGroup" class="form-control">
-                        <option value="0" disabled style="display:none">Select Sql Group...</option>
-                        <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
-                                th:text="${SqlGroupDTO.getName()}"></option>
-                    </select>
+                    <!-- DROPDOWN SQL_GROUPS -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="sqlGroup">Sql Group</label>
+                        <div class="col-md-4">
+                            <select id="sqlGroup" class="form-control">
+                                <option value="0" disabled style="display:none">Select Sql Group...</option>
+                                <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
+                                        th:text="${SqlGroupDTO.getName()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img id="sqlGroupImage" src='' style="max-width: 400px; max-width: 100%; max-height: 100%">
                 </div>
             </div>
             <br/>
@@ -88,7 +95,7 @@
                 <label class="col-md-1 col-form-label" for="descripiton">Description</label>
                 <div class="col-md-11">
                     <textarea id="descripiton" class="form-control" type="text"
-                              placeholder="Task Desciption"></textarea>
+                              placeholder="Task Description"></textarea>
                 </div>
             </div>
             <br/>
@@ -96,7 +103,8 @@
             <!-- SQL STATEMENT WARNING -->
             <div class="form-row row">
                 <h5 class="alert alert-warning">
-                    <strong>Attention!</strong> Specify the SQL Statement, which generates the correct result (expected to
+                    <strong>Attention!</strong> Specify the SQL Statement, which generates the correct result (expected
+                    to
                     be provided by candidate).
                 </h5>
             </div>
@@ -190,7 +198,22 @@
 
 <script>
 
-    $(document).ready(populatePage());
+    $(document).ready(function () {
+            populatePage()
+        }
+    );
+
+    function setImagePath() {
+        let idSqlGroup = $("#sqlGroup").val();
+        let callToRestController = "/tasksrest/imageDownload/" + idSqlGroup;
+        $("#sqlGroupImage").attr("src", callToRestController);
+    }
+
+    $("#sqlGroup").change(function (event) {
+            event.preventDefault();
+            setImagePath()
+        }
+    )
 
     function showPopUp(title, message) {
         $("#myModal").find('h4').text(title);
@@ -198,10 +221,10 @@
         $("#myModal").modal('show');
     }
 
-    function populatePage(){
+    function populatePage() {
         let url_string = window.location.href.split('/');
         let taskId = url_string[url_string.length - 1];
-        if (taskId >= 1){
+        if (taskId >= 1) {
             $.ajax({
                 method: "GET",
                 url: "/tasksrest/editSqlTask/" + taskId,
@@ -213,12 +236,12 @@
     }
 
     //fill in page with the SqlTaskDTO data read from
-    function fillinForm(data){
+    function fillinForm(data) {
         //process 'isEnabled' task flag
-        if (data.isEnabled === true){
+        if (data.isEnabled === true) {
             $("#isEnabled").prop('checked', true);
         }
-        if (data.isEnabled === false){
+        if (data.isEnabled === false) {
             $("#isEnabled").prop('checked', false);
         }
         //process other stand-alone fields
@@ -228,6 +251,7 @@
         $("#complexity").val(data.complexity);
         $("#sqlStatement").val(data.correctStatement);
         $("#sqlGroup").val(data.sqlGroupDTO.id);
+        setImagePath();
 
         //separately fill in tables to display disciplines-stream
         fillinDisciplinesStreams(data);
@@ -364,7 +388,7 @@
     });
 
     //get array of StreamDTO
-    function getStreams(){
+    function getStreams() {
         let arrayStreams = [];
         $('#disc_streams_selected').find('tbody').find('tr').each(function (i, el) {
             let streamDto = {
@@ -399,9 +423,9 @@
             imagePath: null
         }
 
-        if ($("#title").val() == ""){
+        if ($("#title").val() == "") {
             showPopUp('No title', 'Title is empty! Please specify');
-        } else if($("#descripiton").val() == ""){
+        } else if ($("#descripiton").val() == "") {
             showPopUp('No Description', 'Description is empty! Please specify');
         } else if (listStreams.length == 0) {
             showPopUp('No streams', 'Please specify at least one discipline and stream.');

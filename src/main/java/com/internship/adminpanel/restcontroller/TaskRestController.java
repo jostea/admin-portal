@@ -1,15 +1,22 @@
 package com.internship.adminpanel.restcontroller;
 
 import com.internship.adminpanel.model.dto.task.*;
+import com.internship.adminpanel.service.AssetsStorageService;
+import com.internship.adminpanel.service.SqlGroupService;
 import com.internship.adminpanel.service.SqlTaskService;
 import com.internship.adminpanel.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +28,8 @@ public class TaskRestController {
 
     private final TaskService taskService;
     private final SqlTaskService sqlTaskService;
+    private final SqlGroupService sqlGroupService;
+    private final AssetsStorageService assetsStorageService;
 
     @GetMapping("/all")
     public ResponseEntity<List<TaskListDTO>> getAllTasks() {
@@ -155,5 +164,21 @@ public class TaskRestController {
             log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable SQL Task with ID: " + sqlTaskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(value = "imageDownload/{idSqlGroup}")
+    public ResponseEntity downloadFile(@PathVariable Long idSqlGroup, HttpServletRequest request) throws FileNotFoundException {
+        String urlFromDb = "file:" + sqlGroupService.findById(idSqlGroup).getImagePath();
+        Resource resource = assetsStorageService.loadAsResource(urlFromDb);
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            log.error("Could not determine file type.");
+        }
+        if (contentType == null) {
+            contentType = "application/octet-streams";
+        }
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(resource);
     }
 }
