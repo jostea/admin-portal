@@ -9,12 +9,14 @@ import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
 import com.internship.adminpanel.service.StreamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,10 +137,14 @@ public class StreamRestController {
             log.error("Error when user '" + authentication.getName() + "' add new stream with empty name;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("Stream name is required", HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Error when user '" + authentication.getName() + "' add  stream; error message: " + e.getMessage()
+                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
+            return new ResponseEntity<>("Stream '" + streamDTOFromUI.getName() + "' already exist", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' add new stream;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>("This stream already exist", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

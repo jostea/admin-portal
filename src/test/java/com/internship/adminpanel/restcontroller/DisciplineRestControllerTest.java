@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -151,6 +152,17 @@ public class DisciplineRestControllerTest {
         verify(disciplineService).getAllDisciplines();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
+    @Test
+    public void shouldCatchExceptionAlreadyExistWhileAddDiscipline() throws Exception {
+        DisciplineDTO disciplineDTO = createDisciplineDTO();
+        doThrow(DataIntegrityViolationException.class).when(disciplineService).add(disciplineDTO);
+        ResponseEntity<String> responseEntity = disciplineRestController.add(disciplineDTO, authentication);
+        verify(disciplineService).add(disciplineDTO);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).isEqualTo("Discipline '" + disciplineDTO.getName() + "' already exist");
+    }
+
     private DisciplineDTO createDisciplineDTO() {
         return DisciplineDTO.builder()
                 .id(1L)

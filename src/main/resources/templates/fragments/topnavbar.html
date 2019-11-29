@@ -1,4 +1,4 @@
-<div th:fragment="navbar">
+<div th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
     <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
         <nav class="navbar navbar-default">
             <div class="cutomnav nav container-fluid">
@@ -8,6 +8,7 @@
                     <li><a id="goDisciplines">Disciplines</a></li>
                     <li><a id="goStreams">Streams</a></li>
                     <li><a id="goTasks">Tasks</a></li>
+                    <li><a id="goSkills">Skills</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>

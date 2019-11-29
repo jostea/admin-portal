@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -211,16 +212,19 @@ public class StreamRestControllerTest {
         doThrow(new Exception()).when(streamService).addStream(streamDTOFromUI);
         ResponseEntity<String> responseEntity = streamRestController.addStream(streamDTOFromUI, authentication);
         verify(streamService).addStream(streamDTOFromUI);
-        assertThat(responseEntity.getBody()).isEqualTo("This stream already exist");
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void shouldCatchExceptionWhileDeleteStream() throws Exception {
-        Long id = 1L;
-        doThrow(new Exception()).when(streamService).deleteById(id);
-        ResponseEntity<String> responseEntity = streamRestController.deletedById(id, authentication);
-        verify(streamService).deleteById(id);
+    public void shouldCatchExceptionAlreadyExistWhileAddNewStream() throws DataIntegrityViolationException, Exception {
+        StreamDTOFromUI streamDTOFromUI = StreamDTOFromUI.builder()
+                .name("AbgarMangal")
+                .disciplineId(1L)
+                .build();
+        doThrow(DataIntegrityViolationException.class).when(streamService).addStream(streamDTOFromUI);
+        ResponseEntity<String> responseEntity = streamRestController.addStream(streamDTOFromUI, authentication);
+        verify(streamService).addStream(streamDTOFromUI);
+        assertThat(responseEntity.getBody()).isEqualTo("Stream '" + streamDTOFromUI.getName() + "' already exist");
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
