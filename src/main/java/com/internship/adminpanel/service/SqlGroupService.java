@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -29,5 +30,12 @@ public class SqlGroupService {
             sqlGroupDTOs.add(sqlGroupDTO);
         }
         return sqlGroupDTOs;
+    }
+
+    public SqlGroupDTO findById(Long id) {
+        Optional<SqlGroup> sqlGroupDB = sqlGroupRepository.findById(id);
+        if (sqlGroupDB.isPresent())
+            return new SqlGroupDTO(sqlGroupDB.get());
+        else return new SqlGroupDTO();
     }
 }

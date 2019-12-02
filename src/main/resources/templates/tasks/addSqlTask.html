@@ -49,45 +49,57 @@
         <hr>
 
         <form>
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="title">Title</label>
-                <div class="col-md-4">
-                    <input id="title" class="form-control" type="text" placeholder="Task Title">
+
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="title">Title</label>
+                        <div class="col-md-4">
+                            <input id="title" class="form-control" type="text" placeholder="Task Title">
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- DROPDOWN COMPLEXITIES -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="complexity">Complexity</label>
+                        <div class="col-md-4">
+                            <select id="complexity" class="form-control">
+                                <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
+                                <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                        th:text="${complexityEnum.getComplexity()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
+
+
+
+                    <!-- DROPDOWN SQL_GROUPS -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="sqlGroup">Sql Scheme</label>
+                        <div class="col-md-4">
+                            <select id="sqlGroup" class="form-control">
+                                <option value="0" disabled style="display:none">Select Sql Group...</option>
+                                <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
+                                        th:text="${SqlGroupDTO.getName()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img id="sqlGroupImage" src='' style="max-width: 400px; max-width: 100%; max-height: 100%">
                 </div>
             </div>
             <br/>
 
-            <!-- DROPDOWN COMPLEXITIES -->
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
-                <div class="col-md-4">
-                    <select id="complexity" class="form-control">
-                        <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
-                        <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
-                                th:text="${complexityEnum.getComplexity()}"></option>
-                    </select>
-                </div>
-            </div>
-            <br/>
-
-            <!-- DROPDOWN SQL_GROUPS -->
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="sqlGroup">Sql Group</label>
-                <div class="col-md-4">
-                    <select id="sqlGroup" class="form-control">
-                        <option value="0" disabled style="display:none">Select Sql Group...</option>
-                        <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
-                                th:text="${SqlGroupDTO.getName()}"></option>
-                    </select>
-                </div>
-            </div>
-            <br/>
 
             <div class="form-row row">
                 <label class="col-md-1 col-form-label" for="descripiton">Description</label>
                 <div class="col-md-11">
                     <textarea id="descripiton" class="form-control" type="text"
-                              placeholder="Task Desciption"></textarea>
+                              placeholder="Task Description"></textarea>
                 </div>
             </div>
             <br/>
@@ -95,7 +107,8 @@
             <!-- SQL STATEMENT WARNING -->
             <div class="form-row row">
                 <h5 class="alert alert-warning">
-                    <strong>Attention!</strong> Specify the SQL Statement, which generates the correct result (expected to
+                    <strong>Attention!</strong> Specify the SQL Statement, which generates the correct result (expected
+                    to
                     be provided by candidate).
                 </h5>
             </div>
@@ -186,7 +199,19 @@
 
 <script>
 
-    $(document).ready();
+    $(document).ready(setImagePath());
+
+    function setImagePath() {
+        let idSqlGroup = $("#sqlGroup").val();
+        let callToRestController = "/tasksrest/imageDownload/" + idSqlGroup;
+        $("#sqlGroupImage").attr("src", callToRestController);
+    }
+
+    $("#sqlGroup").change(function (event) {
+            event.preventDefault();
+            setImagePath()
+        }
+    )
 
     function showPopUp(title, message) {
         $("#myModal").find('h4').text(title);

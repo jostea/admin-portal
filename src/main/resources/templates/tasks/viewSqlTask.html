@@ -50,36 +50,44 @@
         <hr>
 
         <form>
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="title">Title</label>
-                <div class="col-md-4">
-                    <input id="title" class="form-control" type="text" placeholder="Task Title" readonly="readonly">
-                </div>
-            </div>
-            <br/>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="title">Title</label>
+                        <div class="col-md-4">
+                            <input id="title" class="form-control" type="text" placeholder="Task Title"
+                                   readonly="readonly">
+                        </div>
+                    </div>
+                    <br/>
 
-            <!-- DROPDOWN COMPLEXITIES -->
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
-                <div class="col-md-4">
-                    <select id="complexity" class="form-control" readonly="readonly" disabled>
-                        <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
-                        <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
-                                th:text="${complexityEnum.getComplexity()}"></option>
-                    </select>
-                </div>
-            </div>
-            <br/>
+                    <!-- DROPDOWN COMPLEXITIES -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="complexity">Complexity</label>
+                        <div class="col-md-4">
+                            <select id="complexity" class="form-control" readonly="readonly" disabled>
+                                <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
+                                <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                        th:text="${complexityEnum.getComplexity()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
 
-            <!-- DROPDOWN SQL_GROUPS -->
-            <div class="form-row row">
-                <label class="col-md-1 col-form-label" for="sqlGroup">Sql Group</label>
-                <div class="col-md-4">
-                    <select id="sqlGroup" class="form-control" readonly="readonly" disabled>
-                        <option value="0" disabled style="display:none">Select Sql Group...</option>
-                        <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
-                                th:text="${SqlGroupDTO.getName()}"></option>
-                    </select>
+                    <!-- DROPDOWN SQL_GROUPS -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="sqlGroup">Sql Group</label>
+                        <div class="col-md-4">
+                            <select id="sqlGroup" class="form-control" readonly="readonly" disabled>
+                                <option value="0" disabled style="display:none">Select Sql Group...</option>
+                                <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
+                                        th:text="${SqlGroupDTO.getName()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img id="sqlGroupImage" src='' style="max-width: 400px; max-width: 100%; max-height: 100%">
                 </div>
             </div>
             <br/>
@@ -91,6 +99,7 @@
                               readonly="readonly"></textarea>
                 </div>
             </div>
+
             <br/>
 
             <!-- SQL STATEMENT ITSELF -->
@@ -146,6 +155,12 @@
 
     $(document).ready(populatePage());
 
+    function setImagePath() {
+        let idSqlGroup = $("#sqlGroup").val();
+        let callToRestController = "/tasksrest/imageDownload/" + idSqlGroup;
+        $("#sqlGroupImage").attr("src", callToRestController);
+    }
+
     function showPopUp(title, message) {
         $("#myModal").find('h4').text(title);
         $("#myModal").find('h3').text(message);
@@ -182,6 +197,7 @@
         $("#complexity").val(data.complexity);
         $("#sqlStatement").val(data.correctStatement);
         $("#sqlGroup").val(data.sqlGroupDTO.id);
+        setImagePath();
 
         //separately fill in tables to display disciplines-stream
         fillinDisciplinesStreams(data);
