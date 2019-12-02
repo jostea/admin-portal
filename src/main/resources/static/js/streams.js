@@ -63,6 +63,7 @@ function edit(id) {
 }
 
 function saveIdStream(par1, par2, par3, par4) {
+    getAllDisciplinesEdit(par3, par4);
     flagIdStream = par1;
     let modalDiv = "<form>\n" +
         "                        <label for=\"stream-input\">\n" +
@@ -71,9 +72,7 @@ function saveIdStream(par1, par2, par3, par4) {
         "                        <input type=\"text\" id=\"stream-input\" value='" + par2 + "'/>\n" +
         "                        <label for=\"editDisciplines\">Disciplines:</label>\n" +
         "                        <select id=\"editDisciplines\">\n" +
-        "                               <option value=" + par4 + ">" + par3 + "</option>" +
         "                        </select>\n" +
-        "                            <button type='button' onclick='getAllDisciplinesEdit()'>View</button> " +
         "                    </form>";
     $("#formInModal").html(modalDiv);
 }
@@ -96,7 +95,6 @@ function fillTable(data) {
     $("#streamsTable tbody").html(tbody);
 }
 
-
 $("#confirm-delete-stream-button").on("click", function () {
     deleteStream(streamIdOnDL);
 });
@@ -104,19 +102,23 @@ function confirmDeleteStream(par1) {
     streamIdOnDL = par1;
 }
 
-function getAllDisciplinesEdit() {
+function getAllDisciplinesEdit(DisciplineName, DisciplineId) {
     $.ajax({
         method: "GET",
         url: "/discipline/disciplines",
         success: function (response) {
-            fillSelectorEdit(response);
+            fillSelectorEdit(response, DisciplineName, DisciplineId);
         }
     });
 }
 
-function fillSelectorEdit(data) {
+function fillSelectorEdit(data, DisciplineName, DisciplineId) {
     let option = "";
+    option += "<option value=" + DisciplineId + ">" + DisciplineName + "</option>";
     for (let i = 0; i < data.length; i++) {
+        if (DisciplineName === data[i].name) {
+            continue;
+        }
         option += "<option value=" + data[i].id + ">" + data[i].name + "</option>";
     }
     $("#editDisciplines").html(option);
