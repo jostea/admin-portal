@@ -32,8 +32,8 @@ public class TaskService {
     private final AnswersOptionRepository answersOptionRepository;
 
     public List<TaskListDTO> getAll() {
-        ArrayList<TaskListDTO> tasksDto = new ArrayList<TaskListDTO>();
-        ArrayList<Task> tasks = new ArrayList<Task>();
+        ArrayList<TaskListDTO> tasksDto = new ArrayList<>();
+        ArrayList<Task> tasks;
         tasks = (ArrayList<Task>) taskRepository.findAll();
         for (Task task : tasks) {
             TaskListDTO taskDTO = new TaskListDTO(task);
@@ -52,8 +52,9 @@ public class TaskService {
         for (Long streamID : taskDto.getStreams()) {
             //get Stream object
             Stream stream = new Stream();
-            if (streamRepository.findById(streamID).isPresent()) {
-                stream = streamRepository.findById(streamID).get();
+            Optional<Stream> streamOptional = streamRepository.findById(streamID);
+            if (streamOptional.isPresent()) {
+                stream = streamOptional.get();
                 listStreamsToPersist.add(stream);
             }
             task.setStreams(listStreamsToPersist);
@@ -95,8 +96,11 @@ public class TaskService {
         //and assign them to the Task being updated
         List<Stream> listNewStreams = new ArrayList<>();
         for (StreamDTO streamDto : taskEditDTO.getStreams()) {
-            Stream streamDB = streamRepository.findById(streamDto.getId()).get();
-            listNewStreams.add(streamDB);
+            Optional<Stream> streamOptional = streamRepository.findById(streamDto.getId());
+            if (streamOptional.isPresent()){
+                Stream streamDB = streamOptional.get();
+                listNewStreams.add(streamDB);
+            }
         }
         taskToEdit.setStreams(listNewStreams);
 
