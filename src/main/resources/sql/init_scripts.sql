@@ -167,9 +167,9 @@ INSERT INTO stream_table(name, discipline_id)
 VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
 
 /* Populate sql_group_table with some test data */
-INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #1', 'Path 1');
-INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #2', 'Path 2');
-INSERT INTO sql_group_table(name,image_path) VALUES ('Sql Group #3', 'Path 3');
+INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #1', 'Path 1');
+INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #2', 'Path 2');
+INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #3', 'Path 3');
 
 
 /* Insert the super admin */
