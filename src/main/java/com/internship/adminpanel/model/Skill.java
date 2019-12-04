@@ -1,6 +1,5 @@
 package com.internship.adminpanel.model;
 
-import com.internship.adminpanel.model.enums.ConverterSkills;
 import com.internship.adminpanel.model.enums.SkillsTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +29,6 @@ public class Skill {
     @NotNull(message = "Skill type is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "skill_type")
-    //Another method for get  and add skills
-//    @Convert(converter = ConverterSkills.class)
     private SkillsTypeEnum skillType;
 
     @ManyToMany

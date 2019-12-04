@@ -81,7 +81,6 @@ CREATE TABLE answer_option_table
     is_correct          boolean NOT NULL
 );
 
-
 /*--------------------------------------------------*/
 /* scripts for SQL_task and CODE_task functionality */
 /*--------------------------------------------------*/
@@ -187,9 +186,9 @@ INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #2', 'Path 2');
 INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #3', 'Path 3');
 
 /*Populate skills_table*/
-INSERT INTO skills_table(name,skill_type)VALUES ('Senior','Technical');
-INSERT INTO skills_table(name,skill_type)VALUES ('Middle','Soft');
-INSERT INTO skills_table(name,skill_type)VALUES ('Junior','Tool');
+INSERT INTO skills_table(name,skill_type)VALUES ('Skill1','TECHNICAL');
+INSERT INTO skills_table(name,skill_type)VALUES ('Skill2','SOFT');
+INSERT INTO skills_table(name,skill_type)VALUES ('Skill3','TOOL');
 
 /*Populate skills_stream_table*/
 INSERT INTO skills_stream_table VALUES (1,1);
