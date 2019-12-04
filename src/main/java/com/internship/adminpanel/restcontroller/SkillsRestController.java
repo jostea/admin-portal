@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -63,6 +64,10 @@ public class SkillsRestController {
             log.error("Error when user '" + authentication.getName() + "' add  skill; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
             return new ResponseEntity<>("Skill '" + skillDTOFromUI.getName() + "' already exist", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Error when user '" + authentication.getName() + "' add new skill; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("The specified skill cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -82,6 +87,10 @@ public class SkillsRestController {
             log.error("Error when user '" + authentication.getName() + "'  update skill by id " + id + " ;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("Skill name is required", HttpStatus.BAD_REQUEST);
+        } catch (TransactionSystemException e) {
+            log.error("Error when user '" + authentication.getName() + "' edit new  skill; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("The specified skill cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Data
@@ -20,6 +21,7 @@ public class Discipline {
     private Long id;
 
     @NotBlank(message = "Discipline name is required")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "This name cannot be applied. Must contains only upper case,lower case and numbers.")
     private String name;
 
     @OneToMany(mappedBy = "discipline")

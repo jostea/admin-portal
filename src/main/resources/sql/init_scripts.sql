@@ -57,6 +57,12 @@ CREATE TABLE stream_table
     UNIQUE (name, discipline_id)
 );
 
+CREATE TABLE stream_time_table
+(
+    id           SERIAL PRIMARY KEY,
+    stream_id    int  NOT NULL REFERENCES stream_table (id),
+    time_min	int NOT NULL
+);
 
 /* create table task */
 CREATE TABLE task_table
