@@ -336,8 +336,7 @@
     function getStreamsByDiscipline(discname) {
         $.ajax({
             method: "GET",
-            url: "/streamView/streams/discipline/" + discname,      //TODO: recheck
-            //new url: RECHECK it!!!
+            url: "/streamView/streams/discipline/" + discname,
             success: function (response) {
                 populateStreamsDropdown(response);
             }
