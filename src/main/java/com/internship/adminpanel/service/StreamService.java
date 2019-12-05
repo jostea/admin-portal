@@ -5,10 +5,12 @@ import com.internship.adminpanel.exception.EmptyName;
 import com.internship.adminpanel.exception.StreamHasTasks;
 import com.internship.adminpanel.exception.StreamNotFound;
 import com.internship.adminpanel.model.Discipline;
+import com.internship.adminpanel.model.Internship;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
 import com.internship.adminpanel.repository.DisciplineRepository;
+import com.internship.adminpanel.repository.InternshipRepository;
 import com.internship.adminpanel.repository.StreamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public class StreamService {
 
     private final StreamRepository streamRepository;
     private final DisciplineRepository disciplineRepository;
+    private final InternshipRepository internshipRepository;
 
     public StreamDTO findById(Long id) throws StreamNotFound {
         Optional<Stream> stream = streamRepository.findById(id);
@@ -34,12 +37,23 @@ public class StreamService {
         throw new StreamNotFound(id + "");
     }
 
-    public List<StreamDTO> findAll()throws Exception{
+    public List<StreamDTO> findAll() throws Exception {
         List<StreamDTO> streamDTOList = new ArrayList<>();
         for (Stream val : streamRepository.findAll()) {
             streamDTOList.add(new StreamDTO(val));
         }
         return streamDTOList;
+    }
+
+    public List<StreamDTO> findInternshipStreams() {
+        Optional<Internship> internship = internshipRepository.findFirstByIsCurrentTrue();
+        List<StreamDTO> streamsInternship = new ArrayList<>();
+        if (internship.isPresent()){
+            for (Stream val : internship.get().getStreams()) {
+                streamsInternship.add(new StreamDTO(val));
+            }
+        }
+        return streamsInternship;
     }
 
     public void deleteById(Long id) throws StreamHasTasks, StreamNotFound {
@@ -52,7 +66,7 @@ public class StreamService {
         streamRepository.deleteById(id);
     }
 
-    public List<StreamDTO> filterByName(String name) throws StreamNotFound,Exception {
+    public List<StreamDTO> filterByName(String name) throws StreamNotFound, Exception {
         //Convert To StreamDTO Listed
         List<StreamDTO> streamDTOList = new ArrayList<>();
         for (Stream val : streamRepository.findStreamByNameContainingIgnoreCase(name)) {
@@ -76,7 +90,7 @@ public class StreamService {
         }
         streamRepository.save(
                 Stream.builder()
-                .name(streamUI.getName())
+                        .name(streamUI.getName())
                         .discipline(discipline)
                         .build());
     }
@@ -105,7 +119,7 @@ public class StreamService {
                     + "and Discipline from '" + oldDisciplineName + "' to '" + discipline.getName()
                     + "' by user '" + nameOfUser + "'");
         } else {
-            throw new StreamNotFound( id + "");
+            throw new StreamNotFound(id + "");
         }
     }
 }
