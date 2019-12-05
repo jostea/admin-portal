@@ -40,6 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/tasks/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/users/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/profile/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .antMatchers("/streamView/streams/internship").permitAll()
                 .antMatchers("/streamView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/disciplineView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .antMatchers("/skillsView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")

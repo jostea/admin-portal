@@ -1,6 +1,7 @@
 package com.internship.adminpanel.model.enums;
 
 public enum SkillsTypeEnum {
+
     TECHNICAL("Technical"),
     SOFT("Soft"),
     TOOL("Tool");
@@ -22,4 +23,5 @@ public enum SkillsTypeEnum {
         }
         return null;
     }
+
 }

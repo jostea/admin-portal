@@ -51,6 +51,16 @@ public class StreamRestController {
         }
     }
 
+    @GetMapping("/streams/internship")
+    public ResponseEntity<List<StreamDTO>> streamsOfInternship(){
+        try{
+            return new ResponseEntity<>(streamService.findInternshipStreams(), HttpStatus.OK);
+        } catch (Exception e){
+            log.error("Error while trying to get streams of internship");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @DeleteMapping("/streams/delete/{id}")
     public ResponseEntity<String> deletedById(@PathVariable("id") Long id, Authentication authentication) {
         try {
