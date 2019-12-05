@@ -10,7 +10,5 @@ import java.util.Optional;
 @Repository
 public interface StreamRepository extends JpaRepository<Stream, Long> {
     List<Stream> findStreamByNameContainingIgnoreCase(String name);
-
-    Optional<Stream> findStreamByName(String name);
 }
 

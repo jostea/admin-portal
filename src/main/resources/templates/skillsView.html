@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Skills</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<div th:replace="fragments/topnavbar :: navbar"></div>
+<div class="container">
+    <div id="alertSkill"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <button type="button" class="btn" data-toggle="modal" data-target="#skillAddModal"
+                    id="btn-add-skill" onclick="getAllStreamsForAddSkill()">Add
+            </button>
+            <table class="table table-hover" id="skillsTable">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Streams</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="skillAddModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">New Skill</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="skillName">Name:</label>
+                        <input type="text" id="skillName"/><br>
+                        <label for="typeForSkill">Skill type:</label>
+                        <select id="typeForSkill">
+                            <option>Technical</option>
+                            <option>Tool</option>
+                            <option>Soft</option>
+                        </select><br>
+                        <label for="disciplineForSkill">Discipline:</label>
+                        <select id="disciplineForSkill">
+                        </select>
+                        <label for="streamsForSkill">Streams:</label>
+                        <select id="streamsForSkill">
+                        </select>
+                        <button type="button" class="btn" id="addStreamButton">Add Stream to Skill</button>
+                    </form>
+                    <div id="div-add-table-selected-streams"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="addSkill" class="btn btn-info btn-lg"
+                            data-dismiss="modal" onclick="addSkill()">
+                        Create Skill
+                    </button>
+                    <button type="button" class="btn btn-info btn-lg" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="modal fade" id="skillUpdate" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update Skill</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="skillNewName">Name:</label>
+                        <input type="text" id="skillNewName"/><br>
+                        <label for="newTypeSkill">Skill type:</label>
+                        <select id="newTypeSkill">
+                            <option>Technical</option>
+                            <option>Tool</option>
+                            <option>Soft</option>
+                        </select><br>
+                        <label for="newDisciplineForSkill">Discipline:</label>
+                        <select id="newDisciplineForSkill">
+                        </select>
+                        <label for="newStreamsForSkill">Streams:</label>
+                        <select id="newStreamsForSkill">
+                        </select>
+                        <button type="button" class="btn" id="updateSkillButton">Add Stream to Skill</button>
+                    </form>
+                    <div id="div-update-table-selected-streams"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="updateButton" class="btn btn-info btn-lg"
+                            data-dismiss="modal" onclick="updateSkill()">
+                        Update Skill
+                    </button>
+                    <button type="button" class="btn btn-info btn-lg" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="deleteModalSkill" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Delete</h4>
+                    <div class="modal-body">
+                        <form>
+                            Are you sure want to delete this skill
+                        </form>
+                        <button id="confirm-delete-skill-button" data-dismiss="modal">Confirm</button>
+                        <button class="btn-close" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/users.js"></script>
+<script src="/js/navbar.js"></script>
+<script src="/js/skills.js"></script>
+</body>
+</html>

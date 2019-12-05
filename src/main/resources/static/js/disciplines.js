@@ -6,7 +6,7 @@ function getElementsFromUi(par1, par2) {
     flagDiscipline = par1;
     let modalDiv = "<form>\n" +
         "                        <label for=\"discipline-input-edit\">\n" +
-        "                            Name:\n" +
+        "                            Enter discipline title:\n" +
         "                        </label>\n" +
         "                        <input type=\"text\" id=\"discipline-input-edit\" value='" + par2 + "'/>\n" +
         "                    </form>";

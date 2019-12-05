@@ -32,6 +32,10 @@ $("#goDisciplines").on("click", function () {
     window.location.replace("/disciplineView/");
 });
 
+$("#goSkills").on("click", function () {
+    window.location.replace("/skillsView/");
+});
+
 $("#goSwagger").on("click", function () {
     window.open("/swagger-ui.html#/",'_blank')
 });

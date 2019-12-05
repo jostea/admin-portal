@@ -67,7 +67,7 @@ function saveIdStream(par1, par2, par3, par4) {
     flagIdStream = par1;
     let modalDiv = "<form>\n" +
         "                        <label for=\"stream-input\">\n" +
-        "                            Name:\n" +
+        "                            Enter stream title:\n" +
         "                        </label>\n" +
         "                        <input type=\"text\" id=\"stream-input\" value='" + par2 + "'/>\n" +
         "                        <label for=\"editDisciplines\">Disciplines:</label>\n" +

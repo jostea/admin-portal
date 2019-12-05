@@ -61,12 +61,19 @@ public class Task {
     }
 
     //this constructor was created specially for UNIT TESTS scope
-    public Task(Long id, String title, String description, TypeEnum type, ComplexityEnum complexity, boolean activate){
+    public Task(Long id, String title, String description, TypeEnum type, ComplexityEnum complexity, boolean activate) {
         this.setId(id);
         this.setTitle(title);
         this.setDescription(description);
         this.setTaskType(type);
         this.setComplexity(complexity);
         this.setEnabled(activate);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                '}';
     }
 }

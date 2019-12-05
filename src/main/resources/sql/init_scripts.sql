@@ -4,6 +4,9 @@ drop table if exists stream_table;
 drop table if exists task_table;
 drop table if exists user_table;
 drop table if exists discipline_table;
+drop table if exists skills_stream_table;
+drop table if exists skills_table;
+
 
 /* create table t_user */
 CREATE TABLE user_table
@@ -53,6 +56,21 @@ CREATE TABLE task_stream_table
     task_id   int NOT NULL REFERENCES task_table (id),
     stream_id int NOT NULL REFERENCES stream_table (id)
 );
+/*create skill table*/
+CREATE table skills_table
+(
+    id         SERIAL PRIMARY KEY,
+    name       varchar(255) NOT NULL,
+    skill_type varchar(255) NOT NULL,
+    UNIQUE (name, skill_type)
+);
+
+/* create many-to-many table skill_stream*/
+CREATE TABLE skills_stream_table
+(
+    skill_id  int NOT NULL REFERENCES skills_table (id),
+    stream_id int NOT NULL REFERENCES stream_table (id)
+);
 
 /* create table answer_option */
 CREATE TABLE answer_option_table
@@ -62,8 +80,6 @@ CREATE TABLE answer_option_table
     answer_option_value text    NOT NULL,
     is_correct          boolean NOT NULL
 );
-
-
 
 /*--------------------------------------------------*/
 /* scripts for SQL_task and CODE_task functionality */
@@ -104,8 +120,6 @@ CREATE TABLE sql_stream_table
     sql_task_id   int NOT NULL REFERENCES sql_task_table (id),
     stream_id int NOT NULL REFERENCES stream_table (id)
 );
-
-
 
 /* --- Code task tables --- */
 
@@ -171,7 +185,16 @@ INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #1', 'Path 1');
 INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #2', 'Path 2');
 INSERT INTO sql_group_table(name,image_path) VALUES ('Schema #3', 'Path 3');
 
+/*Populate skills_table*/
+INSERT INTO skills_table(name,skill_type)VALUES ('Skill1','TECHNICAL');
+INSERT INTO skills_table(name,skill_type)VALUES ('Skill2','SOFT');
+INSERT INTO skills_table(name,skill_type)VALUES ('Skill3','TOOL');
 
-/* Insert the super admin */
-insert into user_table (username, email, password, role) values('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK', 'SUPER_ADMIN')
-
+/*Populate skills_stream_table*/
+INSERT INTO skills_stream_table VALUES (1,1);
+INSERT INTO skills_stream_table VALUES (1,2);
+INSERT INTO skills_stream_table VALUES (2,1);
+INSERT INTO skills_stream_table VALUES (3,1);
+-- /* Insert the super admin */
+-- insert into user_table (username, email, password, role)values ('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK','SUPER_ADMIN')
+--

@@ -45,8 +45,6 @@ public class Stream {
     @Override
     public String toString() {
         return "Stream{" +
-                "name='" + name + '\'' +
-                ", tasks=" + tasks +
-                '}';
+                "name='" + name + '\'';
     }
 }
