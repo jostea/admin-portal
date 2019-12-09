@@ -42,6 +42,9 @@ public class Stream {
             inverseJoinColumns = @JoinColumn(name = "code_task_id"))
     private List<CodeTask> codeTasks;
 
+    @OneToOne(mappedBy = "stream")
+    private StreamTime streamTime;
+
     @Override
     public String toString() {
         return "Stream{" +
