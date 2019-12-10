@@ -2,17 +2,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://thymeleaf.org">
-<head>
+    <head>
 
-    <meta charset="UTF-8">
-    <title> And new code task </title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<!--    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">-->
-    <link type="text/css" rel="stylesheet" href="/css/codeTask.css">
-    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
-</head>
+        <meta charset="UTF-8">
+        <title> And new code task </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="/css/codeTask.css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600&display=swap" rel="stylesheet">
+    </head>
 
     <body>
             <!-- HEADER - NAVBAR -->
@@ -111,15 +110,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <button id="addDiscStream" type="submit" class="btn btn-primary">Add</button>
+                                    <button id="addDiscStream" type="submit" class="btn btn-primary">Add Discipline</button>
                                 </div>
                                 <br/>
                             </div>
                             <br/>
                             <div class="form-row row">
-                                <h5 class="alert alert-info">
+                                <h4>
                                     <strong>Info!</strong> There are the following Disciplines and Streams attaches to this task:
-                                </h5>
+                                </h4>
                             </div>
 
                             <div class="form-row row">
@@ -139,9 +138,9 @@
                             </div>
 
                             <div class="form-row row">
-                                <div class="alert alert-danger">
-                                    <strong>Attention!</strong> Disabled task will not appear in test cases!
-                                </div>
+                                <h4>
+                                    <strong>Attention!</strong> Please note that disabled task will not appear in test cases!
+                                </h4>
                             </div>
                             <div class="form-row row">
                                 <label class="col-form-label">Enable Task</label>
@@ -149,64 +148,38 @@
                             </div>
                     </div>
 
-                    <div id="addCodeTaskSecondPart panel panel-primary">
-                        <h3>Set Task Method Signature</h3>
-                        <form class="form-inline">
-                            <form class="form-group">
-                                <label for="methodReturn">Return Type: </label>
-                                <select id="methodReturn" class="form-control" required="required">
+                    <div id="guideMessage">
 
-                                </select>
-                            </form>
-
-                            <form class="form-group">
-                                <label for="methodName">Name: </label>
-                                <input id="methodName" class="form-control" type="text" placeholder="Method Name" required="required">
-                            </form>
-
-                            <label for="numberOfArgs">Number of args: </label>
-                            <select id="numberOfArgs" class="form-control">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>
-                        </form>
-                        <button id="addArgs" class="btn btn-primary">Add Arguments</button>
-                    </div>
-
-                    <div id="addCodeTaskThirdPart">
 
                     </div>
 
-                    <div id="addCodeTaskFourthPart">
-                        <div id="insertAnswers"></div>
-                        <div id="showSubmitted row">
-                            <div class="col-md-6">
-                                <table class="table table-bordered" id="correctAnswersTable">
-                                    <thead>
-                                    <th>Input</th>
-                                    <th>Output</th>
-                                    <th>Cancel</th>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div id="taskMethodSignature">
+                        <div id="textEditor">
+                            <h3>Introduce the code signature for your task</h3>
+                            <label for="themeEditor"></label>
+                            <textarea id="themeEditor" class="form-control" rows="2"></textarea>
+                            <button id="submitSignature" class="btn btn-primary">Submit signature</button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button id="ajaxCodeTask" class="btn btn-default" type="submit">Add Task</button>
-                        </div>
+
+                    <div id="introduceParamsDiv">
+
                     </div>
+
+                    <div>
+                        <table  id="correctAnswersTable" class="table">
+                            <thead>
+
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                <div>
+                    <button id="submitTask" class="btn btn-primary">Submit task</button>
+                </div>
             </div>
         <script src="/js/navbar.js"></script>
         <script src="/js/profile.js"></script>

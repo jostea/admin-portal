@@ -16,7 +16,7 @@ public class MainController {
         if (authentication.getPrincipal().equals("anonymousUser")) {
             modelAndView.setViewName("main");
         } else {
-            modelAndView.setViewName("redirect:/landing");
+            modelAndView.setViewName("redirect:./landing");
         }
         return modelAndView;
     }

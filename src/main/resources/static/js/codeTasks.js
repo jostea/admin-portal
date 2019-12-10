@@ -1,100 +1,166 @@
 $(document).ready(function () {
-    $("#correctAnswersTable").hide();
-    $("#methodReturn").html(dataTypes());
-    $("#ajaxCodeTask").hide();
-    $("#addCodeTaskThirdPart").hide();
-    $("#addCodeTaskFourthPart").hide();
+    $("#submitTask").hide();
 });
 
-$("#addArgs").on("click", function () {
-    if(validateInputsSignature()) {
-        let args = "";
-        args+="<h3>Specify the data type and name for arguments</h3>";
-        for(var i=0; i<$("#numberOfArgs").val(); i++) {
-            args+="<form class='form-inline'>";
-            args+="<h3>Argument #" + i + "</h3>";
-            args+="<label for='argType" + i + "'>Data type : </label>";
-            args+="<select class='form-control' id='argType" + i + "'>";
-            args+=dataTypes();
-            args+="</select>";
-            args+="<label for='argName" + i + "'>;      Name : </label>";
-            args+="<input class='form-control' id='argName" + i + "' type='text' required='required'>";
-            args+="</form>";
-        }
-        args+="<button id='submitArgs' class='btn btn-default'>Submit arguments</button>"
-        $("#addCodeTaskThirdPart").html(args);
-        $("#addCodeTaskThirdPart").show();
-    }
-});
+let accessModifier = "";
+let keyword = "";
+let returnType = "";
+let methodName = "";
+let args = [];
+const rets = ["int", "double", "char", "Integer", "Double", "Char", "String", "Number", "Object"];
+let readingSignature = true;
 
-$("#addCodeTaskThirdPart").on("click", "#submitArgs", function () {
-    if (validateInputsArgsName()) {
-        let correctCode = "";
-        correctCode+="<form class='form-inline'>";
-        correctCode+="<h3>Input at least 2 correct answers</h3>"
-        for (var i=0; i<$("#numberOfArgs").val(); i++) {
-            correctCode+="<span id='helpBlock' class='help-block'>Give a value for " + $("#argName" + i + "").val() + "</span>";
-            correctCode+="<label class='sr-only' for='argValue" + i + "'></label>";
-            correctCode+="<input class='form-control' id='argValue" + i + "' type='text' required='required' placeholder='Input for " + $("#argType" + i).val() + " " + $("#argName" + i).val() + "'>";
+$("#submitSignature").on("click", function () {
+    readingSignature = true;
+    if (validateSignature($("#themeEditor").val())) {
+        let div = "";
+        for (let i = 0; i < args.length; i++) {
+            div+="<div class='input-group'>";
+            div+="<span class='input-group-addon' id='basic-addon3'>" + args[i].name + ": </span>";
+            div+="<input type='text' class='form-control' id='arg" + i + "' aria-describedby='basic-addon3'>";
+            div+="</div>";
         }
-        correctCode+="<div class='has-warning'>";
-        correctCode+="<span id='helpBlock' class='help-block'>Set the return for given values</span>";
-        correctCode+="<label class='sr-only' for='argOutput'></label>";
-        correctCode+="<input class='form-control' id='argOutput' type='text' required='required' placeholder='Expected Return'>";
-        correctCode+="</div>";
-        correctCode+="</form>";
-        correctCode+="<button id='submitCorrectAnswer' class='btn btn-default'>Submit answer</button>";
-        $("#insertAnswers").html(correctCode);
-        $("#addCodeTaskFourthPart").show();
+        div+="<div class='input-group'>";
+        div+="<span class='input-group-addon' id='basic-addon3'>Given input, method must return: </span>";
+        div+="<input type='text' class='form-control' id='correctReturn' aria-describedby='basic-addon3'>";
+        div+="</div>";
+        div+="<div>";
+        div+="<button id='submitCorrectAnswer' class='btn btn-primary'>Add answer</button>";
+        div+="</div>";
+        $("#introduceParamsDiv").html(div);
+    } else {
+        cleanParams();
     }
 });
 
-$("#insertAnswers").on("click", "#submitCorrectAnswer", function () {
-    let showSubmitted = $("#correctAnswersTable tbody").html();
-    showSubmitted+="<tr>";
-    showSubmitted+="<td>";
-    for(var i=0; i<$("#numberOfArgs").val(); i++) {
-        showSubmitted+=$("#argValue" + i + "").val();
-        if (i<$("#numberOfArgs").val()-1) {
-            showSubmitted+=", ";
+$("#introduceParamsDiv").on("click", "#submitCorrectAnswer", function () {
+    if (validateAnswers()) {
+        let tbody = $("#correctAnswersTable tbody").html();
+        tbody+="<tr>";
+        for (let i = 0; i < args.length; i++) {
+            tbody+="<td>" + $("#arg"+ i + "").val() + "</td>";
         }
+        tbody+="<td>" + $("#correctReturn").val() + "</td>";
+        tbody+="<td><button id='disableAnswer' class='btn btn-danger'>Cancel Answer</button></td>"
+        tbody+="</tr>";
+        $("#correctAnswersTable tbody").html(tbody);
+        $("#submitTask").show();
+        for (let i=0; i<args.length; i++) {
+            document.getElementById("arg" + i + "").value = "";
+        }
+        document.getElementById("correctReturn").value = "";
+    } else {
+        showPopUp("Error", "Invalid input for specific parameter type");
     }
-    showSubmitted+="</td>";
-    showSubmitted+="<td>" + $("#argOutput").val() + "</td>";
-    showSubmitted+="<td><button id='cancelCorrectAnswer' class='btn btn-danger'>Cancel</button></td>";
-    showSubmitted+="</tr>";
-    $("#correctAnswersTable tbody").html(showSubmitted);
-    $("#correctAnswersTable").show();
-    $("#ajaxCodeTask").show();
-    for(var i=0; i<$("#numberOfArgs").val(); i++) {
-        document.getElementById("argValue" + i + "").value = "";
-    }
-    document.getElementById("argOutput").value = "";
 });
 
-function generateSignature() {
-    let signature = "public static " + $("#methodReturn").val() + " " + $("#methodName").val() + "(";
-    for(var i=0; i<$("#numberOfArgs").val(); i++) {
-        signature+=$("#argType" + i).val() + " " + $("#argName" + i).val();
-        if (i<$("#numberOfArgs").val()-1) {
-            signature+=", ";
+function validateAnswers() {
+    for (let i=0; i<args.length; i++) {
+        if (!((validateSimpleAnswers(args[i].type, $("#arg" + i + "").val())) || (validateArrayTypeAnswers(args[i].type, $("#arg" + i + "").val()) && (validateSimpleGenerics(type) || validateArray(type))))) {
+            return false;
         }
     }
-    signature+=");";
-    return signature;
+    return true;
 }
 
-function prepareDataForTask() {
-    return {
-        title: $("#title").val(),
-        description: $("#descripiton").val(),
-        complexity: $("#complexity").val(),
-        technology: $("#technology").val(),
-        isEnabled: document.getElementById("isEnabledCode").checked,
-        signature: generateSignature(),
-        streams: getStreamIds(),
-        correctCodes: listCorrectCodes()
+function validateSimpleAnswers(type, input) {
+        if(rets.indexOf(type)!==1) {
+            if (type === "String") {
+                return true;
+            } else if(type==="double" || type==="int" || type==="float" || type==="long" || type==="short" || type==="Double" || type==="Integer" || type==="Long" || type==="Float" || type==="Short") {
+                if (!isNaN(input)) {
+                    return true;
+                }
+            } else if (type === "char" || type === "Char") {
+                if (input.length === 1) {
+                    return true;
+                }
+            }
+        }
+    $("#guideMessage").html("<p type='alert' class='alert alert-danger'>The test for answers input not passed</p>");
+    return false;
+}
+
+function validateArrayTypeAnswers(type, input) {
+    if (returnTypes(type)) {
+        input = input.replace(/\s\s+/g, ' ');
+        input = input.replace(/\s*,\s*/g, ",");
+        input = input.replace(/\[\s*\s*/, '[');
+        input = input.replace(/\s*]\s*/, ']');
+        if (input.charAt(0) === "[" && input.charAt(input.length - 1) === "]") {
+            input = input.slice(1, -1);
+            let inputArr = cubeParse(input);
+            let trueCounter = 0;
+            for (let i = 0; i < inputArr.length; i++) {
+                if ((inputArr[i].charAt(0) !== "[" || inputArr[i].charAt(inputArr[i].length - 1) !== "]") && !validateSimpleAnswers(type, inputArr[i])) {
+                    return false;
+                } else {
+                    if (validateSimpleAnswers(type, inputArr[i])) {
+                        trueCounter++;
+                        if (trueCounter === inputArr.length) {
+                            return true;
+                        }
+                    } else {
+                        return validateArrayTypeAnswers(type, inputArr[i]);
+                    }
+                }
+            }
+        }
     }
+    return false;
+}
+
+function validateDoubleGenericTypeAnswers(type, input) {
+
+}
+
+$("#correctAnswersTable").on("click", "#disableAnswer", function () {
+    $(this).closest('tr').remove();
+});
+
+function cleanParams() {
+    args.length=0;
+    keyword = "";
+    methodName = "";
+    returnType = "";
+    readingSignature = true;
+}
+
+$("#submitTask").on("click", function () {
+    $.ajax({
+        method: "POST",
+        url: "/tasksrest/addCodeTask",
+        data: JSON.stringify(prepareDataForTask()),
+        contentType: "application/json",
+        success: function () {
+            window.location.replace("/tasks/");
+        }
+    });
+});
+
+function prepareDataForTask() {
+    if (ajaxSubmitValidation() && validateSignature($("#themeEditor").val())) {
+        return {
+            title: $("#title").val(),
+            description: $("#descripiton").val(),
+            complexity: $("#complexity").val(),
+            technology: $("#technology").val(),
+            isEnabled: document.getElementById("isEnabledCode").checked,
+            signature: cleanSignature($("#themeEditor").val()),
+            streams: getStreamIds(),
+            correctCodes: listCorrectCodes()
+        }
+    }
+}
+
+function cleanSignature(signature) {
+    if (signature.length>1) {
+        signature = signature.replace(/\s\s+/g, ' ');
+        signature = signature.replace(/\s*,\s*/g, ",");
+        signature = signature.replace(/\(\s*\s*/, '(');
+        signature = signature.replace(/\s*\)\s*/, ')');
+    }
+    return signature;
 }
 
 function getStreamsByDiscipline(discname) {
@@ -139,7 +205,7 @@ $("#addDiscStream").on("click", function (event) {
 });
 
 function getStreamIds() {
-    let listStreamIds = new Array();
+    let listStreamIds = [];
     $('#disc_streams_selected').find('tbody').find('tr').each(function (i, el) {
         let currentStreamId = $(this).find('input[type="hidden"]').eq(1).val();
         listStreamIds.push(currentStreamId.valueOf());
@@ -186,44 +252,25 @@ $("#disc_streams_selected").on('click', '.removeDiscStream', function x() {
     $(this).closest('tr').remove();
 });
 
-$("#addCodeTaskFourthPart").on("click", "#cancelCorrectAnswer", function () {
-    $(this.closest('tr')).remove();
-});
-
-$("#ajaxCodeTask").on("click", function () {
-    if (ajaxSubmitValidation()) {
-        $.ajax({
-            method: "POST",
-            url: "/tasksrest/addCodeTask",
-            data: JSON.stringify(prepareDataForTask()),
-            contentType: "application/json",
-            success: function () {
-                window.location.href = "/tasks/";
-            }
-        });
-    }
-});
-
 function listCorrectCodes() {
     let codes = [];
-    for (var i=0; i<$('#correctAnswersTable tbody')[0].children.length; i++) {
+    let input = "";
+    for (let i=0; i<$('#correctAnswersTable tbody')[0].children.length; i++) {
+        for (let j=0; j<$('#correctAnswersTable tbody')[0].children[0].children.length-2; j++) {
+            input+=$('#correctAnswersTable tbody')[0].children[i].children[j].innerHTML
+            if (j!==$('#correctAnswersTable tbody')[0].children[0].children.length-3) {
+                input+=";";
+            }
+        }
         codes.push(
             {
-                input: $('#correctAnswersTable tbody')["0"].children[i].children["0"].innerHTML,
+                input: input,
                 output: $('#correctAnswersTable tbody')["0"].children[i].children["1"].innerHTML
             }
-        )
+        );
+        input = "";
     }
     return codes;
-}
-
-function dataTypes() {
-    let types = ["int", "double", "char", "float", "byte", "short", "long", "boolean", "String", "Object", "Integer", "Double", "Long", "Float", "Byte", "Custom"];
-    let options = "";
-    types.forEach(function (value) {
-        options+="<option>" + value + "</option>";
-    });
-    return options;
 }
 
 function showPopUp(title, message) {
@@ -232,37 +279,12 @@ function showPopUp(title, message) {
     $("#myModal").modal('show');
 }
 
-function hasNumber(myString) {
-    return /\d/.test(myString);
-}
-
-function validateInputsSignature() {
-    if($("#methodName").val() && !(/\s/.test($("#methodName").val()))) {
-        if (!(hasNumber($("#methodName").val()))) {
-            return true;
-        } else {
-            showPopUp("Invalid method name", "Method name cannot contain numbers");
-        }
-    } else {
-        showPopUp("Invalid method name", "Method name cannot be empty or contain spaces");
-    }
-    return false;
-}
-
-function validateInputsArgsName() {
-    for (var i = 0; i < $("#numberOfArgs").val(); i++) {
-        if (!$("#argName" + i + "").val() || (/\s/.test($("#argName" + i + "").val()))) {
-            showPopUp("Cannot submit", "Argument name cannot be empty or contain spaces");
-            return false;
-        }
-        if (hasNumber($("#argName" + i + "").val())) {
-            showPopUp("Cannot submit", "Argument name cannot contain numbers");
-            return false;
-        }
-        for(var j=0; j<$("#numberOfArgs").val(); j++) {
-            for(var k=0; k<$("#numberOfArgs").val(); k++) {
-                if($("#argName"+j+"").val() === $("#argName"+k+"").val() && j!==k) {
-                    showPopUp("Identical name", "Different Arguments cannot have the same name");
+function noRepetitionForArgs(args) {
+    for (var i = 0; i < args.length; i++) {
+        for(var j=0; j<args.length; j++) {
+            for(var k=0; k<args.length; k++) {
+                if(args[j].name === args[k].name && j!==k) {
+                    alert("Different Arguments cannot have the same name");
                     return false;
                 }
             }
@@ -287,4 +309,216 @@ function ajaxSubmitValidation() {
     }
 
     return false;
+}
+
+function validateSignature(signature) {
+    if (signature.split("(").length>1 && signature.split(" ").length>=3) {
+        signature = cleanSignature(signature);
+        let splittedArgs = signature.split("(")[1].split(")")[0];
+        signature = signature.split("(")[0];
+        let splitted = signature.split(" ");
+        readArgs(splittedArgs);
+        if (threeArgsValidation(splitted) && readingSignature) {
+            keyword = splitted[0];
+            returnType = splitted[1];
+            methodName = splitted[2];
+            return true;
+        } else if (fourArgsValidation(splitted) && readingSignature) {
+            accessModifier = splitted[0];
+            keyword = splitted[1];
+            returnType = splitted[2];
+            methodName = splitted[3];
+            return true;
+        } else {
+            cleanParams();
+        }
+    }
+    alert("invalid signature");
+    return false;
+}
+
+function returnTypes(ret) {
+    if (rets.indexOf(ret)>=0 || validateSimpleGenerics(ret) || validateArray(ret) || validateDoubleGenerics(ret)) {
+        return true;
+    }
+    return false;
+}
+
+function simpleGeneric(input) {
+    var params = ["List", "ArrayList", "Set", "HashSet", "Collection", "TreeSet"];
+    if (params.indexOf(input)!==-1) {
+        return true;
+    }
+    return false;
+}
+
+function validateSimpleGenerics(input) {
+    var holder = input.split("<")[0];
+    var type = customSplitForSimpleGenerics(input);
+    if (!(input.length===1 && returnTypes(input))) {
+        if(!simpleGeneric(holder)) {
+            return false;
+        } else {
+            if(returnTypes(type)) {
+                return true
+            }
+        }
+    }
+}
+
+function customSplitForSimpleGenerics(input) {
+    var arr = input.split("");
+    var finalStr = "";
+    var concat = false;
+    for(var i=0; i<arr.length; i++) {
+        if(arr[i]==="<" && !concat) {
+            concat = true;
+            arr.pop();
+            arr.splice(i, 1);
+        }
+        if (concat) {
+            finalStr+=arr[i];
+        }
+    }
+    return finalStr;
+}
+
+function validateMethodName(name) {
+    return name !== "main" && !returnTypes(name) && isNaN(name.charAt(0)) && /^\w+$/.test(name);
+
+}
+
+function threeArgsValidation(sign) {
+    if (sign.length===3) {
+        if (sign[0]==="static") {
+            if (returnTypes(sign[1])) {
+                if (validateMethodName(sign[2])) {
+                    return true
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function fourArgsValidation(sign) {
+    if (sign.length===4) {
+        if (sign[0]==="public") {
+            if (sign[1]==="static") {
+                if (returnTypes(sign[2])) {
+                    if (validateMethodName(sign[3])) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function readArgs(holder) {
+    if (holder.split(" ").length-1 === parse(holder).length) {
+        args.length = 0;
+        for (let i=0; i<parse(holder).length; i++) {
+            if (returnTypes(parse(holder)[i].split(" ")[0]) && validateArgsName(parse(holder)[i].split(" ")[1])) {
+                args.push({
+                    type: parse(holder)[i].split(" ")[0],
+                    name: parse(holder)[i].split(" ")[1]
+                });
+            } else {
+                cleanParams();
+                readingSignature = false;
+            }
+        }
+    } else {
+        cleanParams();
+        readingSignature = false;
+    }
+    if (!noRepetitionForArgs(args)) {
+        cleanParams();
+        readingSignature = false;
+    }
+}
+function validateArgsName(name) {
+    return isNaN(name.charAt(0)) && /^\w+$/.test(name);
+}
+
+function validateArray(val) {
+    val = val.replace(/\s*\[\s*/g, "\[");
+    let isValid = true;
+    if (rets.indexOf(val.split("[")[0])!==-1 && val.split("[").length>1) {
+        let brackets = val.split(val.split("[")[0])[1];
+        for(let i=0; i<brackets.length; i+=2) {
+            if (!(brackets.split("")[i] === "[" && brackets.split("")[i+1] === "]")) {
+                isValid = false;
+            }
+        }
+    } else {
+        isValid = false;
+    }
+    return isValid;
+}
+
+function parse(str) {
+    let result = [], item = '', depth = 0;
+    function push() {
+        if (item) {
+            result.push(item);
+        }
+        item = '';
+    }
+    for (let i = 0, c; c = str[i], i < str.length; i++) {
+        if (!depth && c === ',') {
+            push();
+        }
+        else {
+            item += c;
+            if (c === '<') depth++;
+            if (c === '>') depth--;
+        }
+    }
+    push();
+    return result;
+}
+
+function validateDoubleGenerics(input) {
+    var params = ["Map", "HashMap"];
+    var cont = "";
+    var key = "";
+    var value = "";
+    if (params.indexOf(input.split("<")[0])===-1) {
+        return false;
+    } else if (params.indexOf(input.split("<")[0])!==1) {
+        for (let i = input.split("<")[0].length+1; i<input.length-1; i++) {
+            cont+=input.split("")[i];
+        }
+        key = cont.split(",")[0];
+        value = cont.split(",")[1];
+        if (returnTypes(key) && returnTypes(value) && cont.split(",").length === 2) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function cubeParse(str) {
+    let result = [], item = '', depth = 0;
+    function push() {
+        if (item) {
+            result.push(item);
+        }
+        item = '';
+    }
+    for (let i = 0, c; c = str[i], i < str.length; i++) {
+        if (!depth && c === ',') {
+            push();
+        }
+        else {
+            item += c;
+            if (c === '[') depth++;
+            if (c === ']') depth--;
+        }
+    }
+    push();
+    return result;
 }

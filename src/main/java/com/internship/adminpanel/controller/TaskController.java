@@ -94,10 +94,10 @@ public class TaskController {
         return model;
     }
 
-    @GetMapping("tasks/addCodeTask")
+    @GetMapping("/tasks/addCodeTask")
     public ModelAndView addCodeTask() throws Exception {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/tasks/addCodeTask");
+        modelAndView.setViewName("tasks/addCodeTask");
         populateModelWithDropDownsAddCodeTask(modelAndView);
         return modelAndView;
     }
