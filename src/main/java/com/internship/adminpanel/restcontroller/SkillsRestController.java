@@ -32,7 +32,7 @@ public class SkillsRestController {
         try {
             return new ResponseEntity<>(skillsService.findById(id), HttpStatus.OK);
         } catch (SkillNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' found discipline with id '" + id + "'; error message: " + e.getMessage()
+            log.error("Error when user '" + authentication.getName() + "' found skill with id '" + id + "'; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -40,13 +40,7 @@ public class SkillsRestController {
 
     @GetMapping("/all")
     public ResponseEntity<List<SkillDTO>> findAll(Authentication authentication) {
-        try {
         return new ResponseEntity<>(skillsService.findAll(), HttpStatus.OK);
-        } catch (SkillNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' found disciplines; error message: " + e.getMessage()
-                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @ResponseBody

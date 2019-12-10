@@ -37,13 +37,7 @@ public class TestStructureRestController {
 
     @GetMapping("/tests")
     public ResponseEntity<List<TestStructureDTO>> findAll(Authentication authentication) {
-        try {
             return new ResponseEntity<>(testStructureService.findAll(), HttpStatus.OK);
-        } catch (TestStructureNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' found test structure; error message: " + e.getMessage()
-                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @ResponseBody

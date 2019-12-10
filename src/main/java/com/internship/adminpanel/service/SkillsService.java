@@ -35,13 +35,10 @@ public class SkillsService {
         }
     }
 
-    public List<SkillDTO> findAll() throws SkillNotFound {
+    public List<SkillDTO> findAll() {
         List<SkillDTO> skillDTOS = new ArrayList<>();
         for (Skill val : skillsRepository.findAll()) {
             skillDTOS.add(new SkillDTO(val));
-        }
-        if (skillDTOS.size() == 0) {
-            throw new SkillNotFound();
         }
         return skillDTOS;
     }

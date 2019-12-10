@@ -33,13 +33,11 @@ public class TestStructureService {
         }
     }
 
-    public List<TestStructureDTO> findAll() throws TestStructureNotFound {
+    public List<TestStructureDTO> findAll(){
         List<TestStructureDTO> testStructureDTOS = new ArrayList<>();
         for (TestStructure ts : testStructureRepository.findAll()) {
             testStructureDTOS.add(new TestStructureDTO(ts));
         }
-        if (testStructureDTOS.isEmpty())
-            throw new TestStructureNotFound();
         return testStructureDTOS;
     }
 

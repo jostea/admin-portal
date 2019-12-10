@@ -99,8 +99,8 @@ function getAllSkills() {
         method: "GET",
         url: "/skillsView/all",
         success: function (response) {
-            $("#alertSkill").html("");
             fillTableSkills(response);
+            $("#alertSkill").html("");
         }
     });
 }
