@@ -1,9 +1,6 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.internship.adminpanel.exception.DisciplineNotFound;
-import com.internship.adminpanel.exception.EmptyName;
-import com.internship.adminpanel.exception.StreamHasTasks;
-import com.internship.adminpanel.exception.StreamNotFound;
+import com.internship.adminpanel.exception.*;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
 import com.internship.adminpanel.service.StreamService;
@@ -243,7 +240,7 @@ public class StreamRestControllerTest {
     }
 
     @Test
-    public void shouldCatchExceptionStreamNotFoundWhileDelete() throws StreamNotFound, StreamHasTasks {
+    public void shouldCatchExceptionStreamNotFoundWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
         Long id = 1L;
         doThrow(StreamNotFound.class).when(streamService).deleteById(id);
         ResponseEntity<String> responseEntity = streamRestController.deletedById(id, authentication);
@@ -253,7 +250,7 @@ public class StreamRestControllerTest {
     }
 
     @Test
-    public void shouldCatchExceptionStreamHasTasksWhileDelete() throws StreamNotFound, StreamHasTasks {
+    public void shouldCatchExceptionStreamHasTasksWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
         Long id = 1L;
         doThrow(StreamHasTasks.class).when(streamService).deleteById(id);
         ResponseEntity<String> responseEntity = streamRestController.deletedById(id, authentication);

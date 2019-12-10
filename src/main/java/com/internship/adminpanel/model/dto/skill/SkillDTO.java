@@ -32,9 +32,8 @@ public class SkillDTO {
         this.id = skill.getId();
         this.name = skill.getName();
         this.setTypeStr(skill.getSkillType().getType());
-        if (skill.getStreams().size() != 0)
+        streams = new ArrayList<>();
             for (Stream s : skill.getStreams()) {
-                streams = new ArrayList<>();
                 this.streams.add(new StreamSkillDTO(s));
             }
     }

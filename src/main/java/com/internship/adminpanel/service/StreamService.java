@@ -1,9 +1,6 @@
 package com.internship.adminpanel.service;
 
-import com.internship.adminpanel.exception.DisciplineNotFound;
-import com.internship.adminpanel.exception.EmptyName;
-import com.internship.adminpanel.exception.StreamHasTasks;
-import com.internship.adminpanel.exception.StreamNotFound;
+import com.internship.adminpanel.exception.*;
 import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.Internship;
 import com.internship.adminpanel.model.Stream;
@@ -57,12 +54,14 @@ public class StreamService {
         return streamsInternship;
     }
 
-    public void deleteById(Long id) throws StreamHasTasks, StreamNotFound {
+    public void deleteById(Long id) throws StreamHasTasks, StreamNotFound, StreamHasSkill {
         Optional<Stream> streamOptional = streamRepository.findById(id);
         if (streamOptional.isPresent()) {
             if (streamOptional.get().getTasks().size() > 0) {
                 throw new StreamHasTasks(streamOptional.get().getName());
             }
+            if (streamOptional.get().getSkill().size() > 0)
+                throw new StreamHasSkill(id +  "");
         } else throw new StreamNotFound(id + "");
         streamRepository.deleteById(id);
     }
