@@ -21,7 +21,7 @@ public class Discipline {
     private Long id;
 
     @NotBlank(message = "Discipline name is required")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "This name cannot be applied. Must contains only upper case,lower case and numbers.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "This name cannot be applied. Must contains only upper case,lower case and numbers.")
     private String name;
 
     @OneToMany(mappedBy = "discipline")

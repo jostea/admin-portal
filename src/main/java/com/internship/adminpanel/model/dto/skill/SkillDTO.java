@@ -25,14 +25,16 @@ public class SkillDTO {
 
     private String typeStr;
 
-    private List<StreamDTO> streams= new ArrayList<>();
+    private List<StreamDTO> streams;
 
     public SkillDTO(Skill skill) {
         this.id = skill.getId();
         this.name = skill.getName();
-        for (Stream s : skill.getStreams()) {
-            this.streams.add(new StreamDTO(s));
-        }
         this.setTypeStr(skill.getSkillType().getType());
+        if (skill.getStreams().size() != 0)
+            for (Stream s : skill.getStreams()) {
+                streams = new ArrayList<>();
+                this.streams.add(new StreamDTO(s));
+            }
     }
 }

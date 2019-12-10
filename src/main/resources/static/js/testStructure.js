@@ -54,15 +54,16 @@ function getTestStructure() {
 
 function fillTestTable(data) {
     let tableBody = "";
-    for (let i = 0; i < data.length; i++) {
-        tableBody += "<tr>";
-        tableBody += `<td id="taskTypeTable` + i + `">${data[i].taskType}</td>`;
-        tableBody += `<td id="complexityTable` + i + `">${data[i].complexity}</td>`;
-        tableBody += `<td id="idOfNrOfQuestions` + i + `">${data[i].nrQuestions}</td>`;
-        tableBody += `<td id="spaceForConfirmUpdate` + i + `"><button class="btn" onclick="updateStructureTest(${i},${data[i].id});">Update</button></td>`;
-        tableBody += `<td><button class="btn" onclick="confirmDeleteStructure(${data[i].id})" data-toggle="modal" data-target="#deleteStructure">Delete</button></td>`;
-        tableBody += "</tr>";
-    }
+    if (data != null)
+        for (let i = 0; i < data.length; i++) {
+            tableBody += "<tr>";
+            tableBody += `<td id="taskTypeTable` + i + `">${data[i].taskType}</td>`;
+            tableBody += `<td id="complexityTable` + i + `">${data[i].complexity}</td>`;
+            tableBody += `<td id="idOfNrOfQuestions` + i + `">${data[i].nrQuestions}</td>`;
+            tableBody += `<td id="spaceForConfirmUpdate` + i + `"><button class="btn" onclick="updateStructureTest(${i},${data[i].id});">Update</button></td>`;
+            tableBody += `<td><button class="btn" onclick="confirmDeleteStructure(${data[i].id})" data-toggle="modal" data-target="#deleteStructure">Delete</button></td>`;
+            tableBody += "</tr>";
+        }
     $("#testStructureTable tbody").html(tableBody);
 }
 

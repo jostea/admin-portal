@@ -23,7 +23,7 @@ public class Stream {
     private Long id;
 
     @NotBlank(message = "Stream name is required")
-    @Pattern(regexp = "^[a-zA-Z0-9+.#]*$", message = "This name cannot be applied. Must contains only upper case,lower case, numbers and symbol '.','+','#'")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s+.#]*$", message = "This name cannot be applied. Must contains only upper case,lower case, numbers and symbol '.','+','#'")
     private String name;
 
     @NotNull(message = "Discipline is required")
