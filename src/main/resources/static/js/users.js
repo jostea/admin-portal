@@ -1,4 +1,53 @@
-$(document).ready(getAllUsers());
+$(document).ready(function () {
+        if (this.URL.split("?").length>1) {
+            const paramName = this.URL.split("?")[1].split("=")[0];
+            let param = this.URL.split("?")[1].split("=")[1];
+            let editUsername = "";
+            switch (paramName) {
+                case "all":
+                    getAllUsers();
+                    $(".view-users-div").show();
+                    $(".view-single-user-div").hide();
+                    $(".edit-user-div").hide();
+                    if (param === "added") {
+                        $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User <b>" + editUsername + "</b> has been edited successfully</p></div>")
+                    }
+                    break;
+                case "one":
+                    $.ajax({
+                        method: "GET",
+                        url: "/users/" + param,
+                        success: function (response) {
+                            fillTableForOne(response);
+                            history.pushState({page: 1}, "one", "?one=" + param);
+                        }
+                    });
+                    $(".view-users-div").hide();
+                    $(".view-single-user-div").show();
+                    $(".edit-user-div").hide();
+                    break;
+                case "edit":
+                    $.ajax({
+                        method: "GET",
+                        url: "/users/edit/" + param,
+                        success: function (response) {
+                            showUserDetails(response);
+                            history.pushState({page: 2}, "edit", "?edit=" + param);
+                        }
+                    });
+                    $(".view-users-div").hide();
+                    $(".view-single-user-div").hide();
+                    $(".edit-user-div").show();
+                    break;
+                default:
+                    window.location.replace("/users/?all");
+            }
+        } else {
+            window.location.replace("/users/?all")
+        }
+    }
+);
+
 $("#addNewUser").on('click', function () {
     window.location.href ="/users/add";
 });
@@ -12,25 +61,15 @@ $(".view-single-user-div").on("click", '.enable-disable-user',  function() {
             data: JSON.stringify(),
             contentType: "application/json",
             success: function () {
-                getAllUsers();
-                $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User's activity has been successfully changed</p></div>")
+                location.reload();
             }
         });
     }
 });
 
 $(".view-users-div").on("click", ".view-user", function () {
-    $(".view-single-user-div").show();
-    $(".view-users-div").hide();
-    $(".edit-user-div").hide();
     var val = this.parentNode.parentElement.querySelector(".db-id").textContent;
-    $.ajax({
-        method: "GET",
-        url: "/users/" + val,
-        success: function (response) {
-            fillTableForOne(response)
-        }
-    });
+    window.location.href = "/users/?one=" + val;
 });
 
 $("#editUser").on("click", ".edit-user-apply", function () {
@@ -43,44 +82,30 @@ $("#editUser").on("click", ".edit-user-apply", function () {
             data: JSON.stringify(prepareDataToEditUser()),
             contentType: "application/json",
             success: function () {
-                getAllUsers();
-                $("#successMessage").html("<div class='alert alert-success' role='alert'><p>User <b>" + $("#edit-username").val() + "</b> has been edited successfully</p></div>")
+                window.location = "/users/?all=added";
             },
             error: function (response) {
-                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Failed to edit. Looks like the credentials you're trying to set are already present in the system</p></div>")
+                $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Failed to edit. Looks like the credentials you're trying to set are already present in the system " + response.responseText + "</p></div>")
             }
         });
     }
 });
 
 $("#edit-user").on("click", function () {
-    $(".view-single-user-div").hide();
-    $(".view-users-div").hide();
-    $(".edit-user-div").show();
     var val = document.querySelector("#db-id-edit").textContent;
-    $.ajax({
-        method: "GET",
-        url: "/users/edit/" + val,
-        success: function (response) {
-            showUserDetails(response);
-        }
-    });
+    window.location.href = "/users/?edit=" + val;
 });
 
 function getAllUsers() {
-    $(".view-single-user-div").hide();
-    $(".view-users-div").show();
-    $(".edit-user-div").hide();
     $.ajax({
         method: "GET",
         url: "/users/all",
         success: function (response) {
             if (response.length===0) {
-                $("#usersTableEnabled").hide();
-                $("#usersTableDisabled").hide();
                 $("#usersInfoParagraph").html("No users in the system yet");
             } else if (response.length>0) {
                 fillTable(response);
+                history.pushState({page: 0}, "all", "?all");
             }
         }
     });
@@ -94,9 +119,9 @@ function fillTableForOne(data) {
     tbody += "<td>" + data.email + "</td>";
     tbody += "<td>" + yesNoVal(data.active) + "</td>";
     if (data.active) {
-        disable_button += "<button class='enable-disable-user btn btn-danger'>Disable this user</button>"
+        disable_button += "<button class='enable-disable-user btn-custom btn btn-danger'>Disable this user</button>"
     } else if(!data.active) {
-        disable_button += "<button class='enable-disable-user btn btn-success'>Enable this user</button>"
+        disable_button += "<button class='enable-disable-user btn-custom btn btn-success'>Enable this user</button>"
     }
     $("#enable-disable-user-button").html(disable_button);
     $("#singleUserTable tbody tr").html(tbody);
@@ -133,20 +158,20 @@ function fillTable(data) {
 function showUserDetails(data) {
     let tbody = "";
     tbody += "<form>";
+    tbody+="<div class='row'></div>"
     tbody += "<tr id='row" + data.id + "'>";
     tbody += "<td hidden id='edit-db-id'>" + data.id + "</td>";
-    tbody += "<tr><label for='edit-username'></label>" +
-        "<mark>Username:</mark> <input type='text' id='edit-username' name='edit-username' value='" + data.username + "'></tr>";
-    tbody += "<tr><label for='edit-email'></label>" +
-        "<mark>Email:</mark> <input type='text' id='edit-email' name='edit-email' value='" + data.email + "'></tr>";
-    tbody += "<tr><label for='edit-password'></label>" +
-        "<mark>Password:</mark> <input type='text' id='edit-password' name='edit-password' placeholder='New Password Here'></tr>";
+    tbody += "<tr><label for='edit-username'><mark>Username:</mark></label>" +
+        "<input class='form-control' type='text' id='edit-username' name='edit-username' value='" + data.username + "'></tr>";
+    tbody += "<tr><label for='edit-email'><mark>Email:</mark></label>" +
+        "<input class='form-control' type='text' id='edit-email' name='edit-email' value='" + data.email + "'></tr>";
+    tbody += "<tr><label for='edit-password'><mark>Password:</mark></label>" +
+        "<input class='form-control' type='text' id='edit-password' name='edit-password' placeholder='New Password Here'></tr>";
     tbody += "<tr><button type='submit' class='edit-user-apply btn btn-primary'>Apply Changes</button></tr>";
     tbody += "</tr>";
     tbody += "</form>";
     $("#editUser tbody").html(tbody);
 }
-
 function prepareDataToEditUser(){
     return {
         username: $("#edit-username").val(),
@@ -176,7 +201,11 @@ function editRequestValidation() {
         if (validateEmail($("#edit-email").val())) {
             if ($("#edit-username").val().length >= 6) {
                 if (document.querySelector("#edit-password").value === "" || document.querySelector("#edit-password").value.length >= 8) {
-                    return true;
+                    if (!(/\s/.test(document.querySelector("#edit-password").value))) {
+                        return true;
+                    } else {
+                        $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Password cannot contain spaces</p></div>")
+                    }
                 } else  {
                     $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Password too short, min eight characters</p></div>")
                 }

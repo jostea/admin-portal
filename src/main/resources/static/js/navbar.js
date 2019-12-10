@@ -1,5 +1,5 @@
 $("#goUsers").on("click", function () {
-    window.location.href = "/users/";
+    window.location.href = "/users/?all";
 });
 
 $("#goStreams").on("click", function () {
