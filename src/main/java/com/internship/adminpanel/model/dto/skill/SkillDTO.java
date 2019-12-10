@@ -3,6 +3,7 @@ package com.internship.adminpanel.model.dto.skill;
 import com.internship.adminpanel.model.Skill;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
+import com.internship.adminpanel.model.dto.stream.StreamSkillDTO;
 import com.internship.adminpanel.model.enums.SkillsTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,7 @@ public class SkillDTO {
 
     private String typeStr;
 
-    private List<StreamDTO> streams;
+    private List<StreamSkillDTO> streams;
 
     public SkillDTO(Skill skill) {
         this.id = skill.getId();
@@ -34,7 +35,7 @@ public class SkillDTO {
         if (skill.getStreams().size() != 0)
             for (Stream s : skill.getStreams()) {
                 streams = new ArrayList<>();
-                this.streams.add(new StreamDTO(s));
+                this.streams.add(new StreamSkillDTO(s));
             }
     }
 }

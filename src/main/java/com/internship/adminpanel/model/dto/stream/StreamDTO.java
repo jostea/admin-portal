@@ -37,16 +37,16 @@ public class StreamDTO {
         this.id = stream.getId();
         this.name = stream.getName();
         this.disciplineName = stream.getDiscipline().getName();
-        if (stream.getTestStructures().size() != 0) {
-            this.testStructures = new ArrayList<>();
-            for (TestStructure ts : stream.getTestStructures()) {
-                this.testStructures.add(new TestStructureDTO(ts));
-            }
-        }
         if (stream.getSkill().size() != 0) {
             this.skills = new ArrayList<>();
             for (Skill skill : stream.getSkill()) {
                 this.skills.add(new SkillDTO(skill));
+            }
+        }
+        if (stream.getTestStructures().size() != 0) {
+            this.testStructures = new ArrayList<>();
+            for (TestStructure ts : stream.getTestStructures()) {
+                this.testStructures.add(new TestStructureDTO(ts));
             }
         }
     }
