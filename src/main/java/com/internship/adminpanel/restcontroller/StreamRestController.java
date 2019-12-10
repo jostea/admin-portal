@@ -13,8 +13,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -113,7 +117,7 @@ public class StreamRestController {
 
     @ResponseBody
     @PutMapping("/stream/edit/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody StreamDTOFromUI streamDTOFromUI,
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @Valid @RequestBody StreamDTOFromUI streamDTOFromUI,
                                          Authentication authentication) {
         try {
             streamService.edit(id, streamDTOFromUI, authentication.getName());
@@ -127,12 +131,16 @@ public class StreamRestController {
             log.error("Error when user '" + authentication.getName() + "' edit stream with empty name;\nerror message: " + e.getMessage()
                     + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("Stream name is required", HttpStatus.BAD_REQUEST);
+        } catch (TransactionSystemException e) {
+            log.error("Error when user '" + authentication.getName() + "' edit stream; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("The specified stream cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @ResponseBody
     @PostMapping("/stream/add")
-    public ResponseEntity<String> addStream(@RequestBody StreamDTOFromUI streamDTOFromUI, Authentication authentication) {
+    public ResponseEntity<String> addStream(@Valid @RequestBody StreamDTOFromUI streamDTOFromUI, Authentication authentication) {
         try {
             streamService.addStream(streamDTOFromUI);
             log.info("User '" + authentication.getName() + "' add new stream '" + streamDTOFromUI.getName() + "'");
@@ -151,10 +159,14 @@ public class StreamRestController {
             log.error("Error when user '" + authentication.getName() + "' add  stream; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
             return new ResponseEntity<>("Stream '" + streamDTOFromUI.getName() + "' already exist", HttpStatus.BAD_REQUEST);
+        } catch (TransactionSystemException e) {
+            log.error("Error when user '" + authentication.getName() + "' add new  stream; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("The specified stream cannot be applied.", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' add new stream;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("The specified stream cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
 }

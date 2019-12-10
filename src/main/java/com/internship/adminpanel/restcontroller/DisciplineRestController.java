@@ -11,8 +11,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class DisciplineRestController {
 
     @ResponseBody
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody DisciplineDTO disciplineDTO, Authentication authentication) {
+    public ResponseEntity<String> add(@Valid @RequestBody DisciplineDTO disciplineDTO, Authentication authentication) {
         try {
             disciplineService.add(disciplineDTO);
             log.info("User '" + authentication.getName() + "' add new discipline '" + disciplineDTO.getName() + "'");
@@ -50,16 +52,20 @@ public class DisciplineRestController {
             log.error("Error when user '" + authentication.getName() + "' add  discipline; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
             return new ResponseEntity<>("Discipline '" + disciplineDTO.getName() + "' already exist", HttpStatus.BAD_REQUEST);
+        } catch (TransactionSystemException e) {
+            log.error("Error when user '" + authentication.getName() + "' add new  discipline; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("The specified discipline cannot be applied.", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Error when user '" + authentication.getName() + "' add  discipline; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("The specified discipline cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @ResponseBody
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> edit(@PathVariable("id") Long id, @RequestBody DisciplineDTO disciplineDTO,
+    public ResponseEntity<String> edit(@PathVariable("id") Long id, @Valid @RequestBody DisciplineDTO disciplineDTO,
                                        Authentication authentication) {
         try {
             disciplineService.edit(id, disciplineDTO, authentication.getName());
@@ -73,6 +79,10 @@ public class DisciplineRestController {
             log.error("Error when user '" + authentication.getName() + "' edit  discipline with id '" + id + "'; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (TransactionSystemException e) {
+            log.error("Error when user '" + authentication.getName() + "' add new  discipline; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("The specified discipline cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
 

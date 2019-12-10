@@ -7,6 +7,7 @@ import com.internship.adminpanel.exception.StreamNotFound;
 import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.Internship;
 import com.internship.adminpanel.model.Stream;
+import com.internship.adminpanel.model.StreamTime;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
 import com.internship.adminpanel.repository.DisciplineRepository;
@@ -67,7 +68,6 @@ public class StreamService {
     }
 
     public List<StreamDTO> filterByName(String name) throws StreamNotFound, Exception {
-        //Convert To StreamDTO Listed
         List<StreamDTO> streamDTOList = new ArrayList<>();
         for (Stream val : streamRepository.findStreamByNameContainingIgnoreCase(name)) {
             streamDTOList.add(new StreamDTO(val));
@@ -77,7 +77,7 @@ public class StreamService {
         return streamDTOList;
     }
 
-    public void addStream(StreamDTOFromUI streamUI) throws DisciplineNotFound, EmptyName, Exception {
+    public void addStream(StreamDTOFromUI streamUI) throws DisciplineNotFound, EmptyName {
         Optional<Discipline> disciplineOp = disciplineRepository.findById(streamUI.getDisciplineId());
         Discipline discipline;
         if (disciplineOp.isPresent()) {

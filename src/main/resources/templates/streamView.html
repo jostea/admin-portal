@@ -73,14 +73,18 @@
                     <h4 class="modal-title">New Stream</h4>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <label for="name">Enter stream title:</label>
-                        <input type="text" id="name"/>
-                        <label for="disciplines">Disciplines:</label>
-                        <select id="disciplines">
+                    <div class="container-fluid">
+                        <form>
+                            <div class="col-md-4">
+                                <label for="name">Enter stream title:</label>
+                                <input type="text" id="name"></div>
+                            <div class="col-md-6">
+                                <label for="disciplines">Disciplines:</label>
+                                <select id="disciplines" class="form-control">
                         </select>
-
-                    </form>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button id="addStream" class="btn btn-info btn-lg"
@@ -114,7 +118,6 @@
         </div>
     </div>
 </div>
-<script src="/js/users.js"></script>
 <script src="/js/navbar.js"></script>
 <script src="/js/streams.js"></script>
 <script src="/js/streamAdd.js"></script>

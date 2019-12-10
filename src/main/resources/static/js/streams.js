@@ -65,15 +65,15 @@ function edit(id) {
 function saveIdStream(par1, par2, par3, par4) {
     getAllDisciplinesEdit(par3, par4);
     flagIdStream = par1;
-    let modalDiv = "<form>\n" +
-        "                        <label for=\"stream-input\">\n" +
-        "                            Enter stream title:\n" +
-        "                        </label>\n" +
-        "                        <input type=\"text\" id=\"stream-input\" value='" + par2 + "'/>\n" +
-        "                        <label for=\"editDisciplines\">Disciplines:</label>\n" +
-        "                        <select id=\"editDisciplines\">\n" +
-        "                        </select>\n" +
-        "                    </form>";
+    let modalDiv = " <div class=\"container-fluid\">\n" +
+        "                        <form>\n" +
+        "                            <div class=\"col-md-4\">\n" +
+        "                                <label for=\"name\">Enter stream title:</label>" +
+        "                        <input type=\"text\" id=\"stream-input\" value='" + par2 + "'/></div>\n" +
+        "                      <div class=\"col-md-6\"><label for=\"editDisciplines\">Disciplines:</label>\n" +
+        "                        <select id=\"editDisciplines\" class=\"form-control\">\n" +
+        "                        </select></div>\n" +
+        "                    </form></div>";
     $("#formInModal").html(modalDiv);
 }
 
@@ -90,9 +90,14 @@ function fillTable(data) {
         tbody += `<td><button type='button' 
                         onclick='confirmDeleteStream(${data[i].id});' class='btn' 
                         data-target="#deleteModalStream"   data-toggle="modal">Delete</button></td>`;
+        tbody += `<td><button type='button' onclick="goTestStructurePage(${data[i].id})" class='btn'>Test Structure</button></td>`;
         tbody += "</tr>";
     }
     $("#streamsTable tbody").html(tbody);
+}
+
+function goTestStructurePage(id) {
+    window.location.href = "/testStructure/" + id;
 }
 
 $("#confirm-delete-stream-button").on("click", function () {
