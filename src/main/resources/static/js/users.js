@@ -91,6 +91,7 @@ $("#editUser").on("click", ".edit-user-apply", function () {
     }
 });
 
+
 $("#edit-user").on("click", function () {
     var val = document.querySelector("#db-id-edit").textContent;
     window.location.href = gOptions.aws_path + "/users/?edit=" + val;
