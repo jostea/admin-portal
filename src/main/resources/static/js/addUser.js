@@ -7,15 +7,15 @@ $("#addUser").on("click", function () {
     if (addUserRequestValidation()) {
         $.ajax({
             method: "POST",
-            url: "/users/add",
+            url: gOptions.aws_path + "/users/add",
             data: JSON.stringify(prepareDataToAddUser()),
             contentType: "application/json",
             beforeSend: function () {
                 $(".spinner").show();
                 $(".main-div").hide();
             },
-            success: function (response) {
-                window.location.replace("/users/?all");
+            success: function () {
+                window.location.replace("/users/?added");
             },
             error: function (response) {
                 $("#saveMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>")

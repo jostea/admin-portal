@@ -8,12 +8,13 @@
     <title>View selected task (question) </title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
-    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/alltasks.css}">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <body>
+
 <div>
 
     <!-- HEADER - NAVBAR -->
@@ -135,7 +136,7 @@
         </form>
     </div>
 </div>
-
+<script th:src="@{/js/config.js}"></script>
 <script>
 
     $(document).ready(populatePage());
@@ -146,7 +147,7 @@
         if (taskId >= 1){
             $.ajax({
                 method: "GET",
-                url: "/tasksrest/viewTask/" + taskId,
+                url: gOptions.aws_path + "/tasksrest/viewTask/" + taskId,
                 success: function (response) {
                     fillinForm(response);
                 }
@@ -210,7 +211,7 @@
     function getStreamsByDiscipline(discname) {
         $.ajax({
             method: "GET",
-            url: "/streamView/streams/discipline/" + discname,
+            url: gOptions.aws_path + "/streamView/streams/discipline/" + discname,
             success: function (response) {
                 populateStreamsDropdown(response);
             }
@@ -231,8 +232,8 @@
     }
 
 </script>
-<script src="/js/navbar.js"></script>
-<script src="/js/profile.js"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
 </body>
 </html>
 

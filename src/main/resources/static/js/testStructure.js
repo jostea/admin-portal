@@ -8,7 +8,7 @@ function getTimeForTest() {
     let streamId = url_string[url_string.length - 1];
     $.ajax({
         method: "GET",
-        url: "/testStructure/{stream_id}/streamtime/" + streamId,
+        url: gOptions.aws_path + "/testStructure/{stream_id}/streamtime/" + streamId,
         success: function (response) {
             viewTime(response);
         }
@@ -28,7 +28,7 @@ function setTimeForTest() {
     let streamId = url_string[url_string.length - 1];
     $.ajax({
         method: "PUT",
-        url: "/testStructure/{stream_id}/setTime/" + streamId,
+        url: gOptions.aws_path + "/testStructure/{stream_id}/setTime/" + streamId,
         data: JSON.stringify($("#inputTimeId").val()),
         contentType: "application/json",
         success: function () {
@@ -44,7 +44,7 @@ function getTestStructure() {
     fillAddForm();
     $.ajax({
         method: "GET",
-        url: "/streamView/streams/" + streamId,
+        url: gOptions.aws_path + "/streamView/streams/" + streamId,
         success: function (response) {
             $("#testTitle").html(`<h3>Test Structure for ${response.name} ${response.disciplineName}</h3>`);
             fillTestTable(response.testStructures);
@@ -80,7 +80,7 @@ $("#confirm-delete-structure-button").on("click", function () {
 function deleteStructure(structureId) {
     $.ajax({
         method: "DELETE",
-        url: "/testStructure/{stream_id}/delete/" + structureId,
+        url: gOptions.aws_path + "/testStructure/{stream_id}/delete/" + structureId,
         success: function () {
             getTestStructure();
         }, error(response) {
@@ -109,7 +109,7 @@ function confirmUpdate(index, testStructureId) {
     let oldAmountQuestions = $("#idOfInputNrQuestion" + index).val();
     $.ajax({
         method: "PUT",
-        url: "/testStructure/{stream_id}/update/" + testStructureId,
+        url: gOptions.aws_path + "/testStructure/{stream_id}/update/" + testStructureId,
         data: JSON.stringify(prepareDataForUpdateStructureData(index)),
         contentType: "application/json",
         success: function () {
@@ -123,7 +123,7 @@ function confirmUpdate(index, testStructureId) {
 function addStructureOfTest() {
     $.ajax({
         method: "POST",
-        url: "/testStructure/{stream_id}/add",
+        url: gOptions.aws_path + "/testStructure/{stream_id}/add",
         data: JSON.stringify(prepareDataForAddStructure()),
         contentType: "application/json",
         success: function () {

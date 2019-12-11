@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>List of tasks in the system</title>
 
-    <!--    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">-->
+    <!--    <link type="text/css" rel="stylesheet" th:href="@{/css/alltasks.css}">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -128,7 +128,7 @@
     </div>
 </div>
 
-
+<script th:src="@{/js/config.js}"></script>
 <script>
     $(document).ready(getAllTasks());
 
@@ -138,7 +138,7 @@
         //fillin Table of General Tasks
         $.ajax({
             method: "GET",
-            url: "/tasksrest/all",
+            url: gOptions.aws_path + "/tasksrest/all",
             success: function (response) {
                 fillTasks(response);
             }
@@ -147,7 +147,7 @@
         //fillin Table of SQL Tasks
         $.ajax({
             method: "GET",
-            url: "/tasksrest/allSql",
+            url: gOptions.aws_path + "/tasksrest/allSql",
             success: function (response) {
                 fillSqlTasks(response);
             }
@@ -159,13 +159,13 @@
         //modify one task
         $.ajax({
             method: "PUT",
-            url: "/tasksrest/disableTask",
+            url: gOptions.aws_path + "/tasksrest/disableTask",
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function () {
                 $("#myModal").modal('show');
                 async function sl() {
-                    window.location.href = "/tasks/";
+                    window.location.href = gOptions.aws_path + "/tasks/";
                 }
             }
         })
@@ -295,21 +295,21 @@
         //modify one task
         $.ajax({
             method: "PUT",
-            url: "/tasksrest/disableSqlTask",
+            url: gOptions.aws_path + "/tasksrest/disableSqlTask",
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function () {
                 $("#myModal").modal('show');
                 async function sl() {
-                    window.location.href = "/tasks/";
+                    window.location.href = gOptions.aws_path + "/tasks/";
                 }
             }
         })
     }
 
 </script>
-<script src="/js/navbar.js"></script>
-<script src="/js/profile.js"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
 </body>
 </html>
 

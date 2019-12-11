@@ -43,7 +43,7 @@ function callConfirmWindowDiscipline(par1) {
 function deleteDiscipline(par) {
     $.ajax({
         method: "DELETE",
-        url: "/discipline/delete/" + par,
+        url: gOptions.aws_path + "/discipline/delete/" + par,
         success: function () {
             getAllDisciplines();
         }, error(response) {
@@ -55,7 +55,7 @@ function deleteDiscipline(par) {
 function addDiscipline() {
     $.ajax({
         method: "POST",
-        url: "/discipline/add",
+        url: gOptions.aws_path + "/discipline/add",
         data: JSON.stringify(prepareDataDisciplineAdd()),
         contentType: "application/json",
         success: function (response) {
@@ -71,7 +71,7 @@ function addDiscipline() {
 function getAllDisciplines() {
     $.ajax({
         method: "GET",
-        url: "/discipline/disciplines",
+        url: gOptions.aws_path + "/discipline/disciplines",
         success: function (response) {
             fillTableDiscipline(response);
         }, error() {
@@ -84,7 +84,7 @@ function getAllDisciplines() {
 function editDiscipline(id) {
     $.ajax({
         method: "PUT",
-        url: "/discipline/update/" + id,
+        url: gOptions.aws_path + "/discipline/update/" + id,
         data: JSON.stringify(prepareDataDiscipline()),
         contentType: "application/json",
         success: function (response) {
@@ -113,7 +113,7 @@ function findByNameDiscipline(val) {
     } else {
         $.ajax({
             method: "GET",
-            url: "/discipline/filterByName" +
+            url: gOptions.aws_path + "/discipline/filterByName" +
                 "/" + val,
             success: function (response) {
                 fillTableDiscipline(response);

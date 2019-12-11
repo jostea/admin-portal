@@ -10,6 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
+<script th:src="@{/js/config.js}"></script>
 <div th:replace="fragments/topnavbar :: navbar"></div>
 
 <div class="container">
@@ -60,7 +61,7 @@
     </div>
 </div>
 
-<script src="/js/navbar.js"></script>
-<script src="/js/testStructure.js"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/testStructure.js}"></script>
 </body>
 </html>
