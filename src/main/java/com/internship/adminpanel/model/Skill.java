@@ -37,5 +37,4 @@ public class Skill {
     @JoinTable(name = "skills_stream_table", joinColumns = @JoinColumn(name = "skill_id"),
             inverseJoinColumns = @JoinColumn(name = "stream_id"))
     private List<Stream> streams;
-
 }

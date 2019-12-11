@@ -6,6 +6,7 @@ import com.internship.adminpanel.model.Skill;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.dto.skill.SkillDTO;
 import com.internship.adminpanel.model.dto.skill.SkillDTOFromUI;
+import com.internship.adminpanel.model.dto.skill.SkillsSpecifiedByStreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.enums.SkillsTypeEnum;
 import com.internship.adminpanel.repository.SkillsRepository;
@@ -73,6 +74,19 @@ public class SkillsService {
             skillsRepository.deleteById(id);
         else
             throw new SkillNotFound(id);
+    }
+
+    public List<SkillsSpecifiedByStreamDTO> getSkillForSpecifiedStream(Long streamId) {
+        Optional<Stream> optionalStream = streamRepository.findById(streamId);
+        log.info(optionalStream + "");
+        List<SkillsSpecifiedByStreamDTO> skillDTOS = new ArrayList<>();
+        if (optionalStream.isPresent()) {
+            Stream stream = optionalStream.get();
+            for (Skill val : stream.getSkill()) {
+                skillDTOS.add(new SkillsSpecifiedByStreamDTO(val));
+            }
+        }
+        return skillDTOS;
     }
 
     private List<Stream> getStreamsByIds(SkillDTOFromUI skillDTOFromUI) {

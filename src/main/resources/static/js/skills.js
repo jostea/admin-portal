@@ -328,6 +328,7 @@ function getAddedStreamIds() {
         listStreamIds.push(currentStreamId.valueOf());
     });
     listStreamIds.splice(0, 1);
+    console.log(listStreamIds);
     return listStreamIds;
 }
 
