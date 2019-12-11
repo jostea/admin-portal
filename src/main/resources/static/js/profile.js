@@ -15,19 +15,23 @@ $("#editPasswordSpan").on("click", "#edit-password-apply", function () {
     var passrep = document.querySelector("#edit-password-repeat").value;
     if(passrep === passnew) {
         if (passnew.length >=8) {
-            var val = document.querySelector("#goProfile").textContent;
-            $.ajax({
-                method: "PUT",
-                url: "/profile/" + val,
-                data: JSON.stringify(prepareDataToEditPassword()),
-                contentType: "application/json",
-                success: function () {
-                    window.location.replace("/landing");
-                },
-                error: function (response) {
-                    $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>");
-                }
-            });
+            if (!(/\s/.test(passnew))) {
+                var val = document.querySelector("#goProfile").textContent;
+                $.ajax({
+                    method: "PUT",
+                    url: "/profile/" + val,
+                    data: JSON.stringify(prepareDataToEditPassword()),
+                    contentType: "application/json",
+                    success: function () {
+                        window.location.replace("/landing");
+                    },
+                    error: function (response) {
+                        $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>");
+                    }
+                });
+            } else {
+                $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>The password cannot contain spaces</p></div>");
+            }
         } else {
             $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>New password should contain at least 8 characters</p></div>");
         }
