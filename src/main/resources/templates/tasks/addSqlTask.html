@@ -10,7 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="/css/alltasks.css">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/alltasks.css}">
 
 </head>
 
@@ -196,14 +196,14 @@
         </form>
     </div>
 </div>
-
+<script th:src="@{/js/config.js}"></script>
 <script>
 
     $(document).ready(setImagePath());
 
     function setImagePath() {
         let idSqlGroup = $("#sqlGroup").val();
-        let callToRestController = "/tasksrest/imageDownload/" + idSqlGroup;
+        let callToRestController = gOptions.aws_path + "/tasksrest/imageDownload/" + idSqlGroup;
         $("#sqlGroupImage").attr("src", callToRestController);
     }
 
@@ -223,11 +223,11 @@
         event.preventDefault();
         $.ajax({
             method: "POST",
-            url: "/tasksrest/addSqlTask",
+            url: gOptions.aws_path + "/tasksrest/addSqlTask",
             data: JSON.stringify(prepareData()),
             contentType: "application/json",
             success: function () {
-                location.href = "/tasks/";
+                location.href = gOptions.aws_path + "/tasks/";
             },
             error: function (response) {
                 showPopUp("Error while creating SQL Task", response.responseText);
@@ -292,7 +292,7 @@
     function getStreamsByDiscipline(discname) {
         $.ajax({
             method: "GET",
-            url: "/streamView/streams/discipline/" + discname,
+            url: gOptions.aws_path + "/streamView/streams/discipline/" + discname,
             success: function (response) {
                 populateStreamsDropdown(response);
             }
@@ -373,8 +373,8 @@
     }
 
 </script>
-<script src="/js/navbar.js"></script>
-<script src="/js/profile.js"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
 </body>
 </html>
 

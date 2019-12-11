@@ -28,4 +28,11 @@ public class StreamTime {
     @NotNull(message = "Time limit to pass the test is required")
     @Column(name = "time_min")
     private Integer timeTest;
+
+    @Override
+    public String toString() {
+        return "StreamTime{" +
+                "timeTest=" + timeTest +
+                '}';
+    }
 }

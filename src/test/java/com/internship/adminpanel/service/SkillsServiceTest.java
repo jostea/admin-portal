@@ -174,7 +174,6 @@ public class SkillsServiceTest {
                 .id(1L)
                 .name(name)
                 .typeStr("Soft")
-                .streams(createStreamDTOList())
                 .build();
     }
 

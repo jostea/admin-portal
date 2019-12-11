@@ -6,6 +6,7 @@ import com.internship.adminpanel.exception.SkillNotFound;
 import com.internship.adminpanel.model.Skill;
 import com.internship.adminpanel.model.dto.skill.SkillDTO;
 import com.internship.adminpanel.model.dto.skill.SkillDTOFromUI;
+import com.internship.adminpanel.model.dto.skill.SkillsSpecifiedByStreamDTO;
 import com.internship.adminpanel.service.SkillsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,5 +100,11 @@ public class SkillsRestController {
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("Couldn't delete skill", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/skillsforStream/{stream_id}")
+    public ResponseEntity<List<SkillsSpecifiedByStreamDTO>> getSkillSpecifiedByStreamId(@PathVariable("stream_id") Long streamId
+            , Authentication authentication) {
+        return new ResponseEntity<>(skillsService.getSkillForSpecifiedStream(streamId), HttpStatus.OK);
     }
 }

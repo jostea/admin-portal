@@ -29,7 +29,7 @@ function prepareForUpdate(skillId, skillOldName, skillType) {
     getAllStreamsForEditSkill();
     $.ajax({
         method: "GET",
-        url: "/skillsView/skill/" + flagSkillEdit,
+        url: gOptions.aws_path + "/skillsView/skill/" + flagSkillEdit,
         success: function (response) {
             fillTableWithExistSkills(response.streams);
         }
@@ -87,7 +87,7 @@ function confirmDeleteSkill(par1) {
 function deleteSkill(par) {
     $.ajax({
         method: "DELETE",
-        url: "/skillsView/delete/" + par,
+        url: gOptions.aws_path + "/skillsView/delete/" + par,
         success: function () {
             getAllSkills();
         }
@@ -97,7 +97,7 @@ function deleteSkill(par) {
 function getAllSkills() {
     $.ajax({
         method: "GET",
-        url: "/skillsView/all",
+        url: gOptions.aws_path + "/skillsView/all",
         success: function (response) {
             fillTableSkills(response);
             $("#alertSkill").html("");
@@ -108,7 +108,7 @@ function getAllSkills() {
 function addSkill() {
     $.ajax({
         method: "POST",
-        url: "/skillsView/add",
+        url: gOptions.aws_path + "/skillsView/add",
         data: JSON.stringify(prepareDataForAddSkill()),
         contentType: "application/json",
         success: function () {
@@ -124,7 +124,7 @@ function addSkill() {
 function updateSkill() {
     $.ajax({
         method: "PUT",
-        url: "/skillsView/update/" + flagSkillEdit,
+        url: gOptions.aws_path + "/skillsView/update/" + flagSkillEdit,
         data: JSON.stringify(prepareDataForUpdateSkill()),
         contentType: "application/json",
         success: function () {
@@ -137,7 +137,7 @@ function updateSkill() {
 function getAllStreamsForAddSkill() {
     $.ajax({
         method: "GET",
-        url: "/discipline/disciplines",
+        url: gOptions.aws_path + "/discipline/disciplines",
         success: function (response) {
             createAddedTable();
             fillSelectorDiscipline(response);
@@ -150,7 +150,7 @@ function getAllStreamsForAddSkill() {
 function getAllStreamsForEditSkill() {
     $.ajax({
         method: "GET",
-        url: "/discipline/disciplines",
+        url: gOptions.aws_path + "/discipline/disciplines",
         success: function (response) {
             fillSelectorEditDisciplineForSkill(response);
             fillSelectorEditStreamForSkill();
@@ -188,7 +188,7 @@ function fillSelectorEditStreamForSkill() {
     let option = "";
     $.ajax({
         method: "GET",
-        url: "/streamView/streams",
+        url: gOptions.aws_path + "/streamView/streams",
         success: function (response) {
             for (let i = 0; i < response.length; i++) {
                 if (($("#newDisciplineForSkill").val()) === (response[i].disciplineId + "")) {
@@ -204,7 +204,7 @@ function fillSelectorAddStreamForSkill() {
     let option = "";
     $.ajax({
         method: "GET",
-        url: "/streamView/streams",
+        url: gOptions.aws_path + "/streamView/streams",
         success: function (response) {
             for (let i = 0; i < response.length; i++) {
                 if (($("#disciplineForSkill").val()) === (response[i].disciplineId + "")) {
@@ -231,7 +231,7 @@ $("#updateSkillButton").on("click", function () {
 function getIdOfAddedStreams(id) {
     $.ajax({
         method: "GET",
-        url: "/streamView/streams/" + id,
+        url: gOptions.aws_path + "/streamView/streams/" + id,
         success: function (response) {
             fillTableWithAddedSkills(response);
         }
@@ -241,7 +241,7 @@ function getIdOfAddedStreams(id) {
 function getIdOfUpdatedStreams(id) {
     $.ajax({
         method: "GET",
-        url: "/streamView/streams/" + id,
+        url: gOptions.aws_path + "/streamView/streams/" + id,
         success: function (response) {
             fillTableWithUpdatedSkills(response);
         }
@@ -328,6 +328,7 @@ function getAddedStreamIds() {
         listStreamIds.push(currentStreamId.valueOf());
     });
     listStreamIds.splice(0, 1);
+    console.log(listStreamIds);
     return listStreamIds;
 }
 

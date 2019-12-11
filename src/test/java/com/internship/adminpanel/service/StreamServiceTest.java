@@ -1,9 +1,6 @@
 package com.internship.adminpanel.service;
 
-import com.internship.adminpanel.exception.DisciplineNotFound;
-import com.internship.adminpanel.exception.EmptyName;
-import com.internship.adminpanel.exception.StreamHasTasks;
-import com.internship.adminpanel.exception.StreamNotFound;
+import com.internship.adminpanel.exception.*;
 import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.Task;
@@ -222,7 +219,7 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionStreamNotFoundWhileDeleteStream() throws StreamNotFound, StreamHasTasks {
+    public void shouldThrowExceptionStreamNotFoundWhileDeleteStream() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
         Long id = 1L;
         exception.expect(StreamNotFound.class);
         exception.expectMessage(id + "");
@@ -232,7 +229,7 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhileDeleteStreamWithExistingTask() throws StreamNotFound, StreamHasTasks {
+    public void shouldThrowExceptionWhileDeleteStreamWithExistingTask() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
         exception.expect(StreamHasTasks.class);
         Long id = 1L;
         List<Task> taskList = new ArrayList<>();

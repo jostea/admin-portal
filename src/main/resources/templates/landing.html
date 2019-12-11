@@ -12,7 +12,8 @@
 
 <div th:replace="fragments/topnavbar :: navbar">
 </div>
-<script src="/js/navbar.js"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/config.js}"></script>
 
 <header class="masthead">
     <div class="container h-100">

@@ -16,7 +16,7 @@ $(document).ready(function () {
                 case "one":
                     $.ajax({
                         method: "GET",
-                        url: "/users/" + param,
+                        url: gOptions.aws_path + "/users/" + param,
                         success: function (response) {
                             fillTableForOne(response);
                             history.pushState({page: 1}, "one", "?one=" + param);
@@ -29,7 +29,7 @@ $(document).ready(function () {
                 case "edit":
                     $.ajax({
                         method: "GET",
-                        url: "/users/edit/" + param,
+                        url: gOptions.aws_path + "/users/edit/" + param,
                         success: function (response) {
                             showUserDetails(response);
                             history.pushState({page: 2}, "edit", "?edit=" + param);
@@ -57,7 +57,7 @@ $(".view-single-user-div").on("click", '.enable-disable-user',  function() {
         var val = document.querySelector("#db-id-edit").textContent;
         $.ajax({
             method: "PUT",
-            url: "/users/delete/" + val,
+            url: gOptions.aws_path + "/users/delete/" + val,
             data: JSON.stringify(),
             contentType: "application/json",
             success: function () {
@@ -69,7 +69,7 @@ $(".view-single-user-div").on("click", '.enable-disable-user',  function() {
 
 $(".view-users-div").on("click", ".view-user", function () {
     var val = this.parentNode.parentElement.querySelector(".db-id").textContent;
-    window.location.href = "/users/?one=" + val;
+    window.location.href = gOptions.aws_path + "/users/?one=" + val;
 });
 
 $("#editUser").on("click", ".edit-user-apply", function () {
@@ -78,11 +78,11 @@ $("#editUser").on("click", ".edit-user-apply", function () {
     if (editRequestValidation()) {
         $.ajax({
             method: "PUT",
-            url: "/users/edit/" + val,
+            url: gOptions.aws_path + "/users/edit/" + val,
             data: JSON.stringify(prepareDataToEditUser()),
             contentType: "application/json",
             success: function () {
-                window.location = "/users/?all=added";
+                window.location = gOptions.aws_path + "/users/?all=added";
             },
             error: function (response) {
                 $("#editUserMessage").html("<div class='alert alert-danger' role='alert'><p>Failed to edit. Looks like the credentials you're trying to set are already present in the system " + response.responseText + "</p></div>")
@@ -93,13 +93,13 @@ $("#editUser").on("click", ".edit-user-apply", function () {
 
 $("#edit-user").on("click", function () {
     var val = document.querySelector("#db-id-edit").textContent;
-    window.location.href = "/users/?edit=" + val;
+    window.location.href = gOptions.aws_path + "/users/?edit=" + val;
 });
 
 function getAllUsers() {
     $.ajax({
         method: "GET",
-        url: "/users/all",
+        url: gOptions.aws_path + "/users/all",
         success: function (response) {
             if (response.length===0) {
                 $("#usersInfoParagraph").html("No users in the system yet");

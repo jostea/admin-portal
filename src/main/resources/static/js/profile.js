@@ -2,7 +2,7 @@ $(document).ready(function () {
         var val = document.querySelector("#goProfile").textContent;
         $.ajax({
             method: "GET",
-            url: "/profile/" + val,
+            url: gOptions.aws_path + "/profile/" + val,
             success: function (response) {
                 getProfile(response);
             }
@@ -19,7 +19,7 @@ $("#editPasswordSpan").on("click", "#edit-password-apply", function () {
                 var val = document.querySelector("#goProfile").textContent;
                 $.ajax({
                     method: "PUT",
-                    url: "/profile/" + val,
+                    url: gOptions.aws_path + "/profile/" + val,
                     data: JSON.stringify(prepareDataToEditPassword()),
                     contentType: "application/json",
                     success: function () {

@@ -1,3 +1,8 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <script th:src="@{/js/config.js}"></script>
+</head>
 <div th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
     <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
         <nav class="navbar navbar-default">
@@ -27,3 +32,4 @@
         </nav>
     </div>
 </div>
+</html>

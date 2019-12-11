@@ -1,7 +1,7 @@
 function getAllDisciplinesAdd() {
     $.ajax({
         method: "GET",
-        url: "/discipline/disciplines",
+        url: gOptions.aws_path + "/discipline/disciplines",
         success: function (response) {
             fillSelectorAdd(response);
         }
@@ -19,7 +19,7 @@ function fillSelectorAdd(data) {
 function addStream() {
     $.ajax({
         method: "POST",
-        url: "/streamView/stream/add",
+        url: gOptions.aws_path + "/streamView/stream/add",
         data: JSON.stringify(prepareDataAdd()),
         contentType: "application/json",
         success: function () {

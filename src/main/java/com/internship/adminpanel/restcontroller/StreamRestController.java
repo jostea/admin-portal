@@ -1,9 +1,6 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.internship.adminpanel.exception.DisciplineNotFound;
-import com.internship.adminpanel.exception.EmptyName;
-import com.internship.adminpanel.exception.StreamHasTasks;
-import com.internship.adminpanel.exception.StreamNotFound;
+import com.internship.adminpanel.exception.*;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
 import com.internship.adminpanel.service.StreamService;
@@ -75,7 +72,12 @@ public class StreamRestController {
             log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("This stream has tasks", HttpStatus.BAD_REQUEST);
-        } catch (StreamNotFound e) {
+        }catch (StreamHasSkill e) {
+            log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
+                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("This stream has skill", HttpStatus.BAD_REQUEST);
+        }
+        catch (StreamNotFound e) {
             log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("This stream not found", HttpStatus.NOT_FOUND);

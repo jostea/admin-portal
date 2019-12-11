@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
+<script th:src="@{/js/config.js}"></script>
 <div th:replace="fragments/topnavbar :: navbar"></div>
 <div class="container">
     <div id="alertStream"></div>
@@ -118,8 +119,8 @@
         </div>
     </div>
 </div>
-<script src="/js/navbar.js"></script>
-<script src="/js/streams.js"></script>
-<script src="/js/streamAdd.js"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/streams.js}"></script>
+<script th:src="@{/js/streamAdd.js}"></script>
 </body>
 </html>

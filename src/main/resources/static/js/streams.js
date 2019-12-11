@@ -6,7 +6,7 @@ let streamIdOnDL;
 function deleteStream(val) {
     $.ajax({
         method: "DELETE",
-        url: "/streamView/streams/delete/" + val,
+        url: gOptions.aws_path + "/streamView/streams/delete/" + val,
         success: function () {
             getAllStreams();
         }, error(response) {
@@ -21,7 +21,7 @@ function filterByName(val) {
     } else {
         $.ajax({
             method: "GET",
-            url: "/streamView/streams/name/" + val,
+            url: gOptions.aws_path + "/streamView/streams/name/" + val,
             success: function (response) {
                 fillTable(response);
             }, error: function (response) {
@@ -36,7 +36,7 @@ function filterByName(val) {
 function getAllStreams() {
     $.ajax({
         method: "GET",
-        url: "/streamView/streams",
+        url: gOptions.aws_path + "/streamView/streams",
         success: function (response) {
             fillTable(response);
         },
@@ -51,7 +51,7 @@ function getAllStreams() {
 function edit(id) {
     $.ajax({
         method: "PUT",
-        url: "/streamView/stream/edit/" + id,
+        url: gOptions.aws_path + "/streamView/stream/edit/" + id,
         data: JSON.stringify(prepareDataE()),
         contentType: "application/json",
         success: function () {
@@ -97,7 +97,7 @@ function fillTable(data) {
 }
 
 function goTestStructurePage(id) {
-    window.location.href = "/testStructure/" + id;
+    window.location.href = gOptions.aws_path + "/testStructure/" + id;
 }
 
 $("#confirm-delete-stream-button").on("click", function () {
@@ -110,7 +110,7 @@ function confirmDeleteStream(par1) {
 function getAllDisciplinesEdit(DisciplineName, DisciplineId) {
     $.ajax({
         method: "GET",
-        url: "/discipline/disciplines",
+        url: gOptions.aws_path + "/discipline/disciplines",
         success: function (response) {
             fillSelectorEdit(response, DisciplineName, DisciplineId);
         }

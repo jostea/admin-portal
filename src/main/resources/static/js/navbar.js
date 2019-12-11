@@ -1,43 +1,43 @@
 $("#goUsers").on("click", function () {
-    window.location.href = "/users/?all";
+    window.location.href = gOptions.aws_path + "/users/";
 });
 
 $("#goStreams").on("click", function () {
-    window.location.href = "/streamView/";
+    window.location.href = gOptions.aws_path + "/streamView/";
 });
 
 $("#goTasks").on("click", function () {
-    window.location.href = "/tasks/";
+    window.location.href = gOptions.aws_path + "/tasks/";
 });
 
 $("#goLogout").on("click", function () {
     $.ajax({
         method: "POST",
-        url: "/logout",
+        url: gOptions.aws_path + "/logout",
         success: function () {
-            window.location.replace("/");
+            window.location.replace(gOptions.aws_path + "/");
         }
     })
 });
 
 $("#goHome").on("click", function () {
-    window.location.replace("/landing");
+    window.location.replace(gOptions.aws_path + "/landing");
 });
 
 $("#goProfile").on("click", function () {
-    window.location.replace("/profile")
+    window.location.replace(gOptions.aws_path + "/profile")
 });
 
 $("#goDisciplines").on("click", function () {
-    window.location.replace("/disciplineView/");
+    window.location.replace(gOptions.aws_path + "/disciplineView/");
 });
 
 $("#goSkills").on("click", function () {
-    window.location.replace("/skillsView/");
+    window.location.replace(gOptions.aws_path + "/skillsView/");
 });
 
 $("#goSwagger").on("click", function () {
-    window.open("/swagger-ui.html#/",'_blank')
+    window.open(gOptions.aws_path + "/swagger-ui.html#/",'_blank')
 });
 
 
