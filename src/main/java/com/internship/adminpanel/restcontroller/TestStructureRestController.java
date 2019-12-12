@@ -56,6 +56,10 @@ public class TestStructureRestController {
             log.error("Error when user '" + authentication.getName() + "' add  test structure; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
             return new ResponseEntity<>("Test structure already exist", HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e) {
+            log.error("Error when user '" + authentication.getName() + "' add  test structure with invalid number of questions; error message: " + e.getMessage()
+                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
+            return new ResponseEntity<>("Number of question must be higher then 0", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -75,6 +79,10 @@ public class TestStructureRestController {
             log.error("Error when user '" + authentication.getName() + "' update  test structure; error message: " + e.getMessage()
                     + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
             return new ResponseEntity<>("Test structure already exist", HttpStatus.BAD_REQUEST);
+        }catch (IllegalArgumentException e) {
+            log.error("Error when user '" + authentication.getName() + "' update  test structure with invalid number of questions; error message: " + e.getMessage()
+                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
+            return new ResponseEntity<>("Number of question must be higher then 0", HttpStatus.BAD_REQUEST);
         }
     }
 

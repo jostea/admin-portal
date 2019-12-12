@@ -55,14 +55,14 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldAddTestStructure() throws StreamNotFound {
+    public void shouldAddTestStructure() throws StreamNotFound, IllegalArgumentException {
         ResponseEntity<String> responseEntity = testStructureRestController.add(createTestStructureFromUI(), authentication);
         verify(testStructureService).add(createTestStructureFromUI());
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    public void shouldUpdateTestStructure() throws StreamNotFound, TestStructureNotFound {
+    public void shouldUpdateTestStructure() throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         Long id = 1L;
         ResponseEntity<String> responseEntity = testStructureRestController.update(id, createTestStructureFromUI(), authentication);
         verify(testStructureService).update(id, createTestStructureFromUI());
@@ -94,7 +94,7 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldThrowExceptionStreamNotFoundWhenAddTest() throws StreamNotFound {
+    public void shouldThrowExceptionStreamNotFoundWhenAddTest() throws StreamNotFound, IllegalArgumentException {
         doThrow(new StreamNotFound("")).when(testStructureService).add(createTestStructureFromUI());
         ResponseEntity<String> responseEntity = testStructureRestController.add(createTestStructureFromUI(), authentication);
         verify(testStructureService).add(createTestStructureFromUI());
@@ -102,7 +102,7 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldThrowExceptionAlreadyExistWhenAddTest() throws DataIntegrityViolationException, StreamNotFound {
+    public void shouldThrowExceptionAlreadyExistWhenAddTest() throws DataIntegrityViolationException, StreamNotFound, IllegalArgumentException {
         doThrow(new DataIntegrityViolationException("")).when(testStructureService).add(createTestStructureFromUI());
         ResponseEntity<String> responseEntity = testStructureRestController.add(createTestStructureFromUI(), authentication);
         verify(testStructureService).add(createTestStructureFromUI());
@@ -111,7 +111,7 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldThrowExceptionStreamNotFoundWhenEditTest() throws StreamNotFound, TestStructureNotFound {
+    public void shouldThrowExceptionStreamNotFoundWhenEditTest() throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         doThrow(new StreamNotFound("")).when(testStructureService).update(1L, createTestStructureFromUI());
         ResponseEntity<String> responseEntity = testStructureRestController.update(1L, createTestStructureFromUI(), authentication);
         verify(testStructureService).update(1L, createTestStructureFromUI());
@@ -119,7 +119,7 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldThrowExceptionTestStructureNotFoundWhenEditTest() throws StreamNotFound, TestStructureNotFound {
+    public void shouldThrowExceptionTestStructureNotFoundWhenEditTest() throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         doThrow(new TestStructureNotFound(1L)).when(testStructureService).update(1L, createTestStructureFromUI());
         ResponseEntity<String> responseEntity = testStructureRestController.update(1L, createTestStructureFromUI(), authentication);
         verify(testStructureService).update(1L, createTestStructureFromUI());
@@ -127,7 +127,7 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldThrowExceptionAlreadyExistWhenEditTest() throws DataIntegrityViolationException, StreamNotFound, TestStructureNotFound {
+    public void shouldThrowExceptionAlreadyExistWhenEditTest() throws DataIntegrityViolationException, StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         doThrow(new DataIntegrityViolationException("")).when(testStructureService).update(1L, createTestStructureFromUI());
         ResponseEntity<String> responseEntity = testStructureRestController.update(1L, createTestStructureFromUI(), authentication);
         verify(testStructureService).update(1L, createTestStructureFromUI());

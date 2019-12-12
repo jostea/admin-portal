@@ -79,3 +79,4 @@ public class Stream {
         return Objects.hash(name, discipline);
     }
 }
+

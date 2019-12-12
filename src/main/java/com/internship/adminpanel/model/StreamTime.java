@@ -22,7 +22,7 @@ public class StreamTime {
     private Long id;
 
     @NotNull(message = "Stream is required")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "stream_id", referencedColumnName = "id")
     private Stream stream;
 
@@ -49,5 +49,11 @@ public class StreamTime {
     @Override
     public int hashCode() {
         return Objects.hash(id, timeTest);
+    }
+
+    public Integer getTimeTest() {
+        if (timeTest == null)
+            timeTest = 0;
+        return timeTest;
     }
 }

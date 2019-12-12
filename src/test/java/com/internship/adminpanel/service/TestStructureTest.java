@@ -51,7 +51,7 @@ public class TestStructureTest {
     }
 
     @Test
-    public void shouldReturnedAll() throws TestStructureNotFound {
+    public void shouldReturnedAll(){
         List<TestStructureDTO> testStructureDTOS = new ArrayList<>();
         testStructureDTOS.add(createTestStructureDTO());
         List<TestStructure> testStructures = new ArrayList<>();
@@ -63,7 +63,7 @@ public class TestStructureTest {
     }
 
     @Test
-    public void shouldAddTestStructure() throws StreamNotFound {
+    public void shouldAddTestStructure() throws StreamNotFound, IllegalArgumentException {
         TestStructureDTOFromUI testStructureDTOFromUI = createTestStructureFromUI();
         TestStructure testStructure = createTestStructureByUi(testStructureDTOFromUI);
         when(streamRepository.findById(1L)).thenReturn(Optional.of(createStream()));
@@ -73,7 +73,7 @@ public class TestStructureTest {
     }
 
     @Test
-    public void shouldUpdateTestStructure() throws StreamNotFound, TestStructureNotFound {
+    public void shouldUpdateTestStructure() throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         Long id = 1L;
         when(testStructureRepository.findById(id)).thenReturn(Optional.of(createTestStructure()));
         when(streamRepository.findById(id)).thenReturn(Optional.of(createStream()));
@@ -112,7 +112,7 @@ public class TestStructureTest {
     }
 
     @Test
-    public void shouldThrowExceptionTestStructureNotFoundWhenUpdateTestStructure() throws StreamNotFound, TestStructureNotFound {
+    public void shouldThrowExceptionTestStructureNotFoundWhenUpdateTestStructure() throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         Long id = 1L;
         exception.expect(TestStructureNotFound.class);
         exception.expectMessage(id + "");
@@ -122,7 +122,7 @@ public class TestStructureTest {
     }
 
     @Test
-    public void shouldThrowExceptionStreamNotFoundWhenEditTest() throws StreamNotFound, TestStructureNotFound {
+    public void shouldThrowExceptionStreamNotFoundWhenEditTest() throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         exception.expect(StreamNotFound.class);
         exception.expectMessage("");
         Long id = 1L;

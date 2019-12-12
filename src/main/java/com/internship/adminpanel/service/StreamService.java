@@ -1,15 +1,10 @@
 package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.exception.*;
-import com.internship.adminpanel.model.Discipline;
-import com.internship.adminpanel.model.Internship;
-import com.internship.adminpanel.model.Stream;
-import com.internship.adminpanel.model.StreamTime;
+import com.internship.adminpanel.model.*;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
-import com.internship.adminpanel.repository.DisciplineRepository;
-import com.internship.adminpanel.repository.InternshipRepository;
-import com.internship.adminpanel.repository.StreamRepository;
+import com.internship.adminpanel.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +20,16 @@ import java.util.Optional;
 public class StreamService {
 
     private final StreamRepository streamRepository;
+
     private final DisciplineRepository disciplineRepository;
+
     private final InternshipRepository internshipRepository;
+
+    private final StreamTimeRepository streamTimeRepository;
+
+    private final TestStructureRepository testStructureRepository;
+
+    private final CandidateRepository candidateRepository;
 
     public StreamDTO findById(Long id) throws StreamNotFound {
         Optional<Stream> stream = streamRepository.findById(id);
@@ -54,15 +57,59 @@ public class StreamService {
         return streamsInternship;
     }
 
-    public void deleteById(Long id) throws StreamHasTasks, StreamNotFound, StreamHasSkill {
+    public void deleteById(Long id) throws StreamNotFound, StreamHasCandidate {
         Optional<Stream> streamOptional = streamRepository.findById(id);
         if (streamOptional.isPresent()) {
-            if (streamOptional.get().getTasks().size() > 0) {
-                throw new StreamHasTasks(streamOptional.get().getName());
+            Stream stream = streamOptional.get();
+            List<Candidate> candidates = candidateRepository.findCandidateByStream(stream);
+            if (candidates.size() > 0) {
+                throw new StreamHasCandidate(id + "");
             }
-            if (streamOptional.get().getSkill().size() > 0)
-                throw new StreamHasSkill(id +  "");
-        } else throw new StreamNotFound(id + "");
+            startDeleteCascade(stream, id);
+        } else {
+            throw new StreamNotFound(id + "");
+        }
+    }
+
+    private void startDeleteCascade(Stream stream, Long id) {
+        List<Internship> internships = internshipRepository.findAll();
+        if (internships.size() > 0) {
+            for (Internship internship1 : internships) {
+                internship1.getStreams().remove(stream);
+            }
+        }
+        if (stream.getTasks().size() > 0) {
+            for (Task task : stream.getTasks()) {
+                List<Stream> stream1 = task.getStreams();
+                stream1.remove(stream);
+            }
+        }
+        if (stream.getCodeTasks().size() > 0) {
+            for (CodeTask task : stream.getCodeTasks()) {
+                List<Stream> stream1 = task.getStreams();
+                stream1.remove(stream);
+            }
+        }
+        if (stream.getSqlTasks().size() > 0) {
+            for (SqlTask task : stream.getSqlTasks()) {
+                List<Stream> stream1 = task.getStreams();
+                stream1.remove(stream);
+            }
+        }
+        if (stream.getSkill().size() > 0) {
+            for (Skill skill : stream.getSkill()) {
+                List<Stream> stream1 = skill.getStreams();
+                stream1.remove(stream);
+            }
+        }
+        if (stream.getTestStructures().size() > 0) {
+            for (TestStructure ts : stream.getTestStructures()) {
+                testStructureRepository.deleteById(ts.getId());
+            }
+        }
+        if (stream.getStreamTime() != null) {
+            streamTimeRepository.deleteById(stream.getStreamTime().getId());
+        }
         streamRepository.deleteById(id);
     }
 
