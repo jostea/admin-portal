@@ -15,7 +15,7 @@ $("#addUser").on("click", function () {
                 $(".main-div").hide();
             },
             success: function () {
-                window.location.replace("/users/?added");
+                window.location.replace(gOptions.aws_path + "/users/?added");
             },
             error: function (response) {
                 $("#saveMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>")

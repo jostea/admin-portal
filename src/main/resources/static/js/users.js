@@ -40,10 +40,10 @@ $(document).ready(function () {
                     $(".edit-user-div").show();
                     break;
                 default:
-                    window.location.replace("/users/?all");
+                    window.location.replace(gOptions.aws_path + "/users/?all");
             }
         } else {
-            window.location.replace("/users/?all")
+            window.location.replace(gOptions.aws_path +"/users/?all")
         }
     }
 );

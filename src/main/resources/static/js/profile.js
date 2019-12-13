@@ -23,7 +23,7 @@ $("#editPasswordSpan").on("click", "#edit-password-apply", function () {
                     data: JSON.stringify(prepareDataToEditPassword()),
                     contentType: "application/json",
                     success: function () {
-                        window.location.replace("/landing");
+                        window.location.replace(gOptions.aws_path + "/landing");
                     },
                     error: function (response) {
                         $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>");
