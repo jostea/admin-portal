@@ -1,17 +1,16 @@
 package com.internship.adminpanel.service;
 
-import com.internship.adminpanel.model.AnswersOption;
-import com.internship.adminpanel.model.Stream;
-import com.internship.adminpanel.model.Task;
-import com.internship.adminpanel.model.dto.stream.StreamDTO;
+import com.internship.adminpanel.model.*;
 import com.internship.adminpanel.model.dto.answer_option.AnswerOptionDTO;
+import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.task.TaskDisableDTO;
 import com.internship.adminpanel.model.dto.task.TaskEditDTO;
 import com.internship.adminpanel.model.dto.task.TaskInsertDTO;
 import com.internship.adminpanel.model.dto.task.TaskListDTO;
-import com.internship.adminpanel.repository.AnswersOptionRepository;
-import com.internship.adminpanel.repository.StreamRepository;
-import com.internship.adminpanel.repository.TaskRepository;
+import com.internship.adminpanel.model.enums.ComplexityEnum;
+import com.internship.adminpanel.model.enums.TaskTypeEnum;
+import com.internship.adminpanel.model.enums.TypeEnum;
+import com.internship.adminpanel.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,8 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final SqlTaskRepository sqlTaskRepository;
+    private final CodeTaskRepository codeTaskRepository;
     private final StreamRepository streamRepository;
     private final AnswersOptionRepository answersOptionRepository;
 
@@ -72,7 +73,7 @@ public class TaskService {
         }
     }
 
-    public void disableTask(TaskDisableDTO taskDisableDTO){
+    public void disableTask(TaskDisableDTO taskDisableDTO) {
         //Get Task from DB to disable_enable
         Task taskToEdit = taskRepository.getOne(taskDisableDTO.getId());
         taskToEdit.setEnabled(taskDisableDTO.isEnabled());
@@ -97,7 +98,7 @@ public class TaskService {
         List<Stream> listNewStreams = new ArrayList<>();
         for (StreamDTO streamDto : taskEditDTO.getStreams()) {
             Optional<Stream> streamOptional = streamRepository.findById(streamDto.getId());
-            if (streamOptional.isPresent()){
+            if (streamOptional.isPresent()) {
                 Stream streamDB = streamOptional.get();
                 listNewStreams.add(streamDB);
             }
@@ -120,7 +121,7 @@ public class TaskService {
         List<AnswersOption> listNewAnswerOptions = new ArrayList<>();
 
         //(part I)
-        listNewAnswerOptions.addAll(createAndReturnNewAnswerOptions(taskEditDTO,taskToEdit));
+        listNewAnswerOptions.addAll(createAndReturnNewAnswerOptions(taskEditDTO, taskToEdit));
 
         //(part II)
         listNewAnswerOptions.addAll(modifyAndReturnExistingAnswerOptions(taskEditDTO));
@@ -140,10 +141,77 @@ public class TaskService {
         else return new TaskEditDTO();
     }
 
+    public int nrStreamTasksByTypeAndComplexity(Long streamId, String taskType, String complexity) throws Exception {
+        int number = 0;
+        Optional<Stream> streamOpt;
+        //get Stream by id
+        try {
+            streamOpt = streamRepository.findById(streamId);
+        } catch (Exception e) {
+            log.warn("Error while getting from DB the Stream with id " + streamId);
+            throw new Exception("There is error while getting stream by id from DB");
+        }
+
+        TaskTypeEnum taskTypeEnum = TaskTypeEnum.fromString(taskType);
+        ComplexityEnum complexityEnum = ComplexityEnum.fromString(complexity);
+
+        switch (taskTypeEnum) {
+            case SINGLE_CHOICE:
+            case MULTI_CHOICE:
+            case CUSTOM_QUESTION:
+            {
+                TypeEnum type = null;
+                if (taskTypeEnum == TaskTypeEnum.SINGLE_CHOICE){
+                    type = TypeEnum.SINGLE_CHOICE;
+                }
+                if (taskTypeEnum == TaskTypeEnum.MULTI_CHOICE){
+                    type = TypeEnum.MULTI_CHOICE;
+                }
+                if (taskTypeEnum == TaskTypeEnum.CUSTOM_QUESTION){
+                    type = TypeEnum.CUSTOM_QUESTION;
+                }
+                if (streamOpt.isPresent()) {
+                    try {
+                        number = taskRepository.findTasksByStreamsAndComplexityAndTaskTypeAndIsEnabled(streamOpt.get(), complexityEnum, type, true).size();
+                    } catch (Exception e) {
+                        log.info("Trying to get standard tasks of stream with id " + streamId + ". There are 0 tasks");
+                        return 0;
+                    }
+                }
+                break;
+            }
+            case SQL_QUESTION:
+            {
+                if (streamOpt.isPresent()) {
+                    try {
+                        number = sqlTaskRepository.findTasksByStreamsAndComplexityAndIsEnabled(streamOpt.get(), complexityEnum, true).size();
+                    } catch (Exception e) {
+                        log.info("Trying to get sql tasks of stream with id " + streamId + ". There are 0 tasks");
+                        return 0;
+                    }
+                }
+                break;
+            }
+            case CODE_QUESTION:
+            {
+                if (streamOpt.isPresent()) {
+                    try {
+                        number = codeTaskRepository.findTasksByStreamsAndComplexityAndIsEnabled(streamOpt.get(), complexityEnum, true).size();
+                    } catch (Exception e) {
+                        log.info("Trying to get code tasks of stream with id " + streamId + ". There are 0 tasks");
+                        return 0;
+                    }
+                }
+                break;
+            }
+        }
+        return number;
+    }
+
     //region PRIVATE METHODS TO PROCESS EDIT TASK
 
     //methods to perform Part I of editTask public method
-    private List<AnswersOption> createAndReturnNewAnswerOptions(TaskEditDTO taskEditDTO, Task taskToEdit){
+    private List<AnswersOption> createAndReturnNewAnswerOptions(TaskEditDTO taskEditDTO, Task taskToEdit) {
         List<AnswersOption> listNewAnswerOptions = new ArrayList<>();
         List<AnswerOptionDTO> listAOwithNoId = taskEditDTO.getAnswers()
                 .stream()
@@ -159,13 +227,13 @@ public class TaskService {
     }
 
     //methods to perform Part II of editTask public method
-    private List<AnswersOption> modifyAndReturnExistingAnswerOptions(TaskEditDTO taskEditDTO){
+    private List<AnswersOption> modifyAndReturnExistingAnswerOptions(TaskEditDTO taskEditDTO) {
         List<AnswersOption> listNewAnswerOptions = new ArrayList<>();
         List<AnswerOptionDTO> listAOwithIDfromUI = taskEditDTO.getAnswers()
                 .stream()
                 .filter(ao -> ao.getId() != null)
                 .collect(Collectors.toList());
-        for (AnswerOptionDTO dto : listAOwithIDfromUI){
+        for (AnswerOptionDTO dto : listAOwithIDfromUI) {
             AnswersOption answerToUpdate = answersOptionRepository.getOne(dto.getId());
             answerToUpdate.setAnswerOptionValue(dto.getAnswer());
             answerToUpdate.setCorrect(dto.isCorrect());
@@ -176,11 +244,11 @@ public class TaskService {
     }
 
     //methods to perform Part III of editTask public method
-    private void deleteRemovedAnswerOptions(Task taskToEdit, List<AnswersOption> listNewAnswerOptions){
+    private void deleteRemovedAnswerOptions(Task taskToEdit, List<AnswersOption> listNewAnswerOptions) {
         List<AnswersOption> listAOwithIDfromDB = taskToEdit.getAnswersOptions();
         //if this ID is not in new list -> remove from answer_option_table
         for (AnswersOption aoDB : listAOwithIDfromDB) {
-            if (!listNewAnswerOptions.contains(aoDB)){
+            if (!listNewAnswerOptions.contains(aoDB)) {
                 answersOptionRepository.delete(aoDB);
             }
         }

@@ -14,6 +14,7 @@
 <div th:replace="fragments/topnavbar :: navbar"></div>
 
 <div class="container">
+
     <div id="alertTestStructure"></div>
     <div class="container-fluid">
         <div class="row">
@@ -24,12 +25,21 @@
                 <br>
                 <div id="divAddTestStructure"></div>
                 <br>
+                <div class="row">
+                    <div class="col-sm-8"></div>
+                    <div class="col-sm-2">
+                        <p style="color: red">Number tasks in DB   <span id="badgeNr" class="badge" style="background-color: red"></span></p>
+                    </div>
+                    <div class="col-sm-2"></div>
+                    <br>
+                </div>
                 <table class="table table-hover" id="testStructureTable">
                     <thead>
                     <tr>
                         <th>Task Type</th>
                         <th>Complexity</th>
                         <th>Nr. of questions</th>
+                        <th></th>
                         <th>Update</th>
                         <th>Remove</th>
                     </tr>
