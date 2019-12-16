@@ -168,11 +168,11 @@ public class TaskRestController {
 
     @GetMapping(value = "imageDownload/{idSqlGroup}")
     public ResponseEntity downloadFile(@PathVariable Long idSqlGroup, HttpServletRequest request) throws FileNotFoundException {
-        String urlFromDb = "file:" + sqlGroupService.findById(idSqlGroup).getImagePath();
+        String urlFromDb = sqlGroupService.findById(idSqlGroup).getImagePath();
         Resource resource = assetsStorageService.loadAsResource(urlFromDb);
         String contentType = null;
         try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            contentType = request.getServletContext().getMimeType(resource.getURL().getFile());
         } catch (IOException ex) {
             log.error("Could not determine file type.");
         }
