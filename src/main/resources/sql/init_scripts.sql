@@ -329,9 +329,9 @@ INSERT INTO stream_table(name, discipline_id)
 VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
 
 /* Populate sql_group_table with some test data */
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema #1', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_1.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema #2', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_2.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema #3', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_3.png');
+INSERT INTO sql_group_table(name, image_path) VALUES ('Schema A', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_1.png');
+INSERT INTO sql_group_table(name, image_path) VALUES ('Schema B', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_2.png');
+INSERT INTO sql_group_table(name, image_path) VALUES ('Schema C', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_3.png');
 INSERT INTO sql_group_table(name, image_path) VALUES ('Not_Found', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/no_image_found.png');
 
 
