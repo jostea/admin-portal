@@ -40,6 +40,8 @@ function setTimeForTest() {
         contentType: "application/json",
         success: function () {
             getTimeForTest();
+        }, error(response) {
+            $("#alertTestStructure").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }
     });
 }

@@ -41,7 +41,9 @@ public class TestStructureService {
         return testStructureDTOS;
     }
 
-    public void add(TestStructureDTOFromUI testUI) throws StreamNotFound {
+    public void add(TestStructureDTOFromUI testUI) throws StreamNotFound, IllegalArgumentException {
+        if (testUI.getNrQuestions() < 0)
+            throw new IllegalArgumentException();
         testStructureRepository.save(TestStructure.builder()
                 .complexity(ComplexityEnum.fromString(testUI.getComplexity()))
                 .taskType(TaskTypeEnum.fromString(testUI.getTaskType()))
@@ -50,10 +52,12 @@ public class TestStructureService {
                 .build());
     }
 
-    public void update(Long id, TestStructureDTOFromUI testUI) throws StreamNotFound, TestStructureNotFound {
+    public void update(Long id, TestStructureDTOFromUI testUI) throws StreamNotFound, TestStructureNotFound, IllegalArgumentException {
         Optional<TestStructure> testStructureOptional = testStructureRepository.findById(id);
         TestStructure testStructure;
         if (testStructureOptional.isPresent()) {
+            if (testUI.getNrQuestions() < 0)
+                throw new IllegalArgumentException();
             testStructure = testStructureOptional.get();
             testStructure.setComplexity(ComplexityEnum.fromString(testUI.getComplexity()));
             testStructure.setTaskType(TaskTypeEnum.fromString(testUI.getTaskType()));

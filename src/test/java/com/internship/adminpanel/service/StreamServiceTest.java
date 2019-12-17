@@ -1,15 +1,13 @@
 package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.exception.*;
-import com.internship.adminpanel.model.Discipline;
-import com.internship.adminpanel.model.Stream;
-import com.internship.adminpanel.model.Task;
+import com.internship.adminpanel.model.*;
 import com.internship.adminpanel.model.dto.stream.StreamDTO;
 import com.internship.adminpanel.model.dto.stream.StreamDTOFromUI;
-import com.internship.adminpanel.repository.DisciplineRepository;
-import com.internship.adminpanel.repository.StreamRepository;
+import com.internship.adminpanel.repository.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.junit.After;
 import org.junit.Rule;
@@ -29,14 +27,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @Data
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class StreamServiceTest {
+
+    public StreamServiceTest() {
+    }
 
     @Mock
     private StreamRepository streamRepository;
 
     @Mock
     private DisciplineRepository disciplineRepository;
+
+    @Mock
+    private CandidateRepository candidateRepository;
+
+    @Mock
+    private InternshipRepository internshipRepository;
+
+    @Mock
+    private TestStructureRepository testStructureRepository;
+
+    @Mock
+    private StreamTimeRepository streamTimeRepository;
 
     @InjectMocks
     private StreamService streamService;
@@ -83,6 +96,7 @@ public class StreamServiceTest {
         List<Stream> mockedDbStreams = new ArrayList<>();
         mockedDbStreams.add(createStreamByNameAndDiscipline("TestStream1", createDiscipline("DisciplineTest1")));
         mockedDbStreams.add(createStreamByNameAndDiscipline("TestStream2", createDiscipline("DisciplineTest2")));
+
         when(streamRepository.findAll()).thenReturn(mockedDbStreams);
         //triggered service
         List<StreamDTO> returnedStreamList = streamService.findAll();
@@ -117,18 +131,69 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldDeleteStream() throws Exception {
+    public void shouldDeleteStream() throws StreamHasCandidate, StreamNotFound {
         Long id = 1L;
-        List<Task> taskList = new ArrayList<>();
+        List<TestStructure> ts = new ArrayList<>();
+        ts.add(TestStructure.builder().id(1L).build());
+
+        List<Internship> internships = new ArrayList<>();
+        List<Stream> streams = new ArrayList<>();
+
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(Task.builder().streams(streams).build());
+
+        List<CodeTask> codeTasks = new ArrayList<>();
+        codeTasks.add(CodeTask.builder().streams(streams).build());
+
+        List<SqlTask> sqlTask = new ArrayList<>();
+        sqlTask.add(SqlTask.builder().streams(streams).build());
+
+        List<Skill> skills = new ArrayList<>();
+        skills.add(Skill.builder().streams(streams).build());
+
         Stream stream = Stream.builder()
+                .id(1L)
                 .name("TestStream")
                 .discipline(createDiscipline("TestDiscipline"))
-                .tasks(taskList)
+                .tasks(tasks)
+                .testStructures(ts)
+                .skill(skills)
+                .streamTime(StreamTime.builder().id(1L).build())
+                .codeTasks(codeTasks)
+                .sqlTasks(sqlTask)
                 .build();
+        streams.add(stream);
+        internships.add(Internship.builder().streams(streams).build());
+        when(candidateRepository.findCandidateByStream(stream)).thenReturn(new ArrayList<>());
         when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
+        when(internshipRepository.findAll()).thenReturn(internships);
+        when(testStructureRepository.findAll()).thenReturn(new ArrayList<>());
+        //Trigger delete method
         streamService.deleteById(id);
+
+        verify(candidateRepository).findCandidateByStream(stream);
         verify(streamRepository).findById(id);
+        verify(internshipRepository).findAll();
+        verify(testStructureRepository).deleteById(1L);
+        verify(streamTimeRepository).deleteById(1L);
         verify(streamRepository).deleteById(id);
+    }
+
+    @Test
+    public void shouldThrowExceptionCandidateExistWhileDeleteStream() throws StreamHasCandidate, StreamNotFound {
+        Long id = 1L;
+        exception.expect(StreamHasCandidate.class);
+        exception.expectMessage(id + "");
+        Stream stream = new Stream();
+        List<Candidate> candidates = new ArrayList<>();
+        candidates.add(Candidate.builder().stream(stream).build());
+        when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
+        when(candidateRepository.findCandidateByStream(stream)).thenReturn(candidates);
+
+        streamService.deleteById(id);
+
+        verify(streamRepository).findById(id);
+        verify(candidateRepository).findCandidateByStream(stream);
     }
 
     @Test
@@ -206,7 +271,6 @@ public class StreamServiceTest {
         streamService.edit(id, streamDTOFromUI, username);
     }
 
-
     @Test
     public void shouldThrowExceptionWhileEditStream() throws DisciplineNotFound, SQLException, StreamNotFound, EmptyName {
         Long id = 1L;
@@ -219,35 +283,13 @@ public class StreamServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionStreamNotFoundWhileDeleteStream() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
+    public void shouldThrowExceptionStreamNotFoundWhileDeleteStream() throws StreamNotFound, StreamHasTasks, StreamHasSkill, StreamHasCandidate {
         Long id = 1L;
         exception.expect(StreamNotFound.class);
         exception.expectMessage(id + "");
         when(streamRepository.findById(id)).thenReturn(Optional.empty());
         streamService.deleteById(id);
         verify(streamRepository).findById(id);
-    }
-
-    @Test
-    public void shouldThrowExceptionWhileDeleteStreamWithExistingTask() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
-        exception.expect(StreamHasTasks.class);
-        Long id = 1L;
-        List<Task> taskList = new ArrayList<>();
-        taskList.add(Task.builder()
-                .title("TestTask1")
-                .build());
-        taskList.add(Task.builder()
-                .title("TestTask2")
-                .build());
-        Stream stream = Stream.builder()
-                .name("TestStream")
-                .discipline(createDiscipline("TestDiscipline"))
-                .tasks(taskList)
-                .build();
-        when(streamRepository.findById(id)).thenReturn(Optional.of(stream));
-        streamService.deleteById(id);
-        verify(streamRepository).findById(id);
-        verify(streamRepository).deleteById(id);
     }
 
     @Test
@@ -299,6 +341,8 @@ public class StreamServiceTest {
                 .id(1L)
                 .name(streamName)
                 .disciplineName(disciplineName)
+                .skills(new ArrayList<>())
+                .testStructures(new ArrayList<>())
                 .build();
     }
 
@@ -307,6 +351,8 @@ public class StreamServiceTest {
                 .id(1L)
                 .name(name)
                 .discipline(discipline)
+                .skill(new ArrayList<>())
+                .testStructures(new ArrayList<>())
                 .build();
     }
 

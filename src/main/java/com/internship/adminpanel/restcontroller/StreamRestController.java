@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.TransactionSystemException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
@@ -68,20 +67,17 @@ public class StreamRestController {
             streamService.deleteById(id);
             log.info("User '" + authentication.getName() + "' deleted stream with id " + id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (StreamHasTasks e) {
-            log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
-                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>("This stream has tasks", HttpStatus.BAD_REQUEST);
-        }catch (StreamHasSkill e) {
-            log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
-                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>("This stream has skill", HttpStatus.BAD_REQUEST);
         }
         catch (StreamNotFound e) {
             log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
                     + e.getMessage() + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>("This stream not found", HttpStatus.NOT_FOUND);
+        } catch (StreamHasCandidate e) {
+            log.error("Error when user '" + authentication.getName() + "'  delete stream by id " + id + " ;\nerror message:"
+                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>("This stream has candidate", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @GetMapping("/streams/name/{name}")

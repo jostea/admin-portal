@@ -34,13 +34,17 @@ public class StreamTimeRestController {
     @PutMapping("/setTime/{stream_id}")
     public ResponseEntity<String> setTimeForStreamTest(@PathVariable("stream_id") Long id, @RequestBody Integer time, Authentication authentication) {
         try {
-            log.info("User '" + authentication.getName() + "' call stream with id '" + id + "'");
+            log.info("User '" + authentication.getName() + "' set time " + time + " for stream's test structure with id '" + id + "'");
             streamTimeService.setTimeForStreamTest(id, time);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (StreamNotFound e) {
             log.error("Error when user '" + authentication.getName() + "' update stream with id '" + id + "';\nerror message: "
                     + e.getMessage() + "\n" + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            log.error("Error when user '" + authentication.getName() + "' update stream with id '" + id + "';\nerror message: "
+                    + e.getMessage() + "\n" + e.getStackTrace());
+            return new ResponseEntity<>("Time must be higher then 0", HttpStatus.BAD_REQUEST);
         }
     }
 }

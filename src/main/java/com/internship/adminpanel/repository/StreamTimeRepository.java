@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface StreamTimeRepository extends JpaRepository<StreamTime, Long> {
     StreamTime findStreamTimeByStream(Stream stream);
+    void deleteByStreamId(Long id);
 }

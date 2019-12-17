@@ -240,7 +240,7 @@ public class StreamRestControllerTest {
     }
 
     @Test
-    public void shouldCatchExceptionStreamNotFoundWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
+    public void shouldCatchExceptionStreamNotFoundWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill, StreamHasCandidate {
         Long id = 1L;
         doThrow(StreamNotFound.class).when(streamService).deleteById(id);
         ResponseEntity<String> responseEntity = streamRestController.deletedById(id, authentication);
@@ -250,7 +250,7 @@ public class StreamRestControllerTest {
     }
 
     @Test
-    public void shouldCatchExceptionStreamHasTasksWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill {
+    public void shouldCatchExceptionStreamHasTasksWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill, StreamHasCandidate {
         Long id = 1L;
         doThrow(StreamHasTasks.class).when(streamService).deleteById(id);
         ResponseEntity<String> responseEntity = streamRestController.deletedById(id, authentication);

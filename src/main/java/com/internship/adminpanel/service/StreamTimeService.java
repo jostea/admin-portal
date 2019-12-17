@@ -38,7 +38,10 @@ public class StreamTimeService {
         throw new StreamNotFound(streamId + "");
     }
 
-    public void setTimeForStreamTest(Long streamId, Integer time) throws StreamNotFound {
+    public void setTimeForStreamTest(Long streamId, Integer time) throws StreamNotFound, IllegalArgumentException {
+        if (time < 0)
+            throw new IllegalArgumentException("Wrong time for test");
+
         Optional<Stream> streamOptional = streamRepository.findById(streamId);
         Stream stream;
         if (streamOptional.isPresent()) {

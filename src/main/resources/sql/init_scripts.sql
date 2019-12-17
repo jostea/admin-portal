@@ -1,5 +1,5 @@
 drop table if exists task_stream_table;
-drop table if exists user_table;
+-- drop table if exists user_table;
 drop table if exists test_token_table;
 drop table if exists candidate_skill_table;
 drop table if exists candidate_custom_task;
