@@ -2,6 +2,7 @@ package com.internship.adminpanel.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -13,16 +14,21 @@ import java.net.MalformedURLException;
 @Slf4j
 @RequiredArgsConstructor
 public class AssetsStorageService {
+
+    @Value("${root.path}")
+    private String rootPath;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     public Resource loadAsResource(String fileNameWithPath) throws FileNotFoundException {
         try {
             Resource resource = new UrlResource(fileNameWithPath);
             if (resource.exists()) {
                 return resource;
             } else {
-                //TODO: should be path to "No_Image_Found" location instead of file on local machine
-                resource = new UrlResource("file:C://INTERNSHIP/sqlimages/no_image_found.png");
+                resource = new UrlResource("https://am-interns-project-s3.s3.us-east-2.amazonaws.com/no_image_found.png");
                 return resource;
-//                throw new FileNotFoundException(fileNameWithPath + " file was not found.");
             }
         } catch (MalformedURLException e) {
             log.error("Error during loading the file {}", fileNameWithPath, e);
