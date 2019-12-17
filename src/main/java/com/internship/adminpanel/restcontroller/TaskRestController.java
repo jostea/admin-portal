@@ -181,4 +181,15 @@ public class TaskRestController {
         }
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(resource);
     }
+
+    @GetMapping("/streamTypeComplexityTasks")
+    public ResponseEntity<Integer> getStreamTypeComplexityTasks(@RequestParam Long streamId, @RequestParam String taskType, @RequestParam String complexity){
+        try{
+            int number = taskService.nrStreamTasksByTypeAndComplexity(streamId,taskType,complexity);
+            return new ResponseEntity<>(number, HttpStatus.OK);
+        } catch (Exception e){
+            log.warn("Error while getting stream Nr of tasks for stream id = " + streamId + ", taskType = " + taskType + ", complexity = " + complexity);
+            return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

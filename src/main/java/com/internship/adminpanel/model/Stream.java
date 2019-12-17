@@ -1,14 +1,16 @@
 package com.internship.adminpanel.model;
 
-import lombok.*;
-import org.springframework.validation.annotation.Validated;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -61,5 +63,19 @@ public class Stream {
     public String toString() {
         return "Stream{" +
                 "name='" + name + '\'';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stream stream = (Stream) o;
+        return name.equals(stream.name) &&
+                discipline.equals(stream.discipline);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, discipline);
     }
 }
