@@ -157,7 +157,7 @@
 
     function setImagePath() {
         let idSqlGroup = $("#sqlGroup").val();
-        let callToRestController = "/tasksrest/imageDownload/" + idSqlGroup;
+        let callToRestController = gOptions.aws_path + "/tasksrest/imageDownload/" + idSqlGroup;
         $("#sqlGroupImage").attr("src", callToRestController);
     }
 
