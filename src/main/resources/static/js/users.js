@@ -49,7 +49,7 @@ $(document).ready(function () {
 );
 
 $("#addNewUser").on('click', function () {
-    window.location.href ="/users/add";
+    window.location.href = gOptions.aws_path + "/users/add";
 });
 
 $(".view-single-user-div").on("click", '.enable-disable-user',  function() {
