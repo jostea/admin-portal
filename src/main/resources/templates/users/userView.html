@@ -47,41 +47,35 @@
                             </div>
                         </div>
 
-                        <div class="view-single-user-div">
+                        <div class="view-single-user-div row">
                             <h2>View User Mode</h2>
-                            <table id="singleUserTable" class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>e-mail</th>
-                                    <th>Is active</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr></tr>
+                            <div id="singleUserDiv" class="col-md-8">
+                                <div id="displaySingleUser"></div>
                                 <span id="edit-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"><button id='edit-user' class="btn btn-default">Edit User</button></span>
                                 <span id="enable-disable-user-button" th:if="${#request.isUserInRole('SUPER_ADMIN')}"></span>
-                                </tbody>
-                            </table>
+                            </div>
                         </div>
 
-                        <div class="edit-user-div">
+                        <div class="edit-user-div row">
                             <div id="editUserMessage"></div>
                             <h2>Edit User Mode</h2>
                             <p>Hit the field you want to edit</p>
-                            <table id="editUser" class="table">
-                                <thead>
-                                <tr>
-                                    <th hidden>id</th>
-                                <tbody></tbody>
-                                </tr>
-                                </thead>
-                            </table>
+                            <div class="col-md-6">
+                                <table id="editUser" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th hidden>id</th>
+                                    <tbody></tbody>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <script th:src="@{/js/users.js}"></script>
             <script th:src="@{/js/navbar.js}"></script>
+            <script th:src="@{/js/config.js}"></script>
     </body>
 </html>

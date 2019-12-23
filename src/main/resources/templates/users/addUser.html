@@ -16,18 +16,27 @@
         </div>
         <div class="container">
             <div id="saveMessage"></div>
-            <form class="form-group">
-                <form class="form-group">
-                    <label for="username-add">Username:</label>
-                    <input class="form-control" required="required" type="text" id="username-add"/>
-                </form>
+            <div>
+                <h2>Add new user</h2>
+                <h6>Please provide a valid email</h6>
+                <h6>Make sure the username has at least 6 symbols, it is made up of only lowercase letters and has no other symbols than .-_!#</h6>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <form class="form-group">
+                        <form class="form-group">
+                            <label for="username-add">Username:</label>
+                            <input class="form-control" required="required" type="text" id="username-add"/>
+                        </form>
 
-                <form class="form-group">
-                    <label for="email-add">Email:</label>
-                    <input class="form-control" required="required" type="text" id="email-add"/>
-                </form>
-                <button id="addUser" class="btn btn-primary">Add</button>
-            </form>
+                        <form class="form-group">
+                            <label for="email-add">Email:</label>
+                            <input class="form-control" required="required" type="text" id="email-add"/>
+                        </form>
+                        <button id="addUser" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <script th:src="@{/js/addUser.js}"></script>

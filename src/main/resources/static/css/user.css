@@ -1,13 +1,7 @@
-.btn {
-    margin: 3px;
-}
-
 input {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
-    box-sizing: border-box;
-    border: none;
 }
 
 #usersTableDisabled th {
@@ -20,4 +14,16 @@ input {
 
 #addNewUser {
     margin: 10px;
+}
+
+.disabled {
+    color: #890903;
+}
+
+.enabled {
+    color: #65a851;
+}
+
+.edit-user-apply {
+    margin: 10px 0;
 }
