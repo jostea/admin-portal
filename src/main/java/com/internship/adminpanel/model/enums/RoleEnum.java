@@ -6,6 +6,10 @@ public enum RoleEnum {
 
     private String role;
 
+    public String getRole() {
+        return this.role;
+    }
+
     RoleEnum(String role) {
         this.role = role;
     }

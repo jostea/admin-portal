@@ -1,11 +1,25 @@
-.btn {
-    margin: 3px;
-}
-
 input {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
-    box-sizing: border-box;
-    border: none;
+}
+
+#profileDetails {
+    padding: 20px 20px 0px;
+}
+
+.roleH {
+    color: #65a851;
+}
+
+.form-control {
+    margin: 3px;
+}
+
+#edit-password-apply {
+    margin: 3px;
+}
+
+#goEditPassword {
+    cursor:pointer;
 }

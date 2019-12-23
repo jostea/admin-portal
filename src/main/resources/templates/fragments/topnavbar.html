@@ -4,6 +4,11 @@
     <script th:src="@{/js/config.js}"></script>
 </head>
 <div th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
+    <style>
+        li {
+            cursor: pointer;
+        }
+    </style>
     <div th:if="${#request.isUserInRole('SUPER_ADMIN')} or ${#request.isUserInRole('ADMIN')}">
         <nav class="navbar navbar-default">
             <div class="cutomnav nav container-fluid">

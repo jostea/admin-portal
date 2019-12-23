@@ -104,6 +104,7 @@ function getAllUsers() {
         success: function (response) {
             if (response.length===0) {
                 $("#usersInfoParagraph").html("No users in the system yet");
+                console.log(response);
             } else if (response.length>0) {
                 fillTable(response);
                 history.pushState({page: 0}, "all", "?all");
@@ -113,19 +114,23 @@ function getAllUsers() {
 }
 
 function fillTableForOne(data) {
-    let tbody = "";
+    let body = "";
     let disable_button = "";
-    tbody += "<td hidden id='db-id-edit'>" + data.id + "</td>";
-    tbody += "<td>" + data.username + "</td>";
-    tbody += "<td>" + data.email + "</td>";
-    tbody += "<td>" + yesNoVal(data.active) + "</td>";
+    body+="<div class='panel panel-default'>";
+    body += "<div hidden id='db-id-edit'>" + data.id + "</div>";
+    body+="<div class='panel-heading'><h3>Username: <strong>" + data.username + "</strong></h3></div>";
+    body+="<div class='panel-body'>";
+    body += "<p><mark>Email:</mark> "+ data.email +"</p>";
+    body += "<p><mark>Activity:</mark> " + yesNoVal(data.active) + "</p>"
+    body+="</div>";
+    body+="</div>";
     if (data.active) {
         disable_button += "<button class='enable-disable-user btn-custom btn btn-danger'>Disable this user</button>"
     } else if(!data.active) {
         disable_button += "<button class='enable-disable-user btn-custom btn btn-success'>Enable this user</button>"
     }
     $("#enable-disable-user-button").html(disable_button);
-    $("#singleUserTable tbody tr").html(tbody);
+    $("#displaySingleUser").html(body);
 }
 
 function fillTable(data) {
@@ -135,12 +140,12 @@ function fillTable(data) {
         if (data[i].active) {
             tbodyEnabled += "<tr id='row" + data[i].id + "'>";
             tbodyEnabled += "<td hidden class='db-id'>" + data[i].id + "</td>";
-            tbodyEnabled += "<td><a class='view-user'>" + data[i].username + "</a></td>";
+            tbodyEnabled += "<td><a class='view-user' style='cursor: pointer'>" + data[i].username + "</a></td>";
             tbodyEnabled += "</tr>";
         } else {
             tbodyDisabled += "<tr id='row" + data[i].id + "'>";
             tbodyDisabled += "<td hidden class='db-id'>" + data[i].id + "</td>";
-            tbodyDisabled += "<td><a class='view-user'>" + data[i].username + "</a></td>";
+            tbodyDisabled += "<td><a class='view-user' style='cursor: pointer'>" + data[i].username + "</a></td>";
             tbodyDisabled += "</tr>";
         }
     }
@@ -162,11 +167,11 @@ function showUserDetails(data) {
     tbody+="<div class='row'></div>"
     tbody += "<tr id='row" + data.id + "'>";
     tbody += "<td hidden id='edit-db-id'>" + data.id + "</td>";
-    tbody += "<tr><label for='edit-username'><mark>Username:</mark></label>" +
+    tbody += "<tr><label for='edit-username'>Username:</label>" +
         "<input class='form-control' type='text' id='edit-username' name='edit-username' value='" + data.username + "'></tr>";
-    tbody += "<tr><label for='edit-email'><mark>Email:</mark></label>" +
+    tbody += "<tr><label for='edit-email'>Email:</label>" +
         "<input class='form-control' type='text' id='edit-email' name='edit-email' value='" + data.email + "'></tr>";
-    tbody += "<tr><label for='edit-password'><mark>Password:</mark></label>" +
+    tbody += "<tr><label for='edit-password'>Password:</label>" +
         "<input class='form-control' type='text' id='edit-password' name='edit-password' placeholder='New Password Here'></tr>";
     tbody += "<tr><button type='submit' class='edit-user-apply btn btn-primary'>Apply Changes</button></tr>";
     tbody += "</tr>";
@@ -183,9 +188,9 @@ function prepareDataToEditUser(){
 
 function yesNoVal(val) {
     if (val) {
-        return "Yes";
+        return "<span class='enabled'>Enabled</span>";
     }
-    return "No";
+    return "<span class='disabled'>Disabled</span>";
 }
 
 function validateEmail(mail)

@@ -22,8 +22,8 @@ $("#editPasswordSpan").on("click", "#edit-password-apply", function () {
                     url: gOptions.aws_path + "/profile/" + val,
                     data: JSON.stringify(prepareDataToEditPassword()),
                     contentType: "application/json",
-                    success: function () {
-                        window.location.replace(gOptions.aws_path + "/landing");
+                    success: function (response) {
+                        $("#succErrMessage").html("<div class='alert alert-success' role='alert'><p>Password changed successfully</p></div>");
                     },
                     error: function (response) {
                         $("#succErrMessage").html("<div class='alert alert-danger' role='alert'><p>" + response.responseText + "</p></div>");
@@ -42,22 +42,25 @@ $("#editPasswordSpan").on("click", "#edit-password-apply", function () {
 
 $("#goEditPassword").on("click", function () {
     let span = "";
-    span += "<label for='edit-password-old'></label>" +
-        "<input required='required' type='password' id='edit-password-old' name='edit-password-old' placeholder='Old Password'>";
-    span += "<label for='edit-password-new'></label>" +
-        "<input required='required' type='password' id='edit-password-new' name='edit-password-new' placeholder='New Password'>";
-    span += "<label for='edit-password-repeat'></label>" +
-        "<input required='required' type='password' id='edit-password-repeat' name='edit-password-repeat' placeholder='Repeat New Password'>";
-    span += "<button id='edit-password-apply' class='btn btn-primary'>Change Password</button>"
+    span += "<input class='form-control' required='required' type='password' id='edit-password-old' name='edit-password-old' placeholder='Old Password'>";
+    span += "<input class='form-control' required='required' type='password' id='edit-password-new' name='edit-password-new' placeholder='New Password'>";
+    span += "<input class='form-control' required='required' type='password' id='edit-password-repeat' name='edit-password-repeat' placeholder='Repeat New Password'>";
+    span += "<button id='edit-password-apply' class='btn btn-primary'>Change Password</button>";
     $("#main-div div #test").html(span);
 });
 
 function getProfile(data) {
-    let tbody = "";
-    tbody += "<td hidden id='db-id-edit'>" + data.id + "</td>";
-    tbody += "<td>" + data.username + "</td>";
-    tbody += "<td>" + data.role + "</td>";
-    $("#profileTable tbody").html(tbody);
+    let body = "";
+    body+="<div class='panel panel-default'>";
+    body += "<div hidden id='db-id-edit'>" + data.id + "</div>";
+    body+="<div class='panel-heading'><h1 class='profileH'><span class='glyphicon glyphicon-user'></span> <strong>PROFILE</strong></h1></div>";
+    body+="<div class='panel-body'>";
+    body += "<p>Here the currently signed user details are displayed. Only the password may be changed here.</p>"
+    body += "<h4 class='nameH'>" + data.username + "</h4>";
+    body += "<h6 class='roleH'><span class='glyphicon glyphicon-ok-circle'></span> " + data.role + "</h6>";
+    body+="</div>";
+    body+="</div>";
+    $("#profileDetails").html(body);
 }
 
 function prepareDataToEditPassword() {

@@ -10,11 +10,11 @@ import lombok.Data;
 public class ProfileDTO {
     private Long id;
     private String username;
-    private RoleEnum role;
+    private String role;
 
     public ProfileDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.role = user.getRole();
+        this.role = user.getRole().getRole();
     }
 }
