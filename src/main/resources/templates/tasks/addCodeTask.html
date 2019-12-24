@@ -9,7 +9,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link type="text/css" rel="stylesheet" href="/css/codeTask.css">
+        <link type="text/css" rel="stylesheet" th:href="@{/css/codeTask.css}">
         <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600&display=swap" rel="stylesheet">
     </head>
 
@@ -181,9 +181,10 @@
                     <button id="submitTask" class="btn btn-primary">Submit task</button>
                 </div>
             </div>
-        <script src="/js/navbar.js"></script>
-        <script src="/js/profile.js"></script>
-        <script src="/js/codeTasks.js"></script>
+            <script th:src="@{/js/navbar.js}"></script>
+            <script th:src="@{/js/profile.js}"></script>
+            <script th:src="@{/js/codeTasks.js}"></script>
+            <script th:src="@{/js/config.js}"></script>
     </body>
 </html>
 

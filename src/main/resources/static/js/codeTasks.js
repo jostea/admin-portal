@@ -129,11 +129,11 @@ function cleanParams() {
 $("#submitTask").on("click", function () {
     $.ajax({
         method: "POST",
-        url: "/tasksrest/addCodeTask",
+        url: gOptions.aws_path + "/tasksrest/addCodeTask",
         data: JSON.stringify(prepareDataForTask()),
         contentType: "application/json",
         success: function () {
-            window.location.replace("/tasks/");
+            window.location.replace(gOptions.aws_path + "/tasks/");
         }
     });
 });
@@ -166,7 +166,7 @@ function cleanSignature(signature) {
 function getStreamsByDiscipline(discname) {
     $.ajax({
         method: "GET",
-        url: "/streamView/streams/discipline/" + discname,      //TODO: recheck
+        url: gOptions.aws_path + "/streamView/streams/discipline/" + discname,      //TODO: recheck
         //new url: RECHECK it!!!
         success: function (response) {
             populateStreamsDropdown(response);
@@ -353,14 +353,14 @@ function simpleGeneric(input) {
 }
 
 function validateSimpleGenerics(input) {
-    var holder = input.split("<")[0];
-    var type = customSplitForSimpleGenerics(input);
+    let holder = input.split("<")[0];
+    let type = customSplitForSimpleGenerics(input);
     if (!(input.length===1 && returnTypes(input))) {
         if(!simpleGeneric(holder)) {
             return false;
         } else {
             if(returnTypes(type)) {
-                return true
+                return true;
             }
         }
     }
@@ -482,10 +482,10 @@ function parse(str) {
 }
 
 function validateDoubleGenerics(input) {
-    var params = ["Map", "HashMap"];
-    var cont = "";
-    var key = "";
-    var value = "";
+    let params = ["Map", "HashMap"];
+    let cont = "";
+    let key = "";
+    let value = "";
     if (params.indexOf(input.split("<")[0])===-1) {
         return false;
     } else if (params.indexOf(input.split("<")[0])!==1) {
