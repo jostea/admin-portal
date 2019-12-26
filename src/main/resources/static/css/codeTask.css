@@ -5,7 +5,7 @@ body {
 #themeEditor {
     font-family: 'Source Code Pro', monospace;
     color: #4b4848;
-    background: #f0eee9;
+    background: #efefef;
     border: transparent;
 }
 
@@ -19,4 +19,8 @@ body {
 
 #submitCorrectAnswer {
     margin: 10px;
+}
+
+.infop {
+    color: #a87a2f;
 }

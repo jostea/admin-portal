@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $("#submitTask").hide();
+    $(".allargs").hide();
 });
 
 let accessModifier = "";
@@ -16,103 +17,40 @@ $("#submitSignature").on("click", function () {
         let div = "";
         for (let i = 0; i < args.length; i++) {
             div+="<div class='input-group'>";
-            div+="<span class='input-group-addon' id='basic-addon3'>" + args[i].name + ": </span>";
+            div+="<span class='input-group-addon' id='basic-addon3'>" + "(" + prepareHTML(args[i].type) + ") " + args[i].name + ": </span>";
             div+="<input type='text' class='form-control' id='arg" + i + "' aria-describedby='basic-addon3'>";
             div+="</div>";
         }
         div+="<div class='input-group'>";
-        div+="<span class='input-group-addon' id='basic-addon3'>Given input, method must return: </span>";
+        div+="<span class='input-group-addon' id='basic-addon3'>(" + prepareHTML(returnType) + ") Given input, method must return: </span>";
         div+="<input type='text' class='form-control' id='correctReturn' aria-describedby='basic-addon3'>";
         div+="</div>";
         div+="<div>";
         div+="<button id='submitCorrectAnswer' class='btn btn-primary'>Add answer</button>";
         div+="</div>";
         $("#introduceParamsDiv").html(div);
+        $(".allargs").show();
     } else {
         cleanParams();
     }
 });
 
 $("#introduceParamsDiv").on("click", "#submitCorrectAnswer", function () {
-    if (validateAnswers()) {
-        let tbody = $("#correctAnswersTable tbody").html();
-        tbody+="<tr>";
-        for (let i = 0; i < args.length; i++) {
-            tbody+="<td>" + $("#arg"+ i + "").val() + "</td>";
-        }
-        tbody+="<td>" + $("#correctReturn").val() + "</td>";
-        tbody+="<td><button id='disableAnswer' class='btn btn-danger'>Cancel Answer</button></td>"
-        tbody+="</tr>";
-        $("#correctAnswersTable tbody").html(tbody);
-        $("#submitTask").show();
-        for (let i=0; i<args.length; i++) {
-            document.getElementById("arg" + i + "").value = "";
-        }
-        document.getElementById("correctReturn").value = "";
-    } else {
-        showPopUp("Error", "Invalid input for specific parameter type");
+    let tbody = $("#correctAnswersTable tbody").html();
+    tbody+="<tr>";
+    for (let i = 0; i < args.length; i++) {
+        tbody+="<td>" + "(" + prepareHTML(args[i].type) + ") " + $("#arg"+ i + "").val() + "</td>";
     }
-});
-
-function validateAnswers() {
+    tbody+="<td>("+ prepareHTML(returnType) + ") " + $("#correctReturn").val() + "</td>";
+    tbody+="<td><button id='disableAnswer' class='btn btn-danger'>Cancel Answer</button></td>"
+    tbody+="</tr>";
+    $("#correctAnswersTable tbody").html(tbody);
+    $("#submitTask").show();
     for (let i=0; i<args.length; i++) {
-        if (!((validateSimpleAnswers(args[i].type, $("#arg" + i + "").val())) || (validateArrayTypeAnswers(args[i].type, $("#arg" + i + "").val()) && (validateSimpleGenerics(type) || validateArray(type))))) {
-            return false;
-        }
+        document.getElementById("arg" + i + "").value = "";
     }
-    return true;
-}
-
-function validateSimpleAnswers(type, input) {
-        if(rets.indexOf(type)!==1) {
-            if (type === "String") {
-                return true;
-            } else if(type==="double" || type==="int" || type==="float" || type==="long" || type==="short" || type==="Double" || type==="Integer" || type==="Long" || type==="Float" || type==="Short") {
-                if (!isNaN(input)) {
-                    return true;
-                }
-            } else if (type === "char" || type === "Char") {
-                if (input.length === 1) {
-                    return true;
-                }
-            }
-        }
-    $("#guideMessage").html("<p type='alert' class='alert alert-danger'>The test for answers input not passed</p>");
-    return false;
-}
-
-function validateArrayTypeAnswers(type, input) {
-    if (returnTypes(type)) {
-        input = input.replace(/\s\s+/g, ' ');
-        input = input.replace(/\s*,\s*/g, ",");
-        input = input.replace(/\[\s*\s*/, '[');
-        input = input.replace(/\s*]\s*/, ']');
-        if (input.charAt(0) === "[" && input.charAt(input.length - 1) === "]") {
-            input = input.slice(1, -1);
-            let inputArr = cubeParse(input);
-            let trueCounter = 0;
-            for (let i = 0; i < inputArr.length; i++) {
-                if ((inputArr[i].charAt(0) !== "[" || inputArr[i].charAt(inputArr[i].length - 1) !== "]") && !validateSimpleAnswers(type, inputArr[i])) {
-                    return false;
-                } else {
-                    if (validateSimpleAnswers(type, inputArr[i])) {
-                        trueCounter++;
-                        if (trueCounter === inputArr.length) {
-                            return true;
-                        }
-                    } else {
-                        return validateArrayTypeAnswers(type, inputArr[i]);
-                    }
-                }
-            }
-        }
-    }
-    return false;
-}
-
-function validateDoubleGenericTypeAnswers(type, input) {
-
-}
+    document.getElementById("correctReturn").value = "";
+});
 
 $("#correctAnswersTable").on("click", "#disableAnswer", function () {
     $(this).closest('tr').remove();
@@ -127,29 +65,32 @@ function cleanParams() {
 }
 
 $("#submitTask").on("click", function () {
-    $.ajax({
-        method: "POST",
-        url: gOptions.aws_path + "/tasksrest/addCodeTask",
-        data: JSON.stringify(prepareDataForTask()),
-        contentType: "application/json",
-        success: function () {
-            window.location.replace(gOptions.aws_path + "/tasks/");
-        }
-    });
+    if (ajaxSubmitValidation() && validateSignature($("#themeEditor").val())) {
+        $.ajax({
+            method: "POST",
+            url: gOptions.aws_path + "/tasksrest/addCodeTask",
+            data: JSON.stringify(prepareDataForTask()),
+            contentType: "application/json",
+            success: function () {
+                window.location.replace(gOptions.aws_path + "/tasks/");
+            },
+            error: function (response) {
+                showPopUp("Error", response.responseText);
+            }
+        });
+    }
 });
 
 function prepareDataForTask() {
-    if (ajaxSubmitValidation() && validateSignature($("#themeEditor").val())) {
-        return {
-            title: $("#title").val(),
-            description: $("#descripiton").val(),
-            complexity: $("#complexity").val(),
-            technology: $("#technology").val(),
-            isEnabled: document.getElementById("isEnabledCode").checked,
-            signature: cleanSignature($("#themeEditor").val()),
-            streams: getStreamIds(),
-            correctCodes: listCorrectCodes()
-        }
+    return {
+        title: $("#title").val(),
+        description: $("#descripiton").val(),
+        complexity: $("#complexity").val(),
+        technology: $("#technology").val(),
+        isEnabled: document.getElementById("isEnabledCode").checked,
+        signature: cleanSignature($("#themeEditor").val()),
+        streams: getStreamIds(),
+        answersSubmit: listCorrectCodes()
     }
 }
 
@@ -254,21 +195,26 @@ $("#disc_streams_selected").on('click', '.removeDiscStream', function x() {
 
 function listCorrectCodes() {
     let codes = [];
-    let input = "";
+    let responses = [];
     for (let i=0; i<$('#correctAnswersTable tbody')[0].children.length; i++) {
         for (let j=0; j<$('#correctAnswersTable tbody')[0].children[0].children.length-2; j++) {
-            input+=$('#correctAnswersTable tbody')[0].children[i].children[j].innerHTML
-            if (j!==$('#correctAnswersTable tbody')[0].children[0].children.length-3) {
-                input+=";";
-            }
+            responses.push(
+                {
+                    type: $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").shift().substring(1, $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").shift().length-1),
+                    value: $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").pop()
+                }
+            );
         }
         codes.push(
             {
-                input: input,
-                output: $('#correctAnswersTable tbody')["0"].children[i].children["1"].innerHTML
+                input: responses,
+                output: {
+                    type: $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").shift().substring(1, $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").shift().length-1),
+                    value: $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").pop()
+                }
             }
         );
-        input = "";
+        responses = [];
     }
     return codes;
 }
@@ -320,13 +266,13 @@ function validateSignature(signature) {
         readArgs(splittedArgs);
         if (threeArgsValidation(splitted) && readingSignature) {
             keyword = splitted[0];
-            returnType = splitted[1];
+            returnType = prepareHTML(splitted[1]);
             methodName = splitted[2];
             return true;
         } else if (fourArgsValidation(splitted) && readingSignature) {
             accessModifier = splitted[0];
             keyword = splitted[1];
-            returnType = splitted[2];
+            returnType = prepareHTML(splitted[2]);
             methodName = splitted[3];
             return true;
         } else {
@@ -414,6 +360,12 @@ function fourArgsValidation(sign) {
         }
     }
     return false;
+}
+
+function prepareHTML(splitElement) {
+    splitElement = splitElement.replace(/>/g, '&gt');
+    splitElement = splitElement.replace(/</g, '&lt');
+    return splitElement;
 }
 
 function readArgs(holder) {

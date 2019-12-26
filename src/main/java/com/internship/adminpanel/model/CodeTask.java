@@ -63,4 +63,13 @@ public class CodeTask {
         this.correctCodes = codeTaskDTOFromUI.getCorrectCodes();
         this.complexity = codeTaskDTOFromUI.getComplexity();
     }
+
+    @Override
+    public String toString() {
+        return "CodeTask{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

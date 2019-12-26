@@ -1,5 +1,7 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.dto.code_task.AnswersSubmitDTO;
+import com.internship.adminpanel.model.dto.code_task.InputsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +33,24 @@ public class CorrectCode {
 
     @NotBlank(message = "Output (method's return value) is required")
     private String output;
+
+    public CorrectCode(AnswersSubmitDTO answersSubmitDTO) {
+        StringBuilder inputSb = new StringBuilder();
+        for (int i=0; i<answersSubmitDTO.getInput().size(); i++) {
+            inputSb.append(answersSubmitDTO.getInput().get(i).getValue());
+            if (i<answersSubmitDTO.getInput().size()-1) {
+                inputSb.append(";");
+            }
+        }
+        this.input = inputSb.toString();
+        this.output = answersSubmitDTO.getOutput().getValue();
+    }
+
+    @Override
+    public String toString() {
+        return "CorrectCode{" +
+                "input='" + input + '\'' +
+                ", output='" + output + '\'' +
+                '}';
+    }
 }

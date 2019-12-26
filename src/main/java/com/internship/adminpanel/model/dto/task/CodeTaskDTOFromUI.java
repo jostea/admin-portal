@@ -19,4 +19,13 @@ public class CodeTaskDTOFromUI {
     private boolean isEnabled;
     private List<CorrectCode> correctCodes;
     private List<Long> streams;
+
+    @Override
+    public String toString() {
+        return "CodeTaskDTOFromUI{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", signature='" + signature + '\'' +
+                '}';
+    }
 }
