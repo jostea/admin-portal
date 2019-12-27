@@ -59,9 +59,9 @@ CREATE TABLE stream_table
 
 CREATE TABLE stream_time_table
 (
-    id           SERIAL PRIMARY KEY,
-    stream_id    int  NOT NULL REFERENCES stream_table (id),
-    time_min	int NOT NULL
+    id        SERIAL PRIMARY KEY,
+    stream_id int NOT NULL REFERENCES stream_table (id),
+    time_min  int NOT NULL
 );
 
 /* create table task */
@@ -115,6 +115,8 @@ CREATE TABLE sql_task_table
     description       text         NOT NULL,
     complexity        varchar(255) NOT NULL,
     is_enabled        boolean      NOT NULL DEFAULT true,
+    rows_ordered      boolean      NOT NULL DEFAULT false,
+    columns_named     boolean      NOT NULL DEFAULT false,
     correct_statement text         NOT NULL,
     sql_group_id      int          NOT NULL REFERENCES sql_group_table (id)
 );
@@ -281,19 +283,19 @@ CREATE TABLE candidate_code_task
 
 CREATE TABLE test_token_table
 (
-    id              SERIAL PRIMARY KEY,
-    candidate_id    int     NOT NULL REFERENCES candidate_table (id),
-    token           text     NOT NULL,
-    date_created 	timestamp NOT NULL,
-    is_active	boolean	NULL,
+    id           SERIAL PRIMARY KEY,
+    candidate_id int       NOT NULL REFERENCES candidate_table (id),
+    token        text      NOT NULL,
+    date_created timestamp NOT NULL,
+    is_active    boolean   NULL,
     UNIQUE (token)
 );
 
 CREATE TABLE stream_time_table
 (
-    id           SERIAL PRIMARY KEY,
-    stream_id    int  NOT NULL REFERENCES stream_table (id),
-    time_min	int NOT NULL
+    id        SERIAL PRIMARY KEY,
+    stream_id int NOT NULL REFERENCES stream_table (id),
+    time_min  int NOT NULL
 );
 
 /*-----------------------------------*/
@@ -329,16 +331,22 @@ INSERT INTO stream_table(name, discipline_id)
 VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
 
 /* Populate sql_group_table with some test data */
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema A', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_1.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema B', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_2.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema C', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_3.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Not_Found', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/no_image_found.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Schema A', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_1.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Schema B', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_2.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Schema C', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_3.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Not_Found', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/no_image_found.png');
 
 
 /* Insert the super admin */
 insert into user_table (username, email, password, role)
-values ('endavamainadmin', 'quiz.manager.a.panel@gmail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK',
+values ('endavamainadmin', 'quiz.manager.a.panel@gmail.com',
+        '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK',
         'SUPER_ADMIN');
 
 /* Populate Internship Table */
-INSERT INTO internship_table(name, is_current) VALUES('Spring 2020', true);
+INSERT INTO internship_table(name, is_current)
+VALUES ('Spring 2020', true);
