@@ -1,3 +1,15 @@
+.technologyH {
+    color: #ef5100;
+}
+
+.codeContainer {
+    background: #3c3c3c;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: 'Source Code Pro', monospace;
+}
+
 body {
     margin-bottom: 40px;
 }

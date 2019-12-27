@@ -94,6 +94,12 @@ public class TaskController {
         return model;
     }
 
+    @GetMapping("/tasks/viewCodeTask/{id}")
+    public ModelAndView viewCodeTask() {
+        ModelAndView modelAndView = new ModelAndView("tasks/viewCodeTask");
+        return modelAndView;
+    }
+
     @GetMapping("/tasks/addCodeTask")
     public ModelAndView addCodeTask() throws Exception {
         ModelAndView modelAndView = new ModelAndView();

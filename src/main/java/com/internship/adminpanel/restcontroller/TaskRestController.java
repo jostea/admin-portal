@@ -1,7 +1,10 @@
 package com.internship.adminpanel.restcontroller;
 
+import com.internship.adminpanel.model.CodeTask;
 import com.internship.adminpanel.model.dto.code_task.CodeTaskSubmitDTO;
 import com.internship.adminpanel.model.dto.task.*;
+import com.internship.adminpanel.repository.CodeTaskRepository;
+import com.internship.adminpanel.service.*;
 import com.internship.adminpanel.service.CodeTaskService;
 import com.internship.adminpanel.service.AssetsStorageService;
 import com.internship.adminpanel.service.SqlGroupService;
@@ -46,6 +49,25 @@ public class TaskRestController {
         ArrayList<SqlTaskListDTO> list;
         list = (ArrayList<SqlTaskListDTO>) sqlTaskService.getAll();
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/allCode")
+    public ResponseEntity<?> getAllCodeTasks() {
+        try {
+            List<CodeTaskDTO> codeTasks = codeTaskService.getAll();
+            return new ResponseEntity<>(codeTasks, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Tasks could not be loaded", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/singleCode/{id}")
+    public ResponseEntity<?> getOneCodeTask(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(codeTaskService.findById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Could not get the task", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/addTask")
