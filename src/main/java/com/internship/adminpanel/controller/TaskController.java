@@ -126,6 +126,12 @@ public class TaskController {
         modelAndView.addObject("technologies", technologies);
     }
 
+    @GetMapping("/tasks/viewCodeTask/{id}")
+    public ModelAndView viewCodeTask() {
+        ModelAndView modelAndView = new ModelAndView("tasks/viewCodeTask");
+        return modelAndView;
+    }
+
     private ModelAndView populateModelWithDropDowns(ModelAndView model) {
         //collection for complexitites dropdown
         List<ComplexityEnum> complexities;
