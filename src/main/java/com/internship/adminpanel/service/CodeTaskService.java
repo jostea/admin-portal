@@ -5,26 +5,47 @@ import com.internship.adminpanel.model.CorrectCode;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.dto.code_task.AnswersSubmitDTO;
 import com.internship.adminpanel.model.dto.code_task.CodeTaskSubmitDTO;
+import com.internship.adminpanel.model.dto.task.CodeTaskDTO;
 import com.internship.adminpanel.model.dto.task.CodeTaskDTOFromUI;
 import com.internship.adminpanel.repository.CodeTaskRepository;
 import com.internship.adminpanel.repository.CorrectCodeRepository;
 import com.internship.adminpanel.repository.StreamRepository;
-import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@Data
+@RequiredArgsConstructor
+@Slf4j
 public class CodeTaskService {
     private final CodeTaskRepository codeTaskRepository;
-    private final StreamRepository streamRepository;
     private final CodeValidationService codeValidationService;
+    private final StreamRepository streamRepository;
     private final CorrectCodeRepository correctCodeRepository;
 
+    public List<CodeTaskDTO> getAll() throws Exception {
+        try {
+            List<CodeTaskDTO> taskDTOS = new ArrayList<>();
+            for (CodeTask codeTask:codeTaskRepository.findAll()) {
+                taskDTOS.add(new CodeTaskDTO(codeTask));
+            }
+            return taskDTOS;
+        } catch (Exception e) {
+            log.warn("Could not extract tasks from db. Stack Trace: " + e.getStackTrace());
+            throw new Exception("Code tasks could not be loaded");
+        }
+    }
+    public CodeTaskDTO findById(Long id) throws Exception {
+        try {
+            return new CodeTaskDTO(codeTaskRepository.findById(id).get());
+        } catch (Exception e) {
+            throw new Exception("Something went wrong finding the task");
+        }
+    }
     public void saveTask(CodeTaskSubmitDTO codeTaskSubmitDTO) throws Exception {
         try {
             if (codeValidationService.validateSignature(codeTaskSubmitDTO.getSignature())) {

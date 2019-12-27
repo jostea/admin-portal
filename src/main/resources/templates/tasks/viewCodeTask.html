@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <title>View selected code task (question) </title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/codeTask.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div th:replace="fragments/topnavbar :: navbar">
+    </div>
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div id="codeTaskHeader" class="panel-body">
+
+            </div>
+            <div class="panel-footer" id="codeTaskFooter"></div>
+        </div>
+    </div>
+    <script th:src="@{/js/singleCodeTask.js}"></script>
+    <script th:src="@{/js/config.js}"></script>
+    <script th:src="@{/js/navbar.js}"></script>
+    <script th:src="@{/js/profile.js}"></script>
+</body>
+</html>
+
