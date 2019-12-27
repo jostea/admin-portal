@@ -1,6 +1,8 @@
 package com.internship.adminpanel.restcontroller;
 
+import com.internship.adminpanel.model.dto.code_task.CodeTaskSubmitDTO;
 import com.internship.adminpanel.model.dto.task.*;
+import com.internship.adminpanel.service.CodeTaskService;
 import com.internship.adminpanel.service.AssetsStorageService;
 import com.internship.adminpanel.service.SqlGroupService;
 import com.internship.adminpanel.service.SqlTaskService;
@@ -30,6 +32,7 @@ public class TaskRestController {
     private final SqlTaskService sqlTaskService;
     private final SqlGroupService sqlGroupService;
     private final AssetsStorageService assetsStorageService;
+    private final CodeTaskService codeTaskService;
 
     @GetMapping("/all")
     public ResponseEntity<List<TaskListDTO>> getAllTasks() {
@@ -190,6 +193,16 @@ public class TaskRestController {
         } catch (Exception e){
             log.warn("Error while getting stream Nr of tasks for stream id = " + streamId + ", taskType = " + taskType + ", complexity = " + complexity);
             return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/addCodeTask")
+    public ResponseEntity<String> addCodeTask(@RequestBody CodeTaskSubmitDTO codeTaskSubmitDTO) {
+        try {
+            codeTaskService.saveTask(codeTaskSubmitDTO);
+            return new ResponseEntity<>("Task added successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

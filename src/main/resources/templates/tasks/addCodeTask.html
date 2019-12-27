@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+    <head>
+
+        <meta charset="UTF-8">
+        <title> And new code task </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link type="text/css" rel="stylesheet" th:href="@{/css/codeTask.css}">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+            <!-- HEADER - NAVBAR -->
+            <div th:replace="fragments/topnavbar :: navbar">
+            </div>
+
+            <div class="container">
+                    <!-- Modal To Display Different Messages -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body" style="text-align:center">
+                                    <h3><strong>Task was successfully modified</strong></h3>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="addCodeTaskFirstPart">
+                        <div class="row">
+                            <h1>
+                                <strong>Add New Code Task</strong>
+                            </h1>
+                        </div>
+                        <hr>
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="title">Title</label>
+                                <div class="col-md-4">
+                                    <input id="title" class="form-control" type="text" placeholder="Task Title" required="required">
+                                </div>
+                            </div>
+                            <br/>
+
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="descripiton">Description</label>
+                                <div class="col-md-4">
+                                <textarea id="descripiton" class="form-control" type="text"
+                                          placeholder="Task Desciption" required="required"></textarea>
+                                </div>
+                            </div>
+                            <br/>
+
+                            <!-- DROPDOWN COMPLEXITY -->
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="complexity">Complexity</label>
+                                <div class="col-md-4">
+                                    <select id="complexity" class="form-control">
+                                        <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                                th:text="${complexityEnum.getComplexity()}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+
+                            <!-- DROPDOWN TECNOLOGY -->
+                            <div class="form-row row">
+                                <label class="col-md-1 col-form-label" for="technology">Technology</label>
+                                <div class="col-md-4">
+                                    <select id="technology" class="form-control">
+                                        <option th:each="technologyEnum : ${technologies}" th:value="${technologyEnum}"
+                                                th:text="${technologyEnum.getType()}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="form-row row">
+                                <!-- DROPDOWN DISCIPLINES -->
+                                <div>
+                                    <label class="col-md-1 col-form-label" for="disciplines">Discipline: </label>
+                                    <div class="col-md-3">
+                                        <select id="disciplines" class="form-control">
+                                            <option value="0" selected disabled style="display: none">Select discipline...</option>
+                                            <option th:each="DisciplineListDTO : ${disciplines}" th:value="${DisciplineListDTO.getId()}"
+                                                    th:text="${DisciplineListDTO.getName()}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- DROPDOWN STREAMS -->
+                                <div>
+                                    <label class="col-md-1 col-form-label" for="streams">Stream:</label>
+                                    <div class="col-md-2">
+                                        <select id="streams" class="form-control">
+                                            <option th:each="StreamDTO : ${streams}" th:value="${StreamDTO.getId()}"
+                                                    th:text="${StreamDTO.getName()}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button id="addDiscStream" type="submit" class="btn btn-primary">Add Discipline</button>
+                                </div>
+                                <br/>
+                            </div>
+                            <br/>
+                            <div class="form-row row">
+                                <h5 class="infop">
+                                    <strong>Info!</strong> There are the following Disciplines and Streams attaches to this task:
+                                </h5>
+                            </div>
+
+                            <div class="form-row row">
+                                <div class="col-md-6">
+                                    <table class="table table-bordered" id="disc_streams_selected">
+                                        <thead>
+                                        <tr>
+                                            <th> Discipline</th>
+                                            <th> Stream</th>
+                                            <th> Remove</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="form-row row">
+                                <h5 class="infop">
+                                    <strong>Attention!</strong> Please note that disabled task will not appear in test cases!
+                                </h5>
+                            </div>
+                            <div class="form-row row">
+                                <label class="col-form-label">Enable Task</label>
+                                <input type="checkbox" id="isEnabledCode" name="activate">
+                            </div>
+                    </div>
+
+                    <div id="guideMessage">
+
+
+                    </div>
+
+                    <div id="taskMethodSignature">
+                        <div id="textEditor">
+                            <h4>Introduce the code signature for your task</h4>
+                            <h5 class="infop">Please note that the signature is being validated in order to avoid code run issues so please follow the next rules for inserting a method signature:</h5>
+                            <h6 class="infop">The main template is <mark>public static <strong>returnType</strong> <strong>methodName</strong>(<strong>arguments</strong>)</mark></h6>
+                            <h6 class="infop">*The <strong>public</strong> access modifier is optional</h6>
+                            <h6 class="infop">Argument types and names must be valid, following Java 8 syntax</h6>
+                            <label for="themeEditor"></label>
+                            <textarea id="themeEditor" class="form-control" rows="1" placeholder="//Your signature here"></textarea>
+                            <button id="submitSignature" class="btn btn-primary">Submit signature</button>
+                        </div>
+                    </div>
+
+                    <div class="allargs">
+                        <h5 class="infop">Please introduce the corresponding value for data type in order to pass the input validation</h5>
+                        <h6 class="infop">For <strong>Arrays, Lists, etc</strong> use the following template: <mark>[param1,param2]</mark></h6>
+                        <h6 class="infop">For <strong>Maps, HashMaps, etc</strong> use the following template: <mark>{key,value}</mark></h6>
+                        <div id="introduceParamsDiv">
+
+                        </div>
+                    </div>
+
+                    <div>
+                        <table  id="correctAnswersTable" class="table">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                <div>
+                    <button id="submitTask" class="btn btn-primary">Submit task</button>
+                </div>
+            </div>
+            <script th:src="@{/js/navbar.js}"></script>
+            <script th:src="@{/js/profile.js}"></script>
+            <script th:src="@{/js/codeTasks.js}"></script>
+            <script th:src="@{/js/config.js}"></script>
+    </body>
+</html>
+

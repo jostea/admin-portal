@@ -259,6 +259,10 @@
         $("#tasksSql tbody").html(tbody);
     }
 
+    $("#addCodeTask").on("click", function () {
+       window.location.href = "addCodeTask/";
+    });
+
     $("#tasksSql").on('click', '.editSqlTask', function () {
         let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
         window.location.href = "editSqlTask/" + idTask;

@@ -1,0 +1,26 @@
+body {
+    margin-bottom: 40px;
+}
+
+#themeEditor {
+    font-family: 'Source Code Pro', monospace;
+    color: #4b4848;
+    background: #efefef;
+    border: transparent;
+}
+
+#submitSignature {
+    margin: 10px;
+}
+
+.input-group {
+    margin: 10px;
+}
+
+#submitCorrectAnswer {
+    margin: 10px;
+}
+
+.infop {
+    color: #a87a2f;
+}
