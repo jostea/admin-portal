@@ -36,3 +36,8 @@ $("#tasksCode").on("click", ".viewCodeTask", function () {
     let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
     window.location.href = "viewCodeTask/" + idTask;
 });
+
+$("#tasksCode").on("click", ".editCodeTask", function () {
+    let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+    window.location.href = "editCodeTask/" + idTask;
+});

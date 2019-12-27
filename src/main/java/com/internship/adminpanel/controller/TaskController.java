@@ -132,6 +132,13 @@ public class TaskController {
         return modelAndView;
     }
 
+    @GetMapping("/tasks/editCodeTask/{id}")
+    public ModelAndView editCodeTask() throws Exception {
+        ModelAndView modelAndView = new ModelAndView("tasks/editCodeTask");
+        populateModelWithDropDownsAddCodeTask(modelAndView);
+        return modelAndView;
+    }
+
     private ModelAndView populateModelWithDropDowns(ModelAndView model) {
         //collection for complexitites dropdown
         List<ComplexityEnum> complexities;
