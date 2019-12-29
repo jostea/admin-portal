@@ -11,6 +11,8 @@ $(document).ready(function () {
 });
 
 function fillCodeSingle(data) {
+    let url_string = window.location.href.split('/');
+    let taskId = url_string[url_string.length - 1];
     let header = "";
     let footer = "";
     header += "<input type='hidden' value='" + data.id + "'>";
@@ -18,6 +20,7 @@ function fillCodeSingle(data) {
     header += "<h3 id='codeTaskTitle'><strong>Title: </strong> " + data.title + "</h3>";
     header += "<h5><strong>Description: </strong> " + data.description + "</h5>";
     header += "<h6 class='technologyH'>" + data.technology + ", " + data.complexity + "</h6>";
+    header += "<a href='" + gOptions.aws_path + "/tasks/editCodeTask/" + taskId +"'>Edit this task</a>"
     footer += "<h6>Signature: <span class='codeContainer'>" + encodeSignatureHtml(data.signature) + "</span></h6>";
     footer += "<h6>Code tests:</h6>";
     footer += "<ul class='list-group'>";

@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
@@ -124,12 +123,6 @@ public class TaskController {
         List<TechnologyEnum> technologies;
         technologies = Arrays.asList(TechnologyEnum.values());
         modelAndView.addObject("technologies", technologies);
-    }
-
-    @GetMapping("/tasks/viewCodeTask/{id}")
-    public ModelAndView viewCodeTask() {
-        ModelAndView modelAndView = new ModelAndView("tasks/viewCodeTask");
-        return modelAndView;
     }
 
     @GetMapping("/tasks/editCodeTask/{id}")

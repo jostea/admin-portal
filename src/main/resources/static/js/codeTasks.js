@@ -1,8 +1,3 @@
-$(document).ready(function () {
-    $("#submitTask").hide();
-    $(".allargs").hide();
-});
-
 let accessModifier = "";
 let keyword = "";
 let returnType = "";
@@ -11,7 +6,92 @@ let args = [];
 const rets = ["int", "double", "char", "Integer", "Double", "Char", "String", "Number", "Object"];
 let readingSignature = true;
 
-$("#submitSignature").on("click", function () {
+$(document).ready(function () {
+    let url_string = window.location.href.split('/');
+    let taskId = url_string[url_string.length - 1];
+    if(!isNaN(taskId) && taskId) {
+        $.ajax({
+            method: "GET",
+            url: gOptions.aws_path + "/tasksrest/singleCode/" + taskId,
+            success: function (response) {
+                fillCodeInputs(response);
+            }
+        });
+    } else {
+        $("#submitTask").hide();
+        $(".allargs").hide();
+    }
+});
+
+function populateStreamsTable(data) {
+    let tbody = "";
+    for (let i=0; i<data.length; i++) {
+        tbody += "<tr>";
+        tbody += "<input type='hidden' value =" + data[i].id + ">";
+        tbody += "<td>" + data[i].disciplineName + "</td>";
+        tbody += "<td>" + data[i].name + "</td>";
+        tbody += "<td>" + "<button class='removeDiscStream btn btn-danger'>Remove</button>" + "</td>";
+        tbody += "</tr>";
+    }
+    $("#disc_streams_selected tbody").html(tbody);
+}
+
+function fillCodeInputs(data) {
+    $("#title").val(data.title);
+    $("#descripiton").val(data.description);
+    $("#complexity").val(data.complexity.toUpperCase());
+    $("#technology").val(data.technology.toUpperCase());
+    populateStreamsTable(data.streams);
+    if (data.enabled) {
+        document.getElementById("isEnabledCode").checked = true;
+    }
+    $("#themeEditor").val(data.signature);
+    validateSignature(data.signature);
+    drawInput(data.correctCodes);
+}
+
+function drawInput(data) {
+    let tbody = "";
+    let thead = "";
+    let div = "";
+    for (let i = 0; i < args.length; i++) {
+        div+="<div class='input-group'>";
+        div+="<span class='input-group-addon' id='basic-addon3'>" + "(" + prepareHTML(args[i].type) + ") " + args[i].name + ": </span>";
+        div+="<input type='text' class='form-control' id='arg" + i + "' aria-describedby='basic-addon3'>";
+        div+="</div>";
+    }
+    div+="<div class='input-group'>";
+    div+="<span class='input-group-addon' id='basic-addon3'>(" + prepareHTML(returnType) + ") Given input, method must return: </span>";
+    div+="<input type='text' class='form-control' id='correctReturn' aria-describedby='basic-addon3'>";
+    div+="</div>";
+    div+="<div>";
+    div+="<button id='submitCorrectAnswer' class='btn btn-primary'>Add answer</button>";
+    div+="</div>";
+    $("#introduceParamsDiv").html(div);
+    $(".allargs").show();
+
+    thead += "<tr>";
+    for (let j = 0; j<data.length; j++) {
+        tbody+="<tr>";
+        for (let i = 0; i < args.length; i++) {
+            tbody+="<td>" + "(" + prepareHTML(args[i].type) + ") " + data[j].input.split(";")[i] + "</td>";
+        }
+        tbody+="<td>("+ prepareHTML(returnType) + ") " + data[j].output + "</td>";
+        tbody+="<td><button id='disableAnswer' class='btn btn-danger'>Cancel Answer</button></td>";
+        tbody+="</tr>";
+    }
+    for (let i = 0; i < args.length; i++) {
+        thead += "<th>" + prepareHTML(args[i].type) + " "+ args[i].name + "</th>";
+    }
+    thead += "<th>" + prepareHTML(returnType) + " - return type " +"</th>";
+    thead += "<th>Cancel Answer</th>";
+    tbody+="</tr>";
+    thead+="</tr>";
+    $("#correctAnswersTable tbody").html(tbody);
+    $("#correctAnswersTable thead").html(thead);
+}
+
+$("#submitSignature").on("click", function drawInput() {
     readingSignature = true;
     if (validateSignature($("#themeEditor").val())) {
         let div = "";
@@ -37,14 +117,21 @@ $("#submitSignature").on("click", function () {
 
 $("#introduceParamsDiv").on("click", "#submitCorrectAnswer", function () {
     let tbody = $("#correctAnswersTable tbody").html();
+    let thead = "";
+    thead += "<tr>";
     tbody+="<tr>";
     for (let i = 0; i < args.length; i++) {
         tbody+="<td>" + "(" + prepareHTML(args[i].type) + ") " + $("#arg"+ i + "").val() + "</td>";
+        thead += "<th>" + prepareHTML(args[i].type) + " "+ args[i].name + "</th>";
     }
     tbody+="<td>("+ prepareHTML(returnType) + ") " + $("#correctReturn").val() + "</td>";
-    tbody+="<td><button id='disableAnswer' class='btn btn-danger'>Cancel Answer</button></td>"
+    thead += "<th>" + prepareHTML(returnType) + " - return type " +"</th>";
+    tbody+="<td><button id='disableAnswer' class='btn btn-danger'>Cancel Answer</button></td>";
+    thead += "<th>Cancel Answer</th>";
     tbody+="</tr>";
+    thead+="</tr>";
     $("#correctAnswersTable tbody").html(tbody);
+    $("#correctAnswersTable thead").html(thead);
     $("#submitTask").show();
     for (let i=0; i<args.length; i++) {
         document.getElementById("arg" + i + "").value = "";
@@ -63,6 +150,25 @@ function cleanParams() {
     returnType = "";
     readingSignature = true;
 }
+
+$("#submitTaskEdit").on("click", function () {
+    if (ajaxSubmitValidation() && validateSignature($("#themeEditor").val())) {
+        let url_string = window.location.href.split('/');
+        let taskId = url_string[url_string.length - 1];
+        $.ajax({
+            method: "POST",
+            url: gOptions.aws_path + "/tasksrest/editCodeTask/" + taskId,
+            data: JSON.stringify(prepareDataForTask()),
+            contentType: "application/json",
+            success: function () {
+                window.location.replace(gOptions.aws_path + "/tasks/");
+            },
+            error: function (response) {
+                showPopUp("Error", response.responseText);
+            }
+        });
+    }
+});
 
 $("#submitTask").on("click", function () {
     if (ajaxSubmitValidation() && validateSignature($("#themeEditor").val())) {
@@ -135,7 +241,6 @@ $("#addDiscStream").on("click", function (event) {
     if (checkDiscAndStreams(selectedDiscipline, selectedStream) && selectedDisciplineId != '0') {
         let tbody = $("#disc_streams_selected tbody").html();
         tbody += "<tr>";
-        tbody += "<input type='hidden' value =" + selectedDisciplineId + ">";
         tbody += "<input type='hidden' value =" + selectedStreamId + ">";
         tbody += "<td>" + selectedDiscipline + "</td>";
         tbody += "<td>" + selectedStream + "</td>";
@@ -147,8 +252,8 @@ $("#addDiscStream").on("click", function (event) {
 
 function getStreamIds() {
     let listStreamIds = [];
-    $('#disc_streams_selected').find('tbody').find('tr').each(function (i, el) {
-        let currentStreamId = $(this).find('input[type="hidden"]').eq(1).val();
+    $('#disc_streams_selected').find('tbody').find('tr').each(function () {
+        let currentStreamId = $(this).find('input[type="hidden"]').eq(0).val();
         listStreamIds.push(currentStreamId.valueOf());
     });
     return listStreamIds;
@@ -198,19 +303,23 @@ function listCorrectCodes() {
     let responses = [];
     for (let i=0; i<$('#correctAnswersTable tbody')[0].children.length; i++) {
         for (let j=0; j<$('#correctAnswersTable tbody')[0].children[0].children.length-2; j++) {
+            let type = $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").shift().substring(1, $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").shift().length-1)
+            let value = $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.substring(type.length+3, $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.length);
             responses.push(
                 {
-                    type: $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").shift().substring(1, $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").shift().length-1),
-                    value: $('#correctAnswersTable tbody')[0].children[i].children[j].innerText.split(" ").pop()
+                    type: type,
+                    value: value
                 }
             );
         }
+        let retType = $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").shift().substring(1, $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").shift().length-1);
+        let retVal = $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.substring(retType.length+3, $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.length);
         codes.push(
             {
                 input: responses,
                 output: {
-                    type: $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").shift().substring(1, $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").shift().length-1),
-                    value: $('#correctAnswersTable tbody')["0"].children[i].children[$('#correctAnswersTable tbody')["0"].children[i].children.length-2].innerText.split(" ").pop()
+                    type: retType,
+                    value: retVal
                 }
             }
         );
@@ -451,26 +560,4 @@ function validateDoubleGenerics(input) {
         }
     }
     return false;
-}
-
-function cubeParse(str) {
-    let result = [], item = '', depth = 0;
-    function push() {
-        if (item) {
-            result.push(item);
-        }
-        item = '';
-    }
-    for (let i = 0, c; c = str[i], i < str.length; i++) {
-        if (!depth && c === ',') {
-            push();
-        }
-        else {
-            item += c;
-            if (c === '[') depth++;
-            if (c === ']') depth--;
-        }
-    }
-    push();
-    return result;
 }

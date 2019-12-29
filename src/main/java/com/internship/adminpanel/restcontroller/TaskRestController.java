@@ -141,13 +141,13 @@ public class TaskRestController {
     }
     //endregion
 
-    @GetMapping("/editCodeTask/{id}")
+    @PostMapping("/editCodeTask/{id}")
     public ResponseEntity<?> editCodeTask(@PathVariable("id") Long id, @RequestBody CodeTaskSubmitDTO codeTaskSubmitDTO) {
         try {
             codeTaskService.editTask(id, codeTaskSubmitDTO);
             return new ResponseEntity<>("Successfully updated the task", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Task could not be updated", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Task could not be updated. Reason: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

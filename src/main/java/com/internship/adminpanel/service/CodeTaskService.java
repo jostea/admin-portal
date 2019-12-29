@@ -13,10 +13,10 @@ import com.internship.adminpanel.repository.StreamRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -75,34 +75,46 @@ public class CodeTaskService {
     }
 
     public void editTask(Long id, CodeTaskSubmitDTO codeTaskSubmitDTO) throws Exception {
+        Optional<CodeTask> fromRepo = codeTaskRepository.findById(id);
         try {
-            if (codeValidationService.validateSignature(codeTaskSubmitDTO.getSignature())) {
-                for (AnswersSubmitDTO answer : codeTaskSubmitDTO.getAnswersSubmit()) {
-                    if (!codeValidationService.validateAnswers(answer)) {
-                        throw new Exception("Answer tests validation not passed");
+            if (fromRepo.isPresent()) {
+                if (codeValidationService.validateSignature(codeTaskSubmitDTO.getSignature())) {
+                    for (AnswersSubmitDTO answer : codeTaskSubmitDTO.getAnswersSubmit()) {
+                        if (!codeValidationService.validateAnswers(answer)) {
+                            throw new Exception("Answer tests validation not passed");
+                        }
                     }
+                    CodeTask edited = fromRepo.get();
+                    CodeTaskDTOFromUI codeTaskDTOFromUI = new CodeTaskDTOFromUI(codeTaskSubmitDTO);
+                    edited.setTitle(codeTaskDTOFromUI.getTitle());
+                    edited.setDescription(codeTaskDTOFromUI.getDescription());
+                    List<Stream> codeTaskStreams = new ArrayList<>();
+                    for (Long s : codeTaskSubmitDTO.getStreams()) {
+                        codeTaskStreams.add(streamRepository.findById(s).get());
+                    }
+                    edited.setStreams(codeTaskStreams);
+                    edited.setComplexity(codeTaskDTOFromUI.getComplexity());
+                    edited.setEnabled(codeTaskDTOFromUI.isEnabled());
+                    edited.setSignature(codeValidationService.cleanSignature(codeTaskDTOFromUI.getSignature()));
+                    edited.setTechnology(codeTaskDTOFromUI.getTechnology());
+                    edited.getCorrectCodes().clear();
+                    for (CorrectCode correctCodeToDelete: correctCodeRepository.findAllByCodeTask(edited)) {
+                        correctCodeRepository.delete(correctCodeToDelete);
+                    }
+                    for (CorrectCode correctCodeToUpdate:codeTaskDTOFromUI.getCorrectCodes()) {
+                        correctCodeToUpdate.setCodeTask(edited);
+                        correctCodeRepository.save(correctCodeToUpdate);
+                    }
+                    codeTaskRepository.save(edited);
+                } else {
+                    throw new Exception("Signature validation not passed");
                 }
-                CodeTask fromRepo = codeTaskRepository.findById(id).get();
-                CodeTaskDTOFromUI codeTaskDTOFromUI = new CodeTaskDTOFromUI(codeTaskSubmitDTO);
-                fromRepo.setTitle(codeTaskDTOFromUI.getTitle());
-                fromRepo.setDescription(codeTaskDTOFromUI.getDescription());
-                List<Stream> updatedStreams = new ArrayList<>();
-                for (Long strid : codeTaskDTOFromUI.getStreams()) {
-                    updatedStreams.add(streamRepository.findById(strid).get());
-                }
-                fromRepo.setStreams(updatedStreams);
-                fromRepo.setComplexity(codeTaskDTOFromUI.getComplexity());
-                fromRepo.setEnabled(codeTaskDTOFromUI.isEnabled());
-                fromRepo.setSignature(codeValidationService.cleanSignature(codeTaskDTOFromUI.getSignature()));
-                fromRepo.setTechnology(codeTaskDTOFromUI.getTechnology());
-                fromRepo.setCorrectCodes(codeTaskDTOFromUI.getCorrectCodes());
-                codeTaskRepository.save(fromRepo);
             } else {
-                throw new Exception("Signature validation not passed");
+                throw new Exception("Task not found");
             }
         } catch (Exception e) {
             log.warn("Code task could not be updated. Stack trace: " + Arrays.toString(e.getStackTrace()));
-            throw new Exception("Could not update the task");
+            throw new Exception(e.getMessage());
         }
     }
 }

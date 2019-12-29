@@ -162,6 +162,7 @@
             <h6 class="infop">Argument types and names must be valid, following Java 8 syntax</h6>
             <label for="themeEditor"></label>
             <textarea id="themeEditor" class="form-control" rows="1" placeholder="//Your signature here"></textarea>
+            <button id="submitSignature" class="btn btn-primary">Submit new signature</button>
         </div>
     </div>
 
@@ -175,7 +176,10 @@
     </div>
 
     <div>
-        <table  id="correctAnswersTable" class="table">
+        <table  id="correctAnswersTable" class="table table-bordered">
+            <thead>
+
+            </thead>
             <tbody>
 
             </tbody>
@@ -183,10 +187,10 @@
     </div>
 
     <div>
-        <button id="submitTask" class="btn btn-primary">Submit changes</button>
+        <button id="submitTaskEdit" class="btn btn-primary">Submit changes</button>
     </div>
 </div>
-<script th:src="@{/js/editCodeTask.js}"></script>
+<script th:src="@{/js/codeTasks.js}"></script>
 <script th:src="@{/js/navbar.js}"></script>
 <script th:src="@{/js/profile.js}"></script>
 <script th:src="@{/js/config.js}"></script>
