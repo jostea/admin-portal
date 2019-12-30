@@ -1,10 +1,7 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.internship.adminpanel.model.CodeTask;
 import com.internship.adminpanel.model.dto.code_task.CodeTaskSubmitDTO;
 import com.internship.adminpanel.model.dto.task.*;
-import com.internship.adminpanel.repository.CodeTaskRepository;
-import com.internship.adminpanel.service.*;
 import com.internship.adminpanel.service.CodeTaskService;
 import com.internship.adminpanel.service.AssetsStorageService;
 import com.internship.adminpanel.service.SqlGroupService;
@@ -143,6 +140,16 @@ public class TaskRestController {
         }
     }
     //endregion
+
+    @PostMapping("/editCodeTask/{id}")
+    public ResponseEntity<?> editCodeTask(@PathVariable("id") Long id, @RequestBody CodeTaskSubmitDTO codeTaskSubmitDTO) {
+        try {
+            codeTaskService.editTask(id, codeTaskSubmitDTO);
+            return new ResponseEntity<>("Successfully updated the task", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Task could not be updated. Reason: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping("/viewTask/{id}")
     public ResponseEntity<TaskEditDTO> viewTask(@PathVariable("id") Long id, Authentication authentication) {

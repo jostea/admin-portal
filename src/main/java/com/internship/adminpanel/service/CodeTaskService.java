@@ -10,23 +10,50 @@ import com.internship.adminpanel.model.dto.task.CodeTaskDTOFromUI;
 import com.internship.adminpanel.repository.CodeTaskRepository;
 import com.internship.adminpanel.repository.CorrectCodeRepository;
 import com.internship.adminpanel.repository.StreamRepository;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class CodeTaskService {
     private final CodeTaskRepository codeTaskRepository;
-    private final CodeValidationService codeValidationService;
     private final StreamRepository streamRepository;
+    private final CodeValidationService codeValidationService;
     private final CorrectCodeRepository correctCodeRepository;
 
+    public void saveTask(CodeTaskSubmitDTO codeTaskSubmitDTO) throws Exception {
+        try {
+            if (codeValidationService.validateSignature(codeTaskSubmitDTO.getSignature())) {
+                for (AnswersSubmitDTO answer : codeTaskSubmitDTO.getAnswersSubmit()) {
+                    if (!codeValidationService.validateAnswers(answer)) {
+                        throw new Exception("Answer tests validation not passed");
+                    }
+                }
+                CodeTaskDTOFromUI codeTaskDTOFromUI = new CodeTaskDTOFromUI(codeTaskSubmitDTO);
+                CodeTask tobeSaved = new CodeTask(codeTaskDTOFromUI);
+                for (CorrectCode code : codeTaskDTOFromUI.getCorrectCodes()) {
+                    code.setCodeTask(tobeSaved);
+                }
+                List<Stream> codeTaskStreams = new ArrayList<>();
+                for (Long s : codeTaskSubmitDTO.getStreams()) {
+                    codeTaskStreams.add(streamRepository.findById(s).get());
+                }
+                tobeSaved.setStreams(codeTaskStreams);
+                codeTaskRepository.save(tobeSaved);
+                for (CorrectCode code : codeTaskDTOFromUI.getCorrectCodes()) {
+                    correctCodeRepository.save(code);
+                }
+            } else throw new Exception("Signature validation not passed");
+        } catch (Exception e) {
+            throw new Exception("Task could not be saved, check all the data again. \nReason: " + e.getMessage());
+        }
+    }
     public List<CodeTaskDTO> getAll() throws Exception {
         try {
             List<CodeTaskDTO> taskDTOS = new ArrayList<>();
@@ -35,7 +62,7 @@ public class CodeTaskService {
             }
             return taskDTOS;
         } catch (Exception e) {
-            log.warn("Could not extract tasks from db. Stack Trace: " + e.getStackTrace());
+            log.warn("Could not extract tasks from db. Stack Trace: " + Arrays.toString(e.getStackTrace()));
             throw new Exception("Code tasks could not be loaded");
         }
     }
@@ -46,43 +73,48 @@ public class CodeTaskService {
             throw new Exception("Something went wrong finding the task");
         }
     }
-    public void saveTask(CodeTaskSubmitDTO codeTaskSubmitDTO) throws Exception {
+
+    public void editTask(Long id, CodeTaskSubmitDTO codeTaskSubmitDTO) throws Exception {
+        Optional<CodeTask> fromRepo = codeTaskRepository.findById(id);
         try {
-            if (codeValidationService.validateSignature(codeTaskSubmitDTO.getSignature())) {
-                for (AnswersSubmitDTO answer:codeTaskSubmitDTO.getAnswersSubmit()) {
-                    if (!codeValidationService.validateAnswers(answer)) {
-                        throw new Exception("Answer tests validation not passed");
+            if (fromRepo.isPresent()) {
+                if (codeValidationService.validateSignature(codeTaskSubmitDTO.getSignature())) {
+                    for (AnswersSubmitDTO answer : codeTaskSubmitDTO.getAnswersSubmit()) {
+                        if (!codeValidationService.validateAnswers(answer)) {
+                            throw new Exception("Answer tests validation not passed");
+                        }
                     }
+                    CodeTask edited = fromRepo.get();
+                    CodeTaskDTOFromUI codeTaskDTOFromUI = new CodeTaskDTOFromUI(codeTaskSubmitDTO);
+                    edited.setTitle(codeTaskDTOFromUI.getTitle());
+                    edited.setDescription(codeTaskDTOFromUI.getDescription());
+                    List<Stream> codeTaskStreams = new ArrayList<>();
+                    for (Long s : codeTaskSubmitDTO.getStreams()) {
+                        codeTaskStreams.add(streamRepository.findById(s).get());
+                    }
+                    edited.setStreams(codeTaskStreams);
+                    edited.setComplexity(codeTaskDTOFromUI.getComplexity());
+                    edited.setEnabled(codeTaskDTOFromUI.isEnabled());
+                    edited.setSignature(codeValidationService.cleanSignature(codeTaskDTOFromUI.getSignature()));
+                    edited.setTechnology(codeTaskDTOFromUI.getTechnology());
+                    edited.getCorrectCodes().clear();
+                    for (CorrectCode correctCodeToDelete: correctCodeRepository.findAllByCodeTask(edited)) {
+                        correctCodeRepository.delete(correctCodeToDelete);
+                    }
+                    for (CorrectCode correctCodeToUpdate:codeTaskDTOFromUI.getCorrectCodes()) {
+                        correctCodeToUpdate.setCodeTask(edited);
+                        correctCodeRepository.save(correctCodeToUpdate);
+                    }
+                    codeTaskRepository.save(edited);
+                } else {
+                    throw new Exception("Signature validation not passed");
                 }
-                CodeTaskDTOFromUI codeTaskDTOFromUI = new CodeTaskDTOFromUI();
-                codeTaskDTOFromUI.setTitle(codeTaskSubmitDTO.getTitle());
-                codeTaskDTOFromUI.setComplexity(codeTaskSubmitDTO.getComplexity());
-                codeTaskDTOFromUI.setTechnology(codeTaskSubmitDTO.getTechnology());
-                List<CorrectCode> currentCodes = new ArrayList<>();
-                for (AnswersSubmitDTO answer:codeTaskSubmitDTO.getAnswersSubmit()) {
-                    CorrectCode inLoopCorrectCode = new CorrectCode(answer);
-                    currentCodes.add(inLoopCorrectCode);
-                }
-                codeTaskDTOFromUI.setCorrectCodes(currentCodes);
-                codeTaskDTOFromUI.setDescription(codeTaskSubmitDTO.getDescription());
-                codeTaskDTOFromUI.setSignature(codeValidationService.cleanSignature(codeTaskSubmitDTO.getSignature()));
-                codeTaskDTOFromUI.setEnabled(codeTaskSubmitDTO.isEnabled());
-                CodeTask tobeSaved = new CodeTask(codeTaskDTOFromUI);
-                for (CorrectCode code: currentCodes) {
-                    code.setCodeTask(tobeSaved);
-                }
-                List<Stream> codeTaskStreams = new ArrayList<>();
-                for (Long s: codeTaskSubmitDTO.getStreams()) {
-                    codeTaskStreams.add(streamRepository.findById(s).get());
-                }
-                tobeSaved.setStreams(codeTaskStreams);
-                codeTaskRepository.save(tobeSaved);
-                for (CorrectCode code: currentCodes) {
-                    correctCodeRepository.save(code);
-                }
-            } else throw new Exception("Signature validation not passed");
+            } else {
+                throw new Exception("Task not found");
+            }
         } catch (Exception e) {
-            throw new Exception("Task could not be saved, check all the data again. \nReason: " + e.getMessage());
+            log.warn("Code task could not be updated. Stack trace: " + Arrays.toString(e.getStackTrace()));
+            throw new Exception(e.getMessage());
         }
     }
 }
