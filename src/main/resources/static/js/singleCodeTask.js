@@ -19,7 +19,12 @@ function fillCodeSingle(data) {
     header += "<h2>View code task</h2>";
     header += "<h3 id='codeTaskTitle'><strong>Title: </strong> " + data.title + "</h3>";
     header += "<h5><strong>Description: </strong> " + data.description + "</h5>";
-    header += "<h6 class='technologyH'>" + data.technology + ", " + data.complexity + "</h6>";
+    header += "<h6 class='technologyH'>" + data.technology + ", " + data.complexity + "</h6>"
+    if (data.enabled) {
+        header += "<h5>This task is currently active <button class='btn btn-danger btn-xs' id='enableDisableButton'>Disable</button></h5>";
+    } else {
+        header += "<h5>This task is currently disabled <button class='btn btn-success btn-xs' id='enableDisableButton'>Enable</button></h5>";
+    }
     header += "<a href='" + gOptions.aws_path + "/tasks/editCodeTask/" + taskId +"'>Edit this task</a>"
     footer += "<h6>Signature: <span class='codeContainer'>" + encodeSignatureHtml(data.signature) + "</span></h6>";
     footer += "<h6>Code tests:</h6>";
@@ -40,4 +45,29 @@ function encodeSignatureHtml(signature) {
     signature = signature.replace(/>/g, '&gt');
     signature = signature.replace(/</g, '&lt');
     return signature;
+}
+
+$("#codeTaskHeader").on("click", "#enableDisableButton", function () {
+    if (confirm("Are you sure you want to change this task's state?")) {
+        let url_string = window.location.href.split('/');
+        let taskId = url_string[url_string.length - 1];
+        disableEnableCodeTask(taskId);
+        window.location.reload();
+    }
+});
+
+function disableEnableCodeTask(idTask) {
+    $.ajax({
+        method: "PUT",
+        url: gOptions.aws_path + "/tasksrest/disableCodeTask/" + idTask,
+        success: function () {
+            $("#myModal").modal('show');
+            async function sl() {
+                window.location.href = gOptions.aws_path + "/tasks/";
+            }
+        },
+        error: function (response) {
+            alert(response.responseText);
+        }
+    });
 }

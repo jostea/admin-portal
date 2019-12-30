@@ -117,4 +117,24 @@ public class CodeTaskService {
             throw new Exception(e.getMessage());
         }
     }
+
+    public void disableTask(Long id) throws Exception {
+        try {
+            Optional<CodeTask> optionalCodeTask = codeTaskRepository.findById(id);
+            if (optionalCodeTask.isPresent()) {
+                CodeTask codeTask = optionalCodeTask.get();
+                if (codeTask.isEnabled()) {
+                    codeTask.setEnabled(false);
+                } else {
+                    codeTask.setEnabled(true);
+                }
+                codeTaskRepository.save(codeTask);
+            } else {
+                throw new Exception("Task not found");
+            }
+        } catch (Exception e) {
+            log.warn("Something went wrong while updating the code task, Stack trace: " + e.getStackTrace());
+            throw new Exception("Code task's activity could not be updated");
+        }
+    }
 }
