@@ -198,6 +198,16 @@ public class TaskRestController {
         }
     }
 
+    @PutMapping("/disableCodeTask/{id}")
+    public ResponseEntity<?> disableCodeTask(@PathVariable Long id) {
+        try {
+            codeTaskService.disableTask(id);
+            return new ResponseEntity<>("Task's activity has been successfully updated", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(value = "imageDownload/{idSqlGroup}")
     public ResponseEntity downloadFile(@PathVariable Long idSqlGroup, HttpServletRequest request) throws FileNotFoundException {
         String urlFromDb = sqlGroupService.findById(idSqlGroup).getImagePath();

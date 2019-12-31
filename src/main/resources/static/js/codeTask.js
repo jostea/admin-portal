@@ -41,3 +41,34 @@ $("#tasksCode").on("click", ".editCodeTask", function () {
     let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
     window.location.href = "editCodeTask/" + idTask;
 });
+
+$("#tasksCode").on("click", ".deleteCodeTask", function () {
+    let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+    if (this.innerHTML === 'Disable') {
+        this.innerHTML = 'Enable';
+        this.classList.replace('btn-warning', 'btn-success');
+    } else {
+        if (this.innerHTML === 'Enable') {
+            this.innerHTML = 'Disable';
+            this.classList.replace('btn-success', 'btn-warning');
+        }
+    }
+    disableEnableCodeTask(idTask);
+});
+
+function disableEnableCodeTask(idTask) {
+    $.ajax({
+        method: "PUT",
+        url: gOptions.aws_path + "/tasksrest/disableCodeTask/" + idTask,
+        success: function () {
+            $("#myModal").modal('show');
+            async function sl() {
+                window.location.href = gOptions.aws_path + "/tasks/";
+            }
+        },
+        error: function (response) {
+            alert(response.responseText);
+        }
+    });
+}
+
