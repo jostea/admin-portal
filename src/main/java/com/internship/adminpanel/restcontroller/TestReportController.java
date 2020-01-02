@@ -1,0 +1,31 @@
+package com.internship.adminpanel.restcontroller;
+
+import com.internship.adminpanel.model.dto.test_report.CandidateTestReportDTO;
+import com.internship.adminpanel.service.TestReportService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/testreport")
+public class TestReportController {
+
+    private final TestReportService testReportService;
+
+    @GetMapping(value = "/report/{id}")
+    public ResponseEntity<?> startTest(@PathVariable("id") Long id) {
+        try {
+            CandidateTestReportDTO candidateTestReportDTO = testReportService.getCandidateTestResults(id);
+            log.info("Test report for candidate with id {} was provided", id);
+            return new ResponseEntity<>(candidateTestReportDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error while getting test results for the candidate with id {}", id);
+            return new ResponseEntity("Error while getting test report", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+}

@@ -1,5 +1,6 @@
 package com.internship.adminpanel.model;
 
+import com.internship.adminpanel.model.enums.TestStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,6 +56,28 @@ public class Candidate {
     @Column(name = "date_test_finished")
     private Timestamp dateTestFinished;
 
+    @NotNull
+    @Column(name = "test_status")
+    @Enumerated(EnumType.STRING)
+    private TestStatusEnum testStatus;
+
+    @OneToMany(mappedBy = "candidate")
+    private List<CandidateSkill> candidateSkills;
+
+    @OneToMany(mappedBy = "candidate")
+    private List<CandidateCustomTask> candidateCustomTasks;
+
+    @OneToMany(mappedBy = "candidate")
+    private List<CandidateSingleTask> candidateSingleTasks;
+
+    @OneToMany(mappedBy = "candidate")
+    private List<CandidateSqlTask> candidateSqlTasks;
+
+    @OneToMany(mappedBy = "candidate")
+    private List<CandidateCodeTask> candidateCodeTasks;
+
+    @OneToMany(mappedBy = "candidate")
+    private List<CandidateMultiTask> candidateMultiTasks;
 
     @Override
     public String toString() {
