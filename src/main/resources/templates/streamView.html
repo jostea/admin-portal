@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Streams</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<script th:src="@{/js/config.js}"></script>
+<div th:replace="fragments/topnavbar :: navbar"></div>
+<div class="container">
+    <div id="alertStream"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <label for="name-input"></label>
+                <input type="text" name="name-input" id="name-input"/>
+                <button onclick="filterByName($('#name-input').val())"
+                        class="btn">Find stream
+                </button>
+                <button type="button" class="btn" onclick="getAllStreams()">Refresh</button>
+                <button type="button" class="btn" data-toggle="modal" data-target="#streamAddModal"
+                        id="btn call-mdl-add" onclick="getAllDisciplinesAdd()">Add
+                </button>
+                <table class="table table-hover" id="streamsTable">
+                    <thead>
+                    <tr>
+                        <th>Stream</th>
+                        <th>Discipline</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="editModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Stream</h4>
+                </div>
+                <div class="modal-body" id="formInModal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-lg" onclick="edit(flagIdStream)" data-dismiss="modal">
+                        Update Stream
+                    </button>
+                    <button type="button" class="btn btn-info btn-lg" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="streamAddModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">New Stream</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form>
+                            <div class="col-md-4">
+                                <label for="name">Enter stream title:</label>
+                                <input type="text" id="name"></div>
+                            <div class="col-md-6">
+                                <label for="disciplines">Disciplines:</label>
+                                <select id="disciplines" class="form-control">
+                        </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="addStream" class="btn btn-info btn-lg"
+                            onclick="addStream()" data-dismiss="modal">
+                        Add
+                    </button>
+                    <button type="button" class="btn btn-info btn-lg" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="deleteModalStream" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Delete</h4>
+                    <div class="modal-body">
+                        <form>
+                            Are you sure want to delete this stream
+                        </form>
+                        <button id="confirm-delete-stream-button" data-dismiss="modal">Confirm</button>
+                        <button class="btn-close" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/streams.js}"></script>
+<script th:src="@{/js/streamAdd.js}"></script>
+</body>
+</html>

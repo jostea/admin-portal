@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta charset="UTF-8">
+    <title>List of tasks in the system</title>
+
+    <!--    <link type="text/css" rel="stylesheet" th:href="@{/css/alltasks.css}">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div>
+    <!-- HEADER - NAVBAR -->
+    <div th:replace="fragments/topnavbar :: navbar">
+    </div>
+
+    <div class="container">
+
+        <!-- Modal On Task Disable_Enable Action -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <!--                    <h4 class="modal-title"></h4>-->
+                    </div>
+                    <div class="modal-body" style="text-align:center">
+                        <h3><strong>Task was successfully modified</strong></h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="col-md-7">
+                <h3> List of Tasks </h3>
+            </div>
+            <div class="btn-toolbar col-md-5">
+                <button id="addTask" type="button" class="btn btn-danger">Add Standard Task</button>
+                <button id="addSqlTask" type="button" class="btn btn-danger">Add SQL Task</button>
+                <button id="addCodeTask" type="button" class="btn btn-danger">Add Code Task</button>
+            </div>
+        </div>
+        <hr/>
+        <br>
+
+        <!-- Table for GENERAL Tasks -->
+        <div class="row">
+            <div class="col-md-7">
+                <h4> General Tasks </h4>
+            </div>
+        </div>
+        <table id="tasks" class="fixed_header table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th> Nr</th>
+                <th> Title</th>
+                <th> Type</th>
+                <th> Complexity</th>
+                <th> Is Enabled</th>
+                <th> View</th>
+                <th> Edit</th>
+                <th> Activate</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <!-- Table for SQL Tasks-->
+        <div class="row">
+            <div class="col-md-7">
+                <h4> SQL Tasks </h4>
+            </div>
+        </div>
+        <table id="tasksSql" class="fixed_header table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th> Nr</th>
+                <th> Title</th>
+                <th> Complexity</th>
+                <th> Is Enabled</th>
+                <th> View</th>
+                <th> Edit</th>
+                <th> Activate</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <!-- Table for CODE Tasks-->
+        <div class="row">
+            <div class="col-md-7">
+                <h4> Code Tasks </h4>
+            </div>
+        </div>
+        <table id="tasksCode" class="fixed_header table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th> Nr</th>
+                <th> Title</th>
+                <th> Complexity</th>
+                <th> Is Enabled</th>
+                <th> Technology</th>
+                <th> View</th>
+                <th> Edit</th>
+                <th> Activate</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/codeTask.js}"></script>
+<script>
+    $(document).ready(getAllTasks());
+
+    //returns response with all tasks
+    function getAllTasks() {
+
+        //fillin Table of General Tasks
+        $.ajax({
+            method: "GET",
+            url: gOptions.aws_path + "/tasksrest/all",
+            success: function (response) {
+                fillTasks(response);
+            }
+        });
+
+        //fillin Table of SQL Tasks
+        $.ajax({
+            method: "GET",
+            url: gOptions.aws_path + "/tasksrest/allSql",
+            success: function (response) {
+                fillSqlTasks(response);
+            }
+        });
+    }
+
+    //disable or enable Standard Task
+    function disable_enable_Task(data) {
+        //modify one task
+        $.ajax({
+            method: "PUT",
+            url: gOptions.aws_path + "/tasksrest/disableTask",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function () {
+                $("#myModal").modal('show');
+                async function sl() {
+                    window.location.href = gOptions.aws_path + "/tasks/";
+                }
+            }
+        })
+    }
+
+    // dynamically fill in table with General Tasks
+    function fillTasks(data) {
+        let tbody = "";
+        for (let i = 0; i < data.length; i++) {
+            tbody += "<tr>";
+            tbody += "<input type='hidden' value=" + data[i].id + ">";
+            tbody += "<td>" + (i + 1) + "</td>";
+            tbody += "<td>" + data[i].title + "</td>";
+            tbody += "<td>" + data[i].type + "</td>";
+            tbody += "<td>" + data[i].complexity + "</td>";
+            tbody += "<td>" + data[i].isEnabled + "</td>";
+            tbody += "<td>" + "<button class='viewTask btn btn-light'> View </button>" + "</td>";
+            tbody += "<td>" + "<button class='editTask btn btn-primary'> Edit </button>" + "</td>";
+            if (data[i].isEnabled === true) {
+                tbody += "<td>" + "<button class='deleteTask btn btn-warning'>Disable</button>" + "</td>";
+            } else {
+                if ((data[i].isEnabled === false)) {
+                    tbody += "<td>" + "<button class='deleteTask btn btn-success'>Enable</button>" + "</td>";
+                }
+            }
+            tbody += "</tr>";
+        }
+        $("#tasks tbody").html(tbody);
+    }
+
+    $("#addTask").on("click", function (event) {
+        window.location.href = "addTask";
+    });
+
+    $("#addSqlTask").on("click", function (event) {
+        window.location.href = "addSqlTask";
+    });
+
+    $("#tasks").on('click', '.editTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        window.location.href = "editTask/" + idTask;
+    });
+
+    $("#tasks").on('click', '.viewTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        window.location.href = "viewTask/" + idTask;
+    });
+
+    $("#tasks").on('click', '.deleteTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        let enable;
+        if (this.innerHTML === 'Disable') {
+            this.innerHTML = 'Enable';
+            this.classList.replace('btn-warning', 'btn-success');
+            enable = false;
+        } else {
+            if (this.innerHTML === 'Enable') {
+                this.innerHTML = 'Disable';
+                this.classList.replace('btn-success', 'btn-warning');
+                enable = true;
+            }
+        }
+        let data = {
+            id: idTask,
+            isEnabled: enable
+        }
+        disable_enable_Task(data);
+    });
+
+    // Process SQL Tasks
+    function fillSqlTasks(data) {
+        let tbody = "";
+        for (let i = 0; i < data.length; i++) {
+            tbody += "<tr>";
+            tbody += "<input type='hidden' value=" + data[i].id + ">";
+            tbody += "<td>" + (i + 1) + "</td>";
+            tbody += "<td>" + data[i].title + "</td>";
+            tbody += "<td>" + data[i].complexity + "</td>";
+            tbody += "<td>" + data[i].isEnabled + "</td>";
+            tbody += "<td>" + "<button class='viewSqlTask btn btn-light'> View </button>" + "</td>";
+            tbody += "<td>" + "<button class='editSqlTask btn btn-primary'> Edit </button>" + "</td>";
+            if (data[i].isEnabled === true) {
+                tbody += "<td>" + "<button class='deleteSqlTask btn btn-warning'>Disable</button>" + "</td>";
+            } else {
+                if ((data[i].isEnabled === false)) {
+                    tbody += "<td>" + "<button class='deleteSqlTask btn btn-success'>Enable</button>" + "</td>";
+                }
+            }
+            tbody += "</tr>";
+        }
+        $("#tasksSql tbody").html(tbody);
+    }
+
+    $("#addCodeTask").on("click", function () {
+       window.location.href = "addCodeTask/";
+    });
+
+    $("#tasksSql").on('click', '.editSqlTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        window.location.href = "editSqlTask/" + idTask;
+    });
+
+    $("#tasksSql").on('click', '.viewSqlTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        window.location.href = "viewSqlTask/" + idTask;
+    });
+
+    $("#tasksSql").on('click', '.deleteSqlTask', function () {
+        let idTask = $(this).closest('tr').find('input[type="hidden"]').eq(0).val();
+        let enable;
+        if (this.innerHTML === 'Disable') {
+            this.innerHTML = 'Enable';
+            this.classList.replace('btn-warning', 'btn-success');
+            enable = false;
+        } else {
+            if (this.innerHTML === 'Enable') {
+                this.innerHTML = 'Disable';
+                this.classList.replace('btn-success', 'btn-warning');
+                enable = true;
+            }
+        }
+        let data = {
+            id: idTask,
+            isEnabled: enable
+        }
+        disable_enable_SqlTask(data);
+    });
+
+    //disable or enable Standard Task
+    function disable_enable_SqlTask(data) {
+        //modify one task
+        $.ajax({
+            method: "PUT",
+            url: gOptions.aws_path + "/tasksrest/disableSqlTask",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function () {
+                $("#myModal").modal('show');
+                async function sl() {
+                    window.location.href = gOptions.aws_path + "/tasks/";
+                }
+            }
+        })
+    }
+
+</script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
+</body>
+</html>
+

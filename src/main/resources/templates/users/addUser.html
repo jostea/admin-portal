@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Add New User</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link th:href="@{/css/addUser.css}" type="text/css" rel="stylesheet">
+</head>
+<script th:src="@{/js/config.js}"></script>
+<body>
+        <div class="spinner">Your request is being processed...</div>
+        <div class="main-div">
+        <div th:replace="fragments/topnavbar :: navbar">
+        </div>
+        <div class="container">
+            <div id="saveMessage"></div>
+            <div>
+                <h2>Add new user</h2>
+                <h6>Please provide a valid email</h6>
+                <h6>Make sure the username has at least 6 symbols, it is made up of only lowercase letters and has no other symbols than .-_!#</h6>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <form class="form-group">
+                        <form class="form-group">
+                            <label for="username-add">Username:</label>
+                            <input class="form-control" required="required" type="text" id="username-add"/>
+                        </form>
+
+                        <form class="form-group">
+                            <label for="email-add">Email:</label>
+                            <input class="form-control" required="required" type="text" id="email-add"/>
+                        </form>
+                        <button id="addUser" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/addUser.js}"></script>
+    <script th:src="@{/js/navbar.js}"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+table {
+    border-collapse: collapse;
+    position: relative;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th {
+    height: 25px;
+    padding: 15px;
+    position: sticky;
+}
+
+td {
+    min-width: 20px;
+    padding: 15px;
+    text-align: left;
+    height: 15px;
+}

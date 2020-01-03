@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>TestStructure</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<script th:src="@{/js/config.js}"></script>
+<div th:replace="fragments/topnavbar :: navbar"></div>
+
+<div class="container">
+
+    <div id="alertTestStructure"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="testTitle"></div>
+                <br>
+                <div id="testTime"></div>
+                <br>
+                <div id="divAddTestStructure"></div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-8"></div>
+                    <div class="col-sm-2">
+                        <p style="color: red">Number tasks in DB   <span id="badgeNr" class="badge" style="background-color: red"></span></p>
+                    </div>
+                    <div class="col-sm-2"></div>
+                    <br>
+                </div>
+                <table class="table table-hover" id="testStructureTable">
+                    <thead>
+                    <tr>
+                        <th>Task Type</th>
+                        <th>Complexity</th>
+                        <th>Nr. of questions</th>
+                        <th></th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyTest"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="deleteStructure" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Delete</h4>
+                    <div class="modal-body">
+                        <form>
+                            Are you sure want to delete this Structure
+                        </form>
+                        <button id="confirm-delete-structure-button" data-dismiss="modal">Confirm</button>
+                        <button class="btn-close" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/testStructure.js}"></script>
+</body>
+</html>

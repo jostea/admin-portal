@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Disciplines</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<script th:src="@{/js/config.js}"></script>
+<div th:replace="fragments/topnavbar :: navbar">
+</div>
+<div class="container">
+    <div id="alertDiscipline"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <label for="discipline-find"></label>
+                <input type="text" id="discipline-find"/>
+                <button onclick="findByNameDiscipline($('#discipline-find').val())"
+                        class="btn">Find discipline
+                </button>
+                <button type="button" class="btn" onclick="getAllDisciplines()">Refresh</button>
+                <button type="button" class="btn" data-toggle="modal" data-target="#disciplinesAddModal"
+                        id="btn call-mdl-add" onclick="">Add
+                </button>
+                <table class="table table-hover" id="disciplinesTable">
+                    <thead>
+                    <tr>
+                        <th>Discipline</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<div class="container">
+    <div class="modal fade" id="editModalDiscipline" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Discipline</h4>
+                </div>
+                <div class="modal-body" id="formInModalDiscipline">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-lg" onclick="editDiscipline(flagDiscipline)"
+                            data-dismiss="modal">
+                        Update discipline
+                    </button>
+                    <button type="button" class="btn btn-info btn-lg" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="disciplinesAddModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">New Discipline</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="discipline-input-add">Enter discipline title:</label>
+                        <input type="text" id="discipline-input-add"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="addDiscipline" class="btn btn-info btn-lg"
+                            onclick="addDiscipline()" data-dismiss="modal">
+                        Add
+                    </button>
+                    <button type="button" class="btn btn-info btn-lg" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal" id="deleteModalDiscipline" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Delete</h4>
+                    <div class="modal-body">
+                        <form>
+                            Are you sure want to delete this discipline
+                        </form>
+                        <button id="confirm-delete-discipline-button" data-dismiss="modal">Confirm</button>
+                        <button class="btn-close" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/disciplines.js}"></script>
+<script th:src="@{/js/navbar.js}"></script>
+</body>
+</html>

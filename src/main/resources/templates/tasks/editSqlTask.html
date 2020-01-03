@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <title> Edit SQL task </title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/alltasks.css}">
+
+</head>
+
+<body>
+<div>
+
+    <!-- HEADER - NAVBAR -->
+    <div th:replace="fragments/topnavbar :: navbar">
+    </div>
+
+    <div class="container">
+
+        <!-- Modal To Display Different Messages -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body" style="text-align:center">
+                        <h3><strong>Task was successfully modified</strong></h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <h1>
+                <strong>Edit SQL Task</strong>
+                <input id="taskId" type='hidden' value=''>
+            </h1>
+        </div>
+        <hr>
+
+        <form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="title">Title</label>
+                        <div class="col-md-4">
+                            <input id="title" class="form-control" type="text" placeholder="Task Title">
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- DROPDOWN COMPLEXITIES -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="complexity">Complexity</label>
+                        <div class="col-md-4">
+                            <select id="complexity" class="form-control">
+                                <!--                        <option value="0" disabled style="display:none">Select complexity...</option>-->
+                                <option th:each="complexityEnum : ${complexities}" th:value="${complexityEnum}"
+                                        th:text="${complexityEnum.getComplexity()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- DROPDOWN SQL_GROUPS -->
+                    <div class="form-row row">
+                        <label class="col-md-2 col-form-label" for="sqlGroup">Sql Group</label>
+                        <div class="col-md-4">
+                            <select id="sqlGroup" class="form-control">
+                                <option value="0" disabled style="display:none">Select Sql Group...</option>
+                                <option th:each="SqlGroupDTO : ${sqlgroups}" th:value="${SqlGroupDTO.getId()}"
+                                        th:text="${SqlGroupDTO.getName()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img id="sqlGroupImage" src='' style="max-width: 400px; max-width: 100%; max-height: 100%">
+                </div>
+            </div>
+            <br/>
+
+            <div class="form-row row">
+                <label class="col-md-1 col-form-label" for="descripiton">Description</label>
+                <div class="col-md-11">
+                    <textarea id="descripiton" class="form-control" type="text"
+                              placeholder="Task Description"></textarea>
+                </div>
+            </div>
+            <br/>
+
+            <!-- SQL STATEMENT WARNING -->
+            <div class="form-row row">
+                <h5 class="alert alert-warning">
+                    <strong>Attention!</strong> Specify the SQL Statement, which generates the correct result (expected
+                    to
+                    be provided by candidate).
+                </h5>
+            </div>
+
+            <!-- SQL STATEMENT ITSELF -->
+            <div id="divSqlStatement" class="form-row row">
+                <label class="col-md-1 col-form-label">SQL Statement</label>
+                <div class="col-md-11">
+                    <textarea id="sqlStatement" class="form-control" type="text" placeholder="SQL Statement"></textarea>
+                </div>
+            </div>
+            <hr>
+
+            <div class="form-row row">
+                <!-- DROPDOWN DISCIPLINES -->
+                <div>
+                    <label class="col-md-1 col-form-label" for="disciplines">Discipline: </label>
+                    <div class="col-md-3">
+                        <select id="disciplines" class="form-control">
+                            <option value="0" selected disabled style="display: none">Select discipline...</option>
+                            <option th:each="DisciplineListDTO : ${disciplines}" th:value="${DisciplineListDTO.getId()}"
+                                    th:text="${DisciplineListDTO.getName()}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- DROPDOWN STREAMS -->
+                <div>
+                    <label class="col-md-1 col-form-label" for="streams">Stream:</label>
+                    <div class="col-md-3">
+                        <select id="streams" class="form-control">
+                            <option th:each="StreamDTO : ${streams}" th:value="${StreamDTO.getId()}"
+                                    th:text="${StreamDTO.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button id="addDiscStream" type="submit" class="btn btn-primary">Add</button>
+                </div>
+                <br/>
+            </div>
+
+            <br/>
+            <div class="form-row row">
+                <h5 class="alert alert-info">
+                    <strong>Info!</strong> There are the following Disciplines and Streams attaches to this task:
+                </h5>
+            </div>
+
+            <div class="form-row row">
+                <table id="disc_streams_selected">
+                    <thead>
+                    <tr>
+                        <th> Discipline</th>
+                        <th> Stream</th>
+                        <th> Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <br/>
+            <hr>
+
+            <div class="form-row row">
+                <div class="alert alert-danger">
+                    <strong>Attention!</strong> Disabled task will not appear in test cases!
+                </div>
+            </div>
+            <div class="form-row row">
+                <label class="col-form-label" style="margin-right: 10px">Enable Task</label>
+                <input type="checkbox" id="isEnabled" name="activate">
+            </div>
+            <br/>
+
+            <hr>
+
+            <div class="form-row row" style="margin-bottom: 100px">
+                <a id="editSqlTask" href="#" class="btn btn-primary a-btn-slide-text">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    <span><strong>Edit</strong></span>
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/config.js}"></script>
+<script>
+
+    $(document).ready(function () {
+            populatePage()
+        }
+    );
+
+    function setImagePath() {
+        let idSqlGroup = $("#sqlGroup").val();
+        let callToRestController = gOptions.aws_path + "/tasksrest/imageDownload/" + idSqlGroup;
+        $("#sqlGroupImage").attr("src", callToRestController);
+    }
+
+    $("#sqlGroup").change(function (event) {
+            event.preventDefault();
+            setImagePath()
+        }
+    )
+
+    function showPopUp(title, message) {
+        $("#myModal").find('h4').text(title);
+        $("#myModal").find('h3').text(message);
+        $("#myModal").modal('show');
+    }
+
+    function populatePage() {
+        let url_string = window.location.href.split('/');
+        let taskId = url_string[url_string.length - 1];
+        if (taskId >= 1) {
+            $.ajax({
+                method: "GET",
+                url: gOptions.aws_path + "/tasksrest/editSqlTask/" + taskId,
+                success: function (response) {
+                    fillinForm(response);
+                }
+            })
+        }
+    }
+
+    //fill in page with the SqlTaskDTO data read from
+    function fillinForm(data) {
+        //process 'isEnabled' task flag
+        if (data.isEnabled === true) {
+            $("#isEnabled").prop('checked', true);
+        }
+        if (data.isEnabled === false) {
+            $("#isEnabled").prop('checked', false);
+        }
+        //process other stand-alone fields
+        $("#taskId").val(data.id);
+        $("#title").val(data.title);
+        $("#descripiton").val(data.description);
+        $("#complexity").val(data.complexity);
+        $("#sqlStatement").val(data.correctStatement);
+        $("#sqlGroup").val(data.sqlGroupDTO.id);
+        setImagePath();
+
+        //separately fill in tables to display disciplines-stream
+        fillinDisciplinesStreams(data);
+        // fillinAnswerOptions(data);
+    }
+
+    //populate table Disciplines-Streams with the data from DB
+    function fillinDisciplinesStreams(data) {
+        let tbody = $("#disc_streams_selected tbody").html();
+        let nrStreams = data.streams.length;
+        for (let i = 0; i < nrStreams; i++) {
+            tbody += "<tr>";
+            tbody += "<input type='hidden' value =''" + ">";
+            tbody += "<input type='hidden' value =" + data.streams[i].id + ">";
+            tbody += "<td>" + data.streams[i].disciplineName + "</td>";
+            tbody += "<td>" + data.streams[i].name + "</td>";
+            tbody += "<td>" + "<button class='removeDiscStream'> Remove </button>" + "</td>";
+            tbody += "</tr>";
+        }
+        $("#disc_streams_selected tbody").html(tbody);
+    }
+
+    $("#editSqlTask").on("click", function (event) {
+        event.preventDefault();
+        $.ajax({
+            method: "PUT",
+            url: gOptions.aws_path + "/tasksrest/editSqlTask",
+            data: JSON.stringify(prepareDataToEdit()),
+            contentType: "application/json",
+            success: function () {
+                location.href = gOptions.aws_path + "/tasks/";
+            },
+            error: function (response) {
+                showPopUp("Error while creating SQL Task", response.responseText);
+            }
+        })
+    });
+
+    // Function to check if there is already exists selected combination Discipline-Stream
+    function checkDiscAndStreams(discText, streamText) {
+        let result = true;
+        $('#disc_streams_selected').find('tbody').find('tr').each(function (i, el) {
+            let currentDiscRow = $(this).find('td').eq(0).text();       //discipline text
+            let currentStreamRow = $(this).find('td').eq(1).text();     //stream text
+            if (currentDiscRow === discText && currentStreamRow === streamText) {
+                result = false;
+                return false;
+            }
+        });
+
+        return result;
+    }
+
+    //returns collection of selected stream IDs
+    function getStreamIds() {
+        let listStreamIds = new Array();
+        $('#disc_streams_selected').find('tbody').find('tr').each(function (i, el) {
+            let currentStreamId = $(this).find('input[type="hidden"]').eq(1).val();
+            listStreamIds.push(currentStreamId.valueOf());
+        });
+        return listStreamIds;
+    }
+
+    // to add on view a new combination of Discipline-Stream
+    $("#addDiscStream").on("click", function (event) {
+        event.preventDefault();
+
+        // get data of the currently selected discipline in the dropdown
+        let elDisc = document.getElementById("disciplines");
+        let selectedDiscipline = elDisc.options[elDisc.selectedIndex].text;
+        let selectedDisciplineId = elDisc.options[elDisc.selectedIndex].value;
+
+        // get data of the currently selected stream in the dropdown
+        let elStream = document.getElementById("streams");
+        let selectedStream = elStream.options[elStream.selectedIndex].text;
+        let selectedStreamId = elStream.options[elStream.selectedIndex].value;
+
+        // If there are no already such combination of Discipline-Stream, then add to the view
+        if (checkDiscAndStreams(selectedDiscipline, selectedStream) && selectedDisciplineId != '0') {
+            let tbody = $("#disc_streams_selected tbody").html();
+            tbody += "<tr>";
+            tbody += "<input type='hidden' value =" + selectedDisciplineId + ">";
+            tbody += "<input type='hidden' value =" + selectedStreamId + ">";
+            tbody += "<td>" + selectedDiscipline + "</td>";
+            tbody += "<td>" + selectedStream + "</td>";
+            tbody += "<td>" + "<button class='removeDiscStream'> Remove </button>" + "</td>";
+            tbody += "</tr>";
+            $("#disc_streams_selected tbody").html(tbody);
+        }
+    });
+
+    //returns streams based on the discipline name provided
+    function getStreamsByDiscipline(discname) {
+        $.ajax({
+            method: "GET",
+            url: gOptions.aws_path + "/streamView/streams/discipline/" + discname,
+            success: function (response) {
+                populateStreamsDropdown(response);
+            }
+        });
+    }
+
+    //populate stream dropdown based on the data provided (filtered by discipline)
+    function populateStreamsDropdown(data) {
+        let tbody = $("#streams").html();
+        tbody = "";
+
+        for (let i = 0; i < data.length; i++) {
+            tbody += "<option value=" + data[i].id + ">";
+            tbody += data[i].name;
+            tbody += "</option>";
+        }
+        $("#streams").html(tbody);
+    }
+
+    //returns a list of streams
+    //according to the discipline specified in the dropdown
+    $("#disciplines").change(function (event) {
+        event.preventDefault();
+
+        //get selected discipline text
+        let elDisc = document.getElementById("disciplines");
+        let selectedDiscipline = elDisc.options[elDisc.selectedIndex].text;
+        let result = new Array();
+
+        //get streams by discipline name and populate streams dropdown
+        getStreamsByDiscipline(selectedDiscipline);
+    });
+
+    // Remove the respective row from the table with "Disciplines-Streams"
+    $("#disc_streams_selected").on('click', '.removeDiscStream', function x() {
+        $(this).closest('tr').remove();
+    });
+
+    //get array of StreamDTO
+    function getStreams() {
+        let arrayStreams = [];
+        $('#disc_streams_selected').find('tbody').find('tr').each(function (i, el) {
+            let streamDto = {
+                id: $(this).find('input[type="hidden"]').eq(1).val(),
+                name: $(this).find('td').eq(1).text(),
+                disciplineName: $(this).find('td').eq(0).text()
+            }
+            arrayStreams.push(streamDto);
+        });
+        return arrayStreams;
+    }
+
+    function prepareDataToEdit() {
+        let listStreams = getStreams();
+        //let listStreamIntegers = listStreams.map(v => parseInt(v, 10));
+        let sel;
+        let checkBox = document.getElementById("isEnabled");
+        if (checkBox.checked === true) {
+            sel = true;
+        } else {
+            sel = false;
+        }
+
+        // get Id of SQL Group
+        let elSqlGroup = document.getElementById("sqlGroup");
+        let selectedSqlGroupText = elSqlGroup.options[elSqlGroup.selectedIndex].text;
+        let selectedSqlGroupId = elSqlGroup.options[elSqlGroup.selectedIndex].value;
+
+        let sqlGroupObject = {
+            id: selectedSqlGroupId,
+            name: selectedSqlGroupText,
+            imagePath: null
+        }
+
+        if ($("#title").val() == "") {
+            showPopUp('No title', 'Title is empty! Please specify');
+        } else if ($("#descripiton").val() == "") {
+            showPopUp('No Description', 'Description is empty! Please specify');
+        } else if (listStreams.length == 0) {
+            showPopUp('No streams', 'Please specify at least one discipline and stream.');
+        } else {
+            return {
+                id: $("#taskId").val(),
+                title: $("#title").val(),
+                description: $("#descripiton").val(),
+                complexity: $("#complexity").val(),
+                isEnabled: sel,
+                correctStatement: $("#sqlStatement").val(),
+                streams: listStreams,
+                sqlGroupDTO: sqlGroupObject
+            }
+        }
+    }
+
+</script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
+</body>
+</html>
+

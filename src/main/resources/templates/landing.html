@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Landing Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+
+<div th:replace="fragments/topnavbar :: navbar">
+</div>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/config.js}"></script>
+
+<header class="masthead">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12 text-center">
+                <h1 class="font-weight-light">Welcome!</h1>
+                <p class="lead">You accessed Admin Panel to manage interview tests and questions.</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Page Content -->
+<section class="py-5">
+    <div class="container">
+        <h3 class="font-weight-light" style="margin-top: 40px">Here are some brief instructions.</h3>
+        <br>
+        <h4>Users</h4>
+        <p> You can manage users to access the Admin Panel. Users with "SuperAdmin" role can create simple Admins and
+            activate/deactivate them. </p>
+        <h4 style="margin-top: 40px">Disciplines</h4>
+        <p>You can add, edit, view and delete disciplines.</p>
+        <h4 style="margin-top: 40px">Streams</h4>
+        <p>You can add, edit, view and delete streams. Please, pay attentions that each stream schould be attached to
+            an already existing discipline.</p>
+        <h4 style="margin-top: 40px">Tasks</h4>
+        <p>You can create, view, modify and disable tasks. Tasks mean questions.</p>
+        <p>There are 3 types of questions:</p>
+        <ol>
+            <li> Standard Tasks</li>
+            <li> Sql Tasks</li>
+            <li> Code Tasks</li>
+        </ol>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,12 @@
+.spinner {
+    color: rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -100px;
+}
+
+h6 {
+    color: #a87a2f;
+}

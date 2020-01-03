@@ -1,0 +1,29 @@
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+}
+
+#usersTableDisabled th {
+    background: rgba(255, 0, 0, 0.1);
+}
+
+#usersTableEnabled th {
+    background: rgba(0, 255, 0, 0.1);
+}
+
+#addNewUser {
+    margin: 10px;
+}
+
+.disabled {
+    color: #890903;
+}
+
+.enabled {
+    color: #65a851;
+}
+
+.edit-user-apply {
+    margin: 10px 0;
+}
