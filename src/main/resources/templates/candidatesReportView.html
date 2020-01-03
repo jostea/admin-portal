@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/candidateReport.css}">
+</head>
+<body>
+<script th:src="@{/js/config.js}"></script>
+<div th:replace="fragments/topnavbar :: navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <h3>Candidate's skills</h3>
+            <div id="skillsSector">
+                <div class="current" value="skills" id="skillsDivFragment">
+                    <div>
+                        <table class="table" id="technicalSkillTable">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th class="text-center">Nr.</th>
+                                <th class="text-center">Statements</th>
+                                <th class="text-center">Level</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodyForTechnicalSkills"></tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div>
+                        <table class="table" id="softSkillTable">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th class="text-center">Nr.</th>
+                                <th class="text-center">Statements</th>
+                                <th class="text-center">Level</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodyForSoftSkills"></tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div>
+                        <table class="table" id="toolSkillTable">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th class="text-center">Nr.</th>
+                                <th class="text-center">Statements</th>
+                                <th class="text-center">Level</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodyForToolSkills"></tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div>
+                        <table class="table" id="englishLevelTable">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th class="text-center">Nr.</th>
+                                <th class="text-center">Statements</th>
+                                <th class="text-center">Level</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbodyForLanguageSkills"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <h3>Single Choice answers</h3>
+            <div id="singleChoiceSector"></div>
+            <br>
+            <h3>Multi Choice answers</h3>
+            <div id="multiChoiceSector"></div>
+            <br>
+            <h3>Custom Questions</h3>
+            <div id="customQuestionSector"></div>
+            <br>
+            <h3>SQL Task</h3>
+            <div id="SQLTaskSector"></div>
+            <br>
+            <h3>Code Task</h3>
+            <div id="CodeTaskSector"></div>
+            <div style="margin-bottom: 10px">
+                <button type="button" class="btn btn-info" id="saveReport" onclick="saveReport()">Save</button>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+</div>
+
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/candidatesReport.js}"></script>
+</body>
+</html>

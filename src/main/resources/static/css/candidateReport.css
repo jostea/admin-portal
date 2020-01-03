@@ -1,0 +1,133 @@
+td {
+    text-align: center;
+}
+
+tr {
+    text-align: center;
+}
+
+#skillsDivFragment {
+    width: 40%;
+    display: inline-table;
+    background-color: gainsboro;
+    border-radius: 10px;
+}
+
+.customAnswer{
+    display: block;
+    margin-left: 20px;
+    border-radius: 5px;
+}
+.singleChoiceClass {
+    background-color: #aeb5b2;
+    border-radius: 10px;
+    width: 60%;
+    padding-bottom: 5px;
+}
+
+.multiChoiceClass {
+    background-color: #aeb5b2;
+    border-radius: 10px;
+    width: 60%;
+    padding-bottom: 5px;
+}
+
+#rtOfCorrectness {
+    margin-left: 5px;
+    background: #e0e0e0;
+    padding: 3px;
+    border-radius: 2px;
+    width: 30%;
+    text-align: center;
+}
+
+.codeTaskClass {
+    background-color: #aeb5b2;
+    border-radius: 10px;
+    width: 60%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.sqlStatements {
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+.titleMessage{
+    padding: 3px;
+    border-radius: 2px;
+    width: 30%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    font-weight: bold;
+    background: #e0e0e0;
+}
+
+.taskMessage {
+    border-radius: 5px;
+    width: 70%;
+    margin-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.customChoiceClass {
+    background-color: #aeb5b2;
+    border-radius: 10px;
+    width: 60%;
+    padding-bottom: 5px;
+}
+
+.sqlTaskClass {
+    background-color: #aeb5b2;
+    border-radius: 10px;
+    width: 60%;
+    padding-bottom: 5px;
+}
+
+.questionClass {
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+.answerCorrectClass {
+    background-color: #46e462c2;
+    width: 50%;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 30px;
+    border-radius: 5px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.answerWrongClass {
+    background-color: #f121099c;
+    width: 50%;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 30px;
+    border-radius: 5px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.expectedAnswer {
+    background-color: #f3f3f39e;
+    width: 50%;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    border-radius: 5px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+

@@ -49,6 +49,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/tasksrest/imageDownload/**").permitAll()
                 .antMatchers("/testreport/**").permitAll()
                 .antMatchers("/tasksrest/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .antMatchers("/reportsView/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                .antMatchers("/candidatesReport/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/")
