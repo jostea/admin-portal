@@ -17,6 +17,6 @@ public class CandidateTestReportDTO {
     private MultiChoiceResultsDTO multiChoiceResultsDTO;
     private CustomChoiceResultsDTO customChoiceResultsDTO;
     private SqlTasksResultsDTO sqlResultsDTO;
-//    private CodeTasksResultsDTO codeTasksResultsDTO;
+    private CodeTasksResultsDTO codeTasksResultsDTO;
 
 }

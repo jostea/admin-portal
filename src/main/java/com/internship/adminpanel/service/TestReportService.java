@@ -30,6 +30,7 @@ public class TestReportService {
         candidateTestReport.setMultiChoiceResultsDTO(new MultiChoiceResultsDTO(getAllMultiChoiceAnswers(candidate)));
         candidateTestReport.setCustomChoiceResultsDTO(new CustomChoiceResultsDTO(getCustomAnswers(candidate)));
         candidateTestReport.setSqlResultsDTO(new SqlTasksResultsDTO(getSqlAnswers(candidate)));
+        candidateTestReport.setCodeTasksResultsDTO(new CodeTasksResultsDTO(getCodeAnswers(candidate)));
 
         return candidateTestReport;
     }
@@ -79,6 +80,15 @@ public class TestReportService {
     }
 
     //endregion
+
+    private List<CodeSingleTaskDTO> getCodeAnswers(Candidate candidate) {
+        List<CandidateCodeTask> codeSingleTask = candidate.getCandidateCodeTasks();
+        List<CodeSingleTaskDTO> codeTaskAnswers = new ArrayList<>();
+        for (CandidateCodeTask candidateCodeTask:codeSingleTask) {
+            codeTaskAnswers.add(new CodeSingleTaskDTO(candidateCodeTask));
+        }
+        return codeTaskAnswers;
+    }
 
 
     //region Getting Sql Answers
