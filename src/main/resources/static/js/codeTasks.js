@@ -339,7 +339,7 @@ function noRepetitionForArgs(args) {
         for(var j=0; j<args.length; j++) {
             for(var k=0; k<args.length; k++) {
                 if(args[j].name === args[k].name && j!==k) {
-                    alert("Different Arguments cannot have the same name");
+                    showPopUp("Arguments Error", "Different Arguments cannot have the same name");
                     return false;
                 }
             }
@@ -388,7 +388,7 @@ function validateSignature(signature) {
             cleanParams();
         }
     }
-    alert("invalid signature");
+    showPopUp("Invalid Signature", "Method signature provided is incorrect. Please review it.")
     return false;
 }
 
