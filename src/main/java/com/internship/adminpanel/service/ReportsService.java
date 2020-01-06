@@ -22,15 +22,8 @@ public class ReportsService {
         List<Candidate> candidates = candidateRepository.findAll();
         List<ReportDTO> reports = new ArrayList<>();
         for (Candidate candidate : candidates) {
-            if (TestStatusEnum.TEST_FINISHED.getType().equalsIgnoreCase(candidate.getTestStatus().getType()))
-                reports.add(ReportDTO.builder()
-                        .streamId(candidate.getStream().getId())
-                        .stream(candidate.getStream().getName())
-                        .discipline(candidate.getStream().getDiscipline().getName())
-                        .candidateId(candidate.getId())
-                        .name(candidate.getFirstName() + " " + candidate.getLastName())
-                        .email(candidate.getEmail())
-                        .build());
+            if (TestStatusEnum.TEST_FINISHED == (candidate.getTestStatus()))
+                reports.add((new ReportDTO(candidate.getStream(), candidate)));
         }
         return reports;
     }
@@ -38,15 +31,8 @@ public class ReportsService {
     public List<ReportDTO> getAllReportsByEmail(String email) {
         List<ReportDTO> reports = new ArrayList<>();
         for (Candidate candidate : candidateRepository.findCandidateByEmailContainingIgnoreCase(email)) {
-            if (TestStatusEnum.TEST_FINISHED.getType().equalsIgnoreCase(candidate.getTestStatus().getType()))
-                reports.add(ReportDTO.builder()
-                        .streamId(candidate.getStream().getId())
-                        .stream(candidate.getStream().getName())
-                        .discipline(candidate.getStream().getDiscipline().getName())
-                        .candidateId(candidate.getId())
-                        .name(candidate.getFirstName() + " " + candidate.getLastName())
-                        .email(candidate.getEmail())
-                        .build());
+            if (TestStatusEnum.TEST_FINISHED == (candidate.getTestStatus()))
+                reports.add((new ReportDTO(candidate.getStream(), candidate)));
         }
         return reports;
     }

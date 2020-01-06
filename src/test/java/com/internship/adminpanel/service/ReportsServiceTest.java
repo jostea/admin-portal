@@ -5,7 +5,7 @@ import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.dto.ReportDTO;
 import com.internship.adminpanel.model.enums.TestStatusEnum;
-import com.internship.adminpanel.repository.CandidateRepository;
+import com.internship.adminpanel.repository.*;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
