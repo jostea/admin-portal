@@ -1,218 +1,300 @@
 $(document).ready(function () {
+    $("#spinner").hide();
     let url_string = window.location.href.split('/');
     let id = url_string[url_string.length - 1];
     $.ajax({
         method: "GET",
         url: gOptions.aws_path + "/testreport/report/" + id,
         success: function (response) {
-            fillSkillsTables(response.skillsResultsDTO.skillGroupAnswers, "Technical");
-            fillSkillsTables(response.skillsResultsDTO.skillGroupAnswers, "Tool");
-            fillSkillsTables(response.skillsResultsDTO.skillGroupAnswers, "Soft");
-            fillSkillsTables(response.skillsResultsDTO.skillGroupAnswers, "Language");
-            fillSingleChoiceTables(response.singleChoiceResultsDTO.singleChoiceAnswers);
-            fillMultiChoiceTable(response.multiChoiceResultsDTO.multiChoiceAnswers);
-            fillCustomChoiceTable(response.customChoiceResultsDTO.customAnswerDTOList);
-            fillSQLTaskTable(response.sqlResultsDTO.sqlAnswers);
-            fillCodeTaskTable(response.codeTasksResultsDTO.codeSingleTaskDTOList);
+            console.log(response);
+            drawReport(response);
         }
     })
     ;
 });
 
-function fillSkillsTables(skillList, skillType) {
-    let tbody = "";
-    for (let i = 0; i < skillList.length; i++) {
-        if (skillList[i].skillType === skillType) {
-            for (let j = 0; j < skillList[i].skillCandidateList.length; j++) {
-                tbody += "<tr>";
-                tbody += "<td>" + (j + 1) + "</td>";
-                tbody += `<td>${skillList[i].skillCandidateList[j].skillName}</td>`;
-                tbody += `<td>${skillList[i].skillCandidateList[j].level}</td>`;
-                tbody += "</tr>";
-                $("#tbodyFor" + skillType + "Skills").html(tbody);
-            }
-        }
-    }
+function drawReport(data) {
+    $("#candidateName").html(data.candidateName);
+    $("#reEvaluateTestToken").val(data.candidateToken);
+    drawSkills(data.skillsResultsDTO.skillGroupAnswers);
+    drawSingleChoice(data.singleChoiceResultsDTO.singleChoiceAnswers);
+    drawMultiChoice(data.multiChoiceResultsDTO.multiChoiceAnswers);
+    drawCustomQuestion(data.customChoiceResultsDTO.customAnswerDTOList);
+    drawSqlQuestion(data.sqlResultsDTO.sqlAnswers);
+    drawCodeQuestion(data.codeTasksResultsDTO.codeSingleTaskDTOList);
 }
 
-function fillSingleChoiceTables(singleChoices) {
-    let tbody = "";
-    for (let i = 0; i < singleChoices.length; i++) {
-        tbody += `<div class="singleChoiceClass"><h4 class="questionClass">${singleChoices[i].textSingleChoiceQuestion}</h4><hr>`;
-        if (singleChoices[i].idSelectedAO === singleChoices[i].idCorrectAO) {
-            tbody += `<h5 id="selectedAOid${i}" hidden></h5>
-                      <label class="checkbox-inline answerCorrectClass"><input type="checkbox" checked>${singleChoices[i].selectedAnswerOptionText}</label>`;
-        }
-        if (singleChoices[i].idSelectedAO !== singleChoices[i].idCorrectAO) {
-            tbody += `<h5 id="selectedAOid${i}" hidden></h5>
-                       <label class="checkbox-inline answerWrongClass"><input type="checkbox" checked>${singleChoices[i].selectedAnswerOptionText}</label>
-                        <label class="checkbox-inline answerCorrectClass"><input type="checkbox"> ${singleChoices[i].correctAnswerOptionText}</label>`;
-        }
-        tbody += `</div>`;
-    }
-    $("#singleChoiceSector").html(tbody);
-}
-
-function fillMultiChoiceTable(multiChoices) {
-    let tbody = ``;
-    for (let i = 0; i < multiChoices.length; i++) {
-        tbody += `<div class="multiChoiceClass"><h4 class="questionClass">${multiChoices[i].textMultiChoiceQuestion}</h4><hr>`;
-        for (let j = 0; j < multiChoices[i].candidateAnswerOptions.length; j++) {
-            if (multiChoices[i].candidateAnswerOptions[j].selected === true
-                && multiChoices[i].candidateAnswerOptions[j].correct === true) {
-                tbody += `<lable class="checkbox-inline answerCorrectClass"><input type="checkbox" checked="true"> 
-                        ${multiChoices[i].candidateAnswerOptions[j].answerOptionText}</lable>`;
-            }
-            if (multiChoices[i].candidateAnswerOptions[j].selected === true
-                && multiChoices[i].candidateAnswerOptions[j].correct === false) {
-                tbody += `<label class="checkbox-inline answerWrongClass"><input type="checkbox" checked="true"> 
-                    ${multiChoices[i].candidateAnswerOptions[j].answerOptionText}</label>`;
-            }
-            if (multiChoices[i].candidateAnswerOptions[j].selected === false
-                && multiChoices[i].candidateAnswerOptions[j].correct === true) {
-                tbody += `<label class="checkbox-inline answerCorrectClass"><input type="checkbox"> ${multiChoices[i].candidateAnswerOptions[j].answerOptionText}</label>`;
-            }
-        }
-        tbody += `</div>`;
-    }
-    $("#multiChoiceSector").html(tbody);
-}
-
-function fillCustomChoiceTable(customChoice) {
-    let tbody = ``;
-    for (let i = 0; i < customChoice.length; i++) {
-        tbody += `<div class="customChoiceClass">`;
-        tbody += `<input hidden id="idCandidateCustomTask${i}" value="${customChoice[i].idCandidateCustomTask}">`;
-        tbody += `<h4 class="questionClass">${customChoice[i].customTaskText}</h4><hr>`;
-        tbody += `<textarea class="customAnswer" id="messageCustom${i}" rows="4" cols="70">${customChoice[i].candidateCustomAnswer}</textarea><hr>`;
-        if (customChoice[i].correct === true) {
-            tbody += `<div><label class="checkbox-inline" style="margin-left: 5px" for="checkboxCustomQuestion${i}"><input type="checkbox" id="checkboxCustomQuestion${i}" checked> Correct</label></div>`;
+function drawCodeQuestion(data) {
+    let body = "";
+    for (let i=0; i<data.length; i++) {
+        if (data[i].isCorrect) {
+            body += "<div class='panel panel-default correct'>";
         } else {
-            tbody += `<div><label class="checkbox-inline" style="margin-left: 5px" for="checkboxCustomQuestion${i}"><input type="checkbox" id="checkboxCustomQuestion${i}"> Correct</label></div>`;
+            body += "<div class='panel panel-default wrong'>";
         }
-        tbody += `</div>`;
-    }
-    $("#customQuestionSector").html(tbody);
-}
-
-function fillSQLTaskTable(sqlTask) {
-    let tbody = ``;
-    for (let i = 0; i < sqlTask.length; i++) {
-        tbody += `<div class="sqlTaskClass"><input id="idCandidateSqlTask${i}" hidden value="${sqlTask[i].idCandidateSqlTask}">`;
-        tbody += `<h4 class="questionClass">${sqlTask[i].textQuestion}</h4><hr>`;
-        tbody += `<div class="container-fluid"> 
-                       <div class="row">
-                        <div class="col-sm-1"></div>
-                            <div class="col-sm-4 sqlStatements"><h6 class="text-center">Expected Answer</h6><hr><h5>${sqlTask[i].correctStatement}</h5></div>
-                            <div class="col-sm-2"></div>
-                            <div class="col-sm-4 sqlStatements"><h6 class="text-center">Candidate Answer</h6><hr><h5>${sqlTask[i].candidateStatement}</h5></div>
-                            <div class="col-sm-1"></div>
-                        </div>
-                  </div>`;
-        tbody += `<h5 class="titleMessage">Message</h5><textarea id="messageSQL${i}" class="taskMessage" rows="4" cols="100">${sqlTask[i].message}</textarea><hr>`;
-        if (sqlTask[i].correct === true) {
-            tbody += `<div><label class="checkbox-inline" style="margin-left: 5px" for="checkboxSqlTask${i}"><input type="checkbox" id="checkboxSqlTask${i}" checked> Correct</label></div>`;
+        body+="<div class='panel-body'>";
+        body+="<h4>" + data[i].taskMessage + "</h4>";
+        body+="<h6><strong>Type:</strong> Code Task</h6>";
+        body += "<div class='panel panel-default'>";
+        body+="<div class='panel-heading'><h5>Candidate's submitted code</h5></div>";
+        body+="<div class='panel-body'>";
+        body+="<h5 class='text-mute'><samp style='white-space: pre-wrap;'>" + data[i].codeProvided + "</samp></h5>";
+        body+="</div>";
+        body+="</div>";
+        body+="<input hidden value='" + data[i].id + "'>";
+        if (data[i].isCorrect) {
+            body+="<h6>Is correct: " + data[i].isCorrect + " <button class='btn btn-danger btn-xs updateCode'>Set false</button></h6>";
         } else {
-            tbody += `<div><label class="checkbox-inline" style="margin-left: 5px" for="checkboxSqlTask${i}"><input type="checkbox" id="checkboxSqlTask${i}"> Correct</label></div>`;
+            body+="<h6>Is correct: " + data[i].isCorrect + " <button class='btn btn-success btn-xs updateCode'>Set correct</button></h6>";
         }
-        tbody += `</div>`;
-    }
-
-    $("#SQLTaskSector").html(tbody);
-}
-
-function fillCodeTaskTable(codeTask) {
-    let tbody = ``;
-    for (let i = 0; i < codeTask.length; i++) {
-        tbody += `<div class="codeTaskClass"><input id="codeTaskId${i}" hidden value="${codeTask[i].codeTaskId}">`;
-        tbody += `<h5 class="titleMessage">Code Provided</h5><textarea  class="taskMessage" rows="10" cols="100">${codeTask[i].codeProvided}</textarea><hr>`;
-        tbody += `<h5 class="titleMessage">Message</h5><textarea id="messageCode${i}" class="taskMessage" rows="4" cols="100">${codeTask[i].message}</textarea><hr>`;
-        if (codeTask[i].isCorrect === true || codeTask[i].isCorrect !== null) {
-            tbody += `<h5 id="rtOfCorrectness">Rate of correctness: ${codeTask[i].rateCorrectness}</h5>`;
-            tbody += `<div><label class="checkbox-inline" style="margin-left: 5px" for="checkboxCodeTask${i}"><input type="checkbox" id="checkboxCodeTask${i}" checked> Correct</label></div>`;
+        if (data[i].rateCorrectness === 1) {
+            body+="<h6 class='text-success'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            body+="<h6 class='text-success'>Message: " + data[i].message + "</h6>";
+        } else if (data[i].rateCorrectness > 0.6) {
+            body+="<h6 class='text-warning'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            body+="<h6 class='text-warning'>Message: " + data[i].message + "</h6>";
         } else {
-            tbody += `<h5 id="rtOfCorrectness">Rate of correctness: ${codeTask[i].rateCorrectness}</h5>`;
-            tbody += `<div><label class="checkbox-inline" style="margin-left: 5px" for="checkboxCodeTask${i}"><input type="checkbox" id="checkboxCodeTask${i}"> Correct</label></div>`;
+            body+="<h6 class='text-danger'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            body+="<h6 class='text-danger'>Message: " + data[i].message + "</h6>";
         }
-        tbody += `</div>`;
+        body+="</div>";
+        body+="</div>";
+        body+="</div>";
+        body+="</div>";
     }
-    $("#CodeTaskSector").html(tbody);
+    $("#codeTask").html(body);
 }
 
-function getStatements() {
-    let url_string = window.location.href.split('/');
-    let candidateId = url_string[url_string.length - 1];
+function drawSqlQuestion(data) {
+    let body = "";
+    for (let i=0; i<data.length; i++) {
+        if (data[i].correct) {
+            body += "<div class='panel panel-default sqlQuestionPanel correct'>";
+        } else {
+            body += "<div class='panel panel-default sqlQuestionPanel wrong'>";
+        }
+        body+="<div class='panel-body'>";
+        body+="<h4><strong>Sql Task:</strong> " + data[i].textQuestion + "</h4>";
+        body+="<h5><strong>Processing message: </strong>" + data[i].message + "</h5>"
+        body+="<h6><strong>Type:</strong> Sql Task</h6>";
+        body += "<div class='panel panel-default'>";
+        body+="<div class='panel-heading' style='white-space: pre-wrap;'><h5>Correct statement</h5></div>";
+        body+="<div class='panel-body'>";
+        body+="<h5 class='text-success' style='white-space: pre-wrap;'><samp>" + data[i].correctStatement + "</samp></h5>";
+        body+="</div>";
+        body+="</div>";
+        body += "<div class='panel panel-default'>";
+        body+="<div class='panel-heading'><h5>Candidate's statement</h5></div>";
+        body+="<div class='panel-body'>";
+        body+="<h5 class='text-muted'><samp>" + data[i].candidateStatement + "</samp></h5>";
+        body+="<input hidden value='" + data[i].idCandidateSqlTask + "'>";
+        if (data[i].correct) {
+            body+="<h6>Is correct: " + data[i].correct + " <button class='btn btn-danger btn-xs updateSql'>Set false</button></h6>";
+        } else {
+            body+="<h6>Is correct: " + data[i].correct + " <button class='btn btn-success btn-xs updateSql'>Set correct</button></h6>";
+        }
+        body+="</div>";
+        body+="</div>";
+        body+="</div>";
+        body+="</div>";
+    }
+    $("#sqlTask").html(body);
+}
 
-    let customArray = [];
-    $("#customQuestionSector").children()
-        .each(function (index, el) {
-            if ($(this).hasClass("customChoiceClass")) {
-                if ($("#checkboxCustomQuestion" + index).is(":checked") === true) {
-                    customArray.push(createCustomObject(true, $("#messageCustom" + index).val(), $("#idCandidateCustomTask" + index).val()));
+function drawCustomQuestion(data) {
+    let body = "";
+    for (let i=0; i<data.length; i++) {
+        if (data[i].correct) {
+            body += "<div class='panel panel-default correct'>";
+        } else {
+            body += "<div class='panel panel-default wrong'>";
+        }
+        body+="<div class='panel-body'>";
+        body+="<h4><strong>Question:</strong> " + data[i].customTaskText + "</h4>";
+        body+="<h6><strong>Type:</strong> Custom question</h6>";
+        if (!data[i].correct) {
+            body+="<h5><strong>Candidate's answer:</strong></h5>";
+            body+="<input hidden value='" + data[i].idCandidateCustomTask + "'>";
+            body+="<h5 class='text-danger'>" + data[i].candidateCustomAnswer + " <button class='btn btn-success btn-xs updateCustom'>Set correct</button></h5>";
+        } else {
+            body+="<h5><strong>Candidate's answer:</strong></h5>";
+            body+="<input hidden value='" + data[i].idCandidateCustomTask + "'>";
+            body+="<h5 class='text-success'>" + data[i].candidateCustomAnswer + " <button class='btn btn-danger btn-xs updateCustom'>Set false</button></h5>";
+            body+="<h6>Info: this answer has been evaluated to be true earlier.</h6>"
+        }
+        body+="</div>";
+        body+="</div>";
+    }
+    $("#customTask").html(body);
+}
+
+function drawSkills(data) {
+    if (data.length === 0) {
+        $("#skillsDivFragment").html("<p><i>No skills provided</i></p>");
+    } else {
+        for (let i=0; i<data.length; i++) {
+            let tbody = "";
+            if (data[i].skillCandidateList.length>0) {
+                for (let j = 0; j < data[i].skillCandidateList.length; j++) {
+                    tbody += "<tr>";
+                    tbody += "<td>" + data[i].skillCandidateList[j].skillName + "</td>";
+                    let table = $("#" + data[i].skillType + "Table");
+                    for (let k = 1; k < table[0].tHead.children[0].cells.length; k++) {
+                        if (data[i].skillCandidateList[j].level !== table[0].tHead.children[0].cells[k].innerText) {
+                            tbody += "<td>-</td>";
+                        } else {
+                            tbody += "<td>" + data[i].skillCandidateList[j].level + "</td>";
+                        }
+                    }
+                }
+            } else {
+                tbody = "<p><i>Candidate has not selected any " + data[i].skillType + " skills</i></p>"
+            }
+            $("#" + data[i].skillType + "Table tbody").html(tbody);
+        }
+    }
+}
+
+function drawSingleChoice(data) {
+    let body  = "";
+    for (let i=0; i<data.length; i++) {
+        body += "<div class='panel panel-default'>";
+        body+="<div class='panel-body'>";
+        body+="<h4><strong>Task:</strong> " + data[i].textSingleChoiceQuestion + "</h4>";
+        body+="<h6><strong>Type:</strong> Single Choice</h6>";
+        if (data[i].correct) {
+            body+="<h5>Answer option selected by candidate</h5>";
+            body+="<div class='alert alert-success' role='alert'>" + data[i].selectedAnswerOptionText + "</div>";
+        } else {
+            body+="<h6>Selected answer</h6>";
+            body+="<div class='alert alert-danger' role='alert'>" + data[i].selectedAnswerOptionText + "</div>";
+        }
+        body+="<h5>All answer options</h5>";
+        body+="<ul class='list-group answersList'>";
+        for (let j=0; j<data[i].allAnswerOptions.length; j++) {
+            if (data[i].allAnswerOptions[j].correct) {
+                body+="<li class='list-group-item'>" + data[i].allAnswerOptions[j].answer + "<span class='badge'>Correct</span></li>";
+            } else {
+                body+="<li class='list-group-item'>" + data[i].allAnswerOptions[j].answer + "</li>";
+            }
+        }
+        body+="</ul>";
+        body+="</div>";
+        body+="</div>";
+    }
+    $("#singleTasks").html(body);
+}
+
+function drawMultiChoice(data) {
+    let body  = "";
+    for (let i=0; i<data.length; i++) {
+        body += "<div class='panel panel-default'>";
+        body+="<div class='panel-body'>";
+        body+="<h4><strong>Task:</strong> " + data[i].textMultiChoiceQuestion + "</h4>";
+        body+="<h6><strong>Type:</strong> Multi Choice</h6>";
+        body+="<h5>Answers selected by candidate</h5>";
+        for (let j=0; j<data[i].candidateAnswerOptions.length; j++) {
+            if (data[i].candidateAnswerOptions[j].selected) {
+                if (data[i].candidateAnswerOptions[j].correct) {
+                    body+="<div class='alert alert-success' role='alert'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</div>";
                 } else {
-                    customArray.push(createCustomObject(false, $("#messageCustom" + index).val(), $("#idCandidateCustomTask" + index).val()));
+                    body+="<div class='alert alert-danger' role='alert'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</div>";
                 }
             }
-        });
+        }
+        body+="<h5>All answer options</h5>";
+        body+="<ul class='list-group answersList'>";
+        for (let j=0; j<data[i].candidateAnswerOptions.length; j++) {
+            if (data[i].candidateAnswerOptions[j].correct) {
+                body+="<li class='list-group-item'>" + data[i].candidateAnswerOptions[j].answerOptionText + "<span class='badge'>Correct</span></li>";
+            } else {
+                body+="<li class='list-group-item'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</li>";
+            }
+        }
+        body+="</ul>";
+        body+="</div>";
+        body+="</div>";
+    }
+    $("#multiTask").html(body);
+}
 
-    let sqlArray = [];
-    $("#SQLTaskSector").children()
-        .each(function (index, el) {
-            if ($(this).hasClass("sqlTaskClass")) {
-                if ($("#checkboxSqlTask" + index).is(":checked") === true) {
-                    sqlArray.push(createSqlObject(true, $("#messageSQL" + index).val(), $("#idCandidateSqlTask" + index).val()));
-                } else {
-                    sqlArray.push(createSqlObject(false, $("#messageSQL" + index).val(), $("#idCandidateSqlTask" + index).val()));
+$(".container").on("click", ".updateSql", function () {
+    let el = this.parentNode.parentNode.parentNode.children[1];
+    let id = el.querySelector("input").value;
+    $('#confirmSqlUpdateModal').modal('show');
+    $(".container").on("click", "#updateSqlConfirmButton", function () {
+        if ($("#sqlTaskMessageProvided").val()) {
+            $('#confirmSqlUpdateModal').modal('hide');
+            $.ajax({
+                method: "PUT",
+                url: gOptions.aws_path + "/testreport/updateSqlState",
+                data: JSON.stringify({id: id, message: $("#sqlTaskMessageProvided").val()}),
+                contentType: "application/json",
+                success: function () {
+                    window.location.reload();
                 }
+            });
+        } else {
+            $("#updateSqlMessage").show();
+        }
+    });
+});
+
+$(".container").on("click", ".updateCode", function () {
+    let el = this.parentNode.parentNode.parentNode;
+    let id = el.querySelector("input").value;
+    $('#confirmCodeUpdateModal').modal('show');
+    $(".container").on("click", "#updateCodeConfirmButton", function () {
+        if ($("#codeTaskMessageProvided").val()) {
+            $('#confirmCodeUpdateModal').modal('hide');
+            $.ajax({
+                method: "PUT",
+                url: gOptions.aws_path + "/testreport/updateCodeState",
+                data: JSON.stringify({id: id, message: $("#codeTaskMessageProvided").val()}),
+                contentType: "application/json",
+                success: function () {
+                    window.location.reload();
+                }
+            });
+        } else {
+            $("#updateCodeMessage").show();
+        }
+    });
+});
+
+$(".container").on("click", ".updateCustom", function () {
+    let el = this.parentNode.parentNode.parentNode;
+    let id = el.querySelector("input").value;
+    $('#confirmCustomUpdateModal').modal('show');
+    $(".container").on("click", "#updateCustomConfirmButton", function () {
+        $('#confirmCustomUpdateModal').modal('hide');
+        $.ajax({
+            method: "PUT",
+            url: gOptions.aws_path + "/testreport/updateCustomState",
+            data: JSON.stringify({id: id}),
+            contentType: "application/json",
+            success: function () {
+                window.location.reload();
             }
         });
+    });
+});
 
-    let codeArray = [];
-    $("#CodeTaskSector").children()
-        .each(function (index, el) {
-            if ($(this).hasClass("codeTaskClass")) {
-                if ($("#checkboxCodeTask" + index).is(":checked") === true) {
-                    codeArray.push(createCodeObject(true, $("#messageCode" + index).val(), $("#codeTaskId" + index).val()));
-                } else {
-                    codeArray.push(createCodeObject(false, $("#messageCode" + index).val(), $("#codeTaskId" + index).val()));
-                }
+$("#reEvaluateTest").on("click", function () {
+    $.ajax({
+        method: "GET",
+        url: gOptions.aws_path + "/testreport/reEvaluateCandidate/" + $("#reEvaluateTestToken").val(),
+        beforeSend: function() {
+            $("#spinner").show();
+            $("#mainDiv").hide();
+        },
+        success: function () {
+            window.location.reload();
+        },
+        complete: function () {
+            $("#spinner").hide();
+            $("#mainDiv").show();
+        }
+    });
+});
 
-            }
-        });
-
-    return {
-        candidateId: candidateId,
-        customReport: customArray,
-        sqlReport: sqlArray,
-        codeReport: codeArray
-    }
-}
-
-function createCodeObject(isCorrect, message, codeTaskId) {
-    return {
-        message: message,
-        correct: isCorrect,
-        codeTaskId: codeTaskId
-    }
-}
-
-function createCustomObject(isCorrect, message, idCandidateCustomTask) {
-    return {
-        message: message,
-        correct: isCorrect,
-        idCandidateCustomTask: idCandidateCustomTask
-    }
-}
-
-function createSqlObject(isCorrect, message, idCandidateSqlTask) {
-    return {
-        message: message,
-        correct: isCorrect,
-        idCandidateSqlTask: idCandidateSqlTask
-    }
-}
-
-function saveReport() {
-    getStatements();
-    window.location.href = gOptions.aws_path + "/reportsView";
-}

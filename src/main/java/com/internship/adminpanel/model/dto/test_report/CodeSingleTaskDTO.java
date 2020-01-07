@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class CodeSingleTaskDTO {
     private Long id;
+    private String taskMessage;
     private Long candidateId;
     private Long codeTaskId;
     private String codeProvided;
@@ -21,5 +22,6 @@ public class CodeSingleTaskDTO {
         this.rateCorrectness = candidateCodeTask.getRateCorrectness();
         this.message = candidateCodeTask.getMessage();
         this.isCorrect = candidateCodeTask.getIsCorrect();
+        this.taskMessage = candidateCodeTask.getCodeTask().getDescription();
     }
 }

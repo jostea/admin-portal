@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class CandidateTestReportDTO {
 
     private Long candidateId;
+    private String candidateName;
+    private String candidateToken;
     private SkillsResultsDTO skillsResultsDTO;
     private SingleChoiceResultsDTO singleChoiceResultsDTO;
     private MultiChoiceResultsDTO multiChoiceResultsDTO;

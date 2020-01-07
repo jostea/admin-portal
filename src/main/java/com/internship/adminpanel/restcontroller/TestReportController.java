@@ -1,5 +1,8 @@
 package com.internship.adminpanel.restcontroller;
 
+import com.internship.adminpanel.model.dto.set_false.CodeChangeCorrectDTO;
+import com.internship.adminpanel.model.dto.set_false.CustomChangeCorrectDTO;
+import com.internship.adminpanel.model.dto.set_false.SqlChangeCorrectDTO;
 import com.internship.adminpanel.model.dto.test_report.CandidateTestReportDTO;
 import com.internship.adminpanel.service.TestReportService;
 import lombok.RequiredArgsConstructor;
@@ -28,4 +31,43 @@ public class TestReportController {
         }
     }
 
+    @PutMapping("/updateSqlState")
+    public ResponseEntity<?> updateSqlState(@RequestBody SqlChangeCorrectDTO sqlChangeCorrectDTO) {
+        try {
+            testReportService.updateSqlState(sqlChangeCorrectDTO);
+            return new ResponseEntity<>("Sql task successfully updated", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/updateCodeState")
+    public ResponseEntity<?> updateCodeState(@RequestBody CodeChangeCorrectDTO codeChangeCorrectDTO) {
+        try {
+            testReportService.updateCodeState(codeChangeCorrectDTO);
+            return new ResponseEntity<>("Sql task successfully updated", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/updateCustomState")
+    public ResponseEntity<?> updateCustomState(@RequestBody CustomChangeCorrectDTO customChangeCorrectDTO) {
+        try {
+            testReportService.updateCustomState(customChangeCorrectDTO);
+            return new ResponseEntity<>("Task has been updated", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/reEvaluateCandidate/{token}")
+    public ResponseEntity<?> reEvaluateCandidate(@PathVariable String token) {
+        try {
+            testReportService.reEvaluateCandidate(token);
+            return new ResponseEntity<>("Test re-evaluated", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Could not re-evaluate", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
