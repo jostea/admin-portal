@@ -1,19 +1,13 @@
 package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.model.*;
-import com.internship.adminpanel.model.dto.set_false.CodeChangeCorrectDTO;
-import com.internship.adminpanel.model.dto.set_false.CustomChangeCorrectDTO;
-import com.internship.adminpanel.model.dto.set_false.SqlChangeCorrectDTO;
+import com.internship.adminpanel.model.dto.set_false.ChangeCorrectnessDTO;
 import com.internship.adminpanel.model.dto.test_report.*;
 import com.internship.adminpanel.model.enums.SkillsTypeEnum;
 import com.internship.adminpanel.repository.*;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,11 +19,8 @@ import java.util.Optional;
 @Slf4j
 public class TestReportService {
 
-    @Autowired
-    private Environment env;
-
     private final RestTemplate restTemplate;
-
+    private final Environment env;
     private final CandidateRepository candidateRepository;
     private final TaskRepository taskRepository;
     private final CandidateSqlTaskRepository candidateSqlTaskRepository;
@@ -37,7 +28,7 @@ public class TestReportService {
     private final CandidateCustomTaskRepository candidateCustomTaskRepository;
     private final TestTokenRepository testTokenRepository;
 
-    public TestReportService(RestTemplateBuilder restTemplateBuilder, CandidateRepository candidateRepository, TaskRepository taskRepository, CandidateSqlTaskRepository candidateSqlTaskRepository, CandidateCodeTaskRepository candidateCodeTaskRepository, CandidateCustomTaskRepository candidateCustomTaskRepository, TestTokenRepository testTokenRepository) {
+    public TestReportService(Environment env, RestTemplateBuilder restTemplateBuilder, CandidateRepository candidateRepository, TaskRepository taskRepository, CandidateSqlTaskRepository candidateSqlTaskRepository, CandidateCodeTaskRepository candidateCodeTaskRepository, CandidateCustomTaskRepository candidateCustomTaskRepository, TestTokenRepository testTokenRepository) {
         this.candidateRepository = candidateRepository;
         this.taskRepository = taskRepository;
         this.candidateSqlTaskRepository = candidateSqlTaskRepository;
@@ -45,6 +36,7 @@ public class TestReportService {
         this.candidateCustomTaskRepository = candidateCustomTaskRepository;
         this.testTokenRepository = testTokenRepository;
         this.restTemplate = restTemplateBuilder.build();
+        this.env = env;
     }
 
     public CandidateTestReportDTO getCandidateTestResults(Long candidateId) {
@@ -231,53 +223,48 @@ public class TestReportService {
     }
     //endregion
 
-    public void updateSqlState(SqlChangeCorrectDTO sqlChangeCorrectDTO) throws Exception {
+    public void updateAnswerState(ChangeCorrectnessDTO changeCorrectnessDTO) throws Exception {
         try {
-            CandidateSqlTask toBeUpdated = candidateSqlTaskRepository.findById(sqlChangeCorrectDTO.getId()).get();
-            if (toBeUpdated.isCorrect()) {
-                toBeUpdated.setCorrect(false);
-            } else {
-                toBeUpdated.setCorrect(true);
+            switch (changeCorrectnessDTO.getType()) {
+                case "code":
+                    CandidateCodeTask toBeUpdatedCode = candidateCodeTaskRepository.findById(changeCorrectnessDTO.getId()).get();
+                    toBeUpdatedCode.setMessage(changeCorrectnessDTO.getMessage());
+                    if (toBeUpdatedCode.getIsCorrect()) {
+                        toBeUpdatedCode.setIsCorrect(false);
+                    } else {
+                        toBeUpdatedCode.setIsCorrect(true);
+                    }
+                    candidateCodeTaskRepository.save(toBeUpdatedCode);
+                    break;
+                case "sql":
+                    CandidateSqlTask toBeUpdatedSql = candidateSqlTaskRepository.findById(changeCorrectnessDTO.getId()).get();
+                    toBeUpdatedSql.setMessage(changeCorrectnessDTO.getMessage());
+                    if (toBeUpdatedSql.isCorrect()) {
+                        toBeUpdatedSql.setCorrect(false);
+                    } else {
+                        toBeUpdatedSql.setCorrect(true);
+                    }
+                    candidateSqlTaskRepository.save(toBeUpdatedSql);
+                    break;
+                case "custom":
+                    CandidateCustomTask toBeUpdatedCustom = candidateCustomTaskRepository.findById(changeCorrectnessDTO.getId()).get();
+                    if (toBeUpdatedCustom.isCorrect()) {
+                        toBeUpdatedCustom.setCorrect(false);
+                    } else {
+                        toBeUpdatedCustom.setCorrect(true);
+                    }
+                    candidateCustomTaskRepository.save(toBeUpdatedCustom);
+                    break;
             }
-            toBeUpdated.setMessage(sqlChangeCorrectDTO.getMessage());
-            candidateSqlTaskRepository.save(toBeUpdated);
         } catch (Exception e) {
-            throw new Exception("Unable to set correctness of the sql task");
-        }
-    }
-
-    public void updateCodeState(CodeChangeCorrectDTO codeChangeCorrectDTO) throws Exception {
-        try {
-            CandidateCodeTask toBeUpdated = candidateCodeTaskRepository.findById(codeChangeCorrectDTO.getId()).get();
-            if (toBeUpdated.getIsCorrect()) {
-                toBeUpdated.setIsCorrect(false);
-            } else {
-                toBeUpdated.setIsCorrect(true);
-            }
-            toBeUpdated.setMessage(codeChangeCorrectDTO.getMessage());
-            candidateCodeTaskRepository.save(toBeUpdated);
-        } catch (Exception e) {
-            throw new Exception("Could not update code task answer");
-        }
-    }
-
-    public void updateCustomState(CustomChangeCorrectDTO customChangeCorrectDTO) throws Exception {
-        try {
-            CandidateCustomTask toBeUpdated = candidateCustomTaskRepository.findById(customChangeCorrectDTO.getId()).get();
-            if (toBeUpdated.isCorrect()) {
-                toBeUpdated.setCorrect(false);
-            } else {
-                toBeUpdated.setCorrect(true);
-            }
-            candidateCustomTaskRepository.save(toBeUpdated);
-        } catch (Exception e) {
-            throw new Exception("Could not update custom state");
+            log.info("could not change the state of the response");
+            throw new Exception("Could not update the state of the response");
         }
     }
 
     public void reEvaluateCandidate(String token) throws Exception {
         try {
-            String url = env.getProperty("evaluation.path") + "testsrest/getCandidateResults/" + token;
+            String url = env.getProperty("evaluation.path") + "/testsrest/getCandidateResults/" + token;
             restTemplate.getForEntity(url, String.class);
         } catch (Exception e) {
             throw new Exception("could not reevaluate");

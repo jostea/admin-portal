@@ -228,7 +228,7 @@ $(".container").on("click", ".updateSql", function () {
             $.ajax({
                 method: "PUT",
                 url: gOptions.aws_path + "/testreport/updateSqlState",
-                data: JSON.stringify({id: id, message: $("#sqlTaskMessageProvided").val()}),
+                data: JSON.stringify({id: id, message: $("#sqlTaskMessageProvided").val(), type: "sql"}),
                 contentType: "application/json",
                 success: function () {
                     window.location.reload();
@@ -250,7 +250,7 @@ $(".container").on("click", ".updateCode", function () {
             $.ajax({
                 method: "PUT",
                 url: gOptions.aws_path + "/testreport/updateCodeState",
-                data: JSON.stringify({id: id, message: $("#codeTaskMessageProvided").val()}),
+                data: JSON.stringify({id: id, message: $("#codeTaskMessageProvided").val(), type: "code"}),
                 contentType: "application/json",
                 success: function () {
                     window.location.reload();
@@ -271,7 +271,7 @@ $(".container").on("click", ".updateCustom", function () {
         $.ajax({
             method: "PUT",
             url: gOptions.aws_path + "/testreport/updateCustomState",
-            data: JSON.stringify({id: id}),
+            data: JSON.stringify({id: id, type: "custom"}),
             contentType: "application/json",
             success: function () {
                 window.location.reload();
@@ -290,6 +290,9 @@ $("#reEvaluateTest").on("click", function () {
         },
         success: function () {
             window.location.reload();
+        },
+        error: function() {
+
         },
         complete: function () {
             $("#spinner").hide();

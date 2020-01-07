@@ -1,8 +1,6 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.internship.adminpanel.model.dto.set_false.CodeChangeCorrectDTO;
-import com.internship.adminpanel.model.dto.set_false.CustomChangeCorrectDTO;
-import com.internship.adminpanel.model.dto.set_false.SqlChangeCorrectDTO;
+import com.internship.adminpanel.model.dto.set_false.ChangeCorrectnessDTO;
 import com.internship.adminpanel.model.dto.test_report.CandidateTestReportDTO;
 import com.internship.adminpanel.service.TestReportService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +30,9 @@ public class TestReportController {
     }
 
     @PutMapping("/updateSqlState")
-    public ResponseEntity<?> updateSqlState(@RequestBody SqlChangeCorrectDTO sqlChangeCorrectDTO) {
+    public ResponseEntity<?> updateSqlState(@RequestBody ChangeCorrectnessDTO changeCorrectnessDTO) {
         try {
-            testReportService.updateSqlState(sqlChangeCorrectDTO);
+            testReportService.updateAnswerState(changeCorrectnessDTO);
             return new ResponseEntity<>("Sql task successfully updated", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -42,9 +40,9 @@ public class TestReportController {
     }
 
     @PutMapping("/updateCodeState")
-    public ResponseEntity<?> updateCodeState(@RequestBody CodeChangeCorrectDTO codeChangeCorrectDTO) {
+    public ResponseEntity<?> updateCodeState(@RequestBody ChangeCorrectnessDTO changeCorrectnessDTO) {
         try {
-            testReportService.updateCodeState(codeChangeCorrectDTO);
+            testReportService.updateAnswerState(changeCorrectnessDTO);
             return new ResponseEntity<>("Sql task successfully updated", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -52,9 +50,9 @@ public class TestReportController {
     }
 
     @PutMapping("/updateCustomState")
-    public ResponseEntity<?> updateCustomState(@RequestBody CustomChangeCorrectDTO customChangeCorrectDTO) {
+    public ResponseEntity<?> updateCustomState(@RequestBody ChangeCorrectnessDTO changeCorrectnessDTO) {
         try {
-            testReportService.updateCustomState(customChangeCorrectDTO);
+            testReportService.updateAnswerState(changeCorrectnessDTO);
             return new ResponseEntity<>("Task has been updated", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

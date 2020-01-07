@@ -22,7 +22,7 @@ function fillTable(data) {
         tbody += `<td>${data[i].name}</td>`;
         tbody += `<td>${data[i].email}</td>`;
         tbody += `<td>
-                    <button type="button" class="btn btn-info" onclick="viewTest(${data[i].candidateId});">View</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="viewTest(${data[i].candidateId});">View results</button>
                    </td>`;
         tbody += `</tr>`;
     }
