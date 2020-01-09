@@ -264,7 +264,7 @@ public class TestReportService {
 
     public void reEvaluateCandidate(String token) throws Exception {
         try {
-            String url = env.getProperty("evaluation.path") + "/testsrest/getCandidateResults/" + token;
+            String url = env.getProperty("evaluation.path") + "/testsrest/reEvaluateCandidate/" + token;
             restTemplate.getForEntity(url, String.class);
         } catch (Exception e) {
             throw new Exception("could not reevaluate");
