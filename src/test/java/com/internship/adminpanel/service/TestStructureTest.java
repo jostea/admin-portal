@@ -2,6 +2,7 @@ package com.internship.adminpanel.service;
 
 import com.internship.adminpanel.exception.StreamNotFound;
 import com.internship.adminpanel.exception.TestStructureNotFound;
+import com.internship.adminpanel.model.Discipline;
 import com.internship.adminpanel.model.Stream;
 import com.internship.adminpanel.model.TestStructure;
 import com.internship.adminpanel.model.dto.teststructure.TestStructureDTO;
@@ -88,7 +89,7 @@ public class TestStructureTest {
         Long id = 1L;
         when(testStructureRepository.findById(id)).thenReturn(Optional.of(createTestStructure()));
         testStructureService.delete(id);
-        verify(testStructureRepository, times(2)).findById(id);
+        verify(testStructureRepository).findById(id);
         verify(testStructureRepository).deleteById(id);
     }
 
@@ -100,15 +101,6 @@ public class TestStructureTest {
         when(testStructureRepository.findById(id)).thenReturn(Optional.empty());
         testStructureService.findById(id);
         verify(testStructureRepository).findById(id);
-    }
-
-    @Test
-    public void shouldThrowExceptionTestStructureNotFoundWhenFindAllTests() throws TestStructureNotFound {
-        exception.expect(TestStructureNotFound.class);
-        exception.expectMessage("");
-        when(testStructureRepository.findAll()).thenReturn(new ArrayList<>());
-        testStructureService.findAll();
-        verify(testStructureRepository).findAll();
     }
 
     @Test
@@ -182,6 +174,8 @@ public class TestStructureTest {
     private Stream createStream() {
         return Stream.builder()
                 .id(1L)
+                .name("TestStream")
+                .discipline(Discipline.builder().name("TestDiscipline").build())
                 .build();
     }
 }

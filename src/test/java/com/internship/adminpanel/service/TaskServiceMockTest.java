@@ -157,6 +157,10 @@ public class TaskServiceMockTest {
         List<Stream> streams = new ArrayList<>();
         Stream stream = buildStreamEntity(1L, "JAVA", discipline);
         Stream stream2 = buildStreamEntity(2L, "DEVOPS", discipline);
+        stream.setSkill(new ArrayList<>());
+        stream2.setSkill(new ArrayList<>());
+        stream.setTestStructures(new ArrayList<>());
+        stream2.setTestStructures(new ArrayList<>());
         streams.add(stream);
         streams.add(stream2);
 

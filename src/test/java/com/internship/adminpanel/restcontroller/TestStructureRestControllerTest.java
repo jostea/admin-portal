@@ -86,14 +86,6 @@ public class TestStructureRestControllerTest {
     }
 
     @Test
-    public void shouldCatchExceptionTestStructureNotFoundWhenFindAll() throws TestStructureNotFound {
-        doThrow(new TestStructureNotFound()).when(testStructureService).findAll();
-        ResponseEntity<List<TestStructureDTO>> responseEntity = testStructureRestController.findAll(authentication);
-        verify(testStructureService).findAll();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     public void shouldThrowExceptionStreamNotFoundWhenAddTest() throws StreamNotFound, IllegalArgumentException {
         doThrow(new StreamNotFound("")).when(testStructureService).add(createTestStructureFromUI());
         ResponseEntity<String> responseEntity = testStructureRestController.add(createTestStructureFromUI(), authentication);

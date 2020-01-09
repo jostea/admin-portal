@@ -200,7 +200,7 @@ public class StreamRestControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void shouldCatchExceptionWhileAddStream() throws Exception {
         StreamDTOFromUI streamDTOFromUI = StreamDTOFromUI.builder()
                 .name("Berbek")
@@ -252,10 +252,10 @@ public class StreamRestControllerTest {
     @Test
     public void shouldCatchExceptionStreamHasTasksWhileDelete() throws StreamNotFound, StreamHasTasks, StreamHasSkill, StreamHasCandidate {
         Long id = 1L;
-        doThrow(StreamHasTasks.class).when(streamService).deleteById(id);
+        doThrow(StreamHasCandidate.class).when(streamService).deleteById(id);
         ResponseEntity<String> responseEntity = streamRestController.deletedById(id, authentication);
         verify(streamService).deleteById(id);
-        assertThat(responseEntity.getBody()).isEqualTo("This stream has tasks");
+        assertThat(responseEntity.getBody()).isEqualTo("This stream has candidate");
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
