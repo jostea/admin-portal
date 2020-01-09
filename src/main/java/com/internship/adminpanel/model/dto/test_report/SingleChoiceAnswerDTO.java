@@ -27,8 +27,10 @@ public class SingleChoiceAnswerDTO {
 
     public SingleChoiceAnswerDTO(CandidateSingleTask singleTask){
         this.setTextSingleChoiceQuestion(singleTask.getTask().getDescription());
-        this.setSelectedAnswerOptionText(singleTask.getAnswersOption().getAnswerOptionValue());
-        this.setIdSelectedAO(singleTask.getAnswersOption().getId());
+        if (singleTask.getAnswersOption() != null) {
+            this.setSelectedAnswerOptionText(singleTask.getAnswersOption().getAnswerOptionValue());
+            this.setIdSelectedAO(singleTask.getAnswersOption().getId());
+        }
         List<AnswerOptionDTO> answerOptionDTOS = new ArrayList<>();
         for (AnswersOption answersOption: singleTask.getTask().getAnswersOptions()) {
             answerOptionDTOS.add(new AnswerOptionDTO(answersOption));

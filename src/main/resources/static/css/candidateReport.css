@@ -10,6 +10,10 @@
     background: rgba(150,255,150,0.1);
 }
 
+.almost {
+    background: rgba(255, 159, 73, 0.1);
+}
+
 #spinner {
     color: rgba(0, 0, 0, 0.2);
     position: fixed;

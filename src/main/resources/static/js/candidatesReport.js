@@ -29,6 +29,8 @@ function drawCodeQuestion(data) {
     for (let i=0; i<data.length; i++) {
         if (data[i].isCorrect) {
             body += "<div class='panel panel-default correct'>";
+        } else if (data[i].rateCorrectness>0.6) {
+            body += "<div class='panel panel-default almost'>";
         } else {
             body += "<div class='panel panel-default wrong'>";
         }
@@ -51,10 +53,18 @@ function drawCodeQuestion(data) {
             body+="<h6 class='text-success'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
             body+="<h6 class='text-success'>Message: " + data[i].message + "</h6>";
         } else if (data[i].rateCorrectness > 0.6) {
-            body+="<h6 class='text-warning'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            if (data[i].rateCorrectness) {
+                body+="<h6 class='text-warning'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            } else {
+                body+="<h6 class='text-warning'>Rate of correctness has not been calculated</h6>";
+            }
             body+="<h6 class='text-warning'>Message: " + data[i].message + "</h6>";
         } else {
-            body+="<h6 class='text-danger'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            if (data[i].rateCorrectness) {
+                body+="<h6 class='text-danger'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
+            } else {
+                body+="<h6 class='text-danger'>Rate of correctness has not been calculated</h6>";
+            }
             body+="<h6 class='text-danger'>Message: " + data[i].message + "</h6>";
         }
         body+="</div>";
@@ -86,7 +96,11 @@ function drawSqlQuestion(data) {
         body += "<div class='panel panel-default'>";
         body+="<div class='panel-heading'><h5>Candidate's statement</h5></div>";
         body+="<div class='panel-body'>";
-        body+="<h5 class='text-muted'><samp>" + data[i].candidateStatement + "</samp></h5>";
+        if (data[i].candidateStatement) {
+            body+="<h5 class='text-muted'><samp>" + data[i].candidateStatement + "</samp></h5>";
+        } else {
+            body+="<h6 class='text-muted'>The candidate has not provided any SQL statement</h6>";
+        }
         body+="<input hidden value='" + data[i].idCandidateSqlTask + "'>";
         if (data[i].correct) {
             body+="<h6>Is correct: " + data[i].correct + " <button class='btn btn-danger btn-xs updateSql'>Set false</button></h6>";
@@ -115,7 +129,11 @@ function drawCustomQuestion(data) {
         if (!data[i].correct) {
             body+="<h5><strong>Candidate's answer:</strong></h5>";
             body+="<input hidden value='" + data[i].idCandidateCustomTask + "'>";
-            body+="<h5 class='text-danger'>" + data[i].candidateCustomAnswer + " <button class='btn btn-success btn-xs updateCustom'>Set correct</button></h5>";
+            if (data[i].candidateCustomAnswer) {
+                body+="<h5 class='text-danger'>" + data[i].candidateCustomAnswer + " <button class='btn btn-success btn-xs updateCustom'>Set correct</button></h5>";
+            } else {
+                body+="<h6><i>The candidate has not provided an answer for this task</i></h6>"
+            }
         } else {
             body+="<h5><strong>Candidate's answer:</strong></h5>";
             body+="<input hidden value='" + data[i].idCandidateCustomTask + "'>";
@@ -140,15 +158,19 @@ function drawSkills(data) {
                     tbody += "<td>" + data[i].skillCandidateList[j].skillName + "</td>";
                     let table = $("#" + data[i].skillType + "Table");
                     for (let k = 1; k < table[0].tHead.children[0].cells.length; k++) {
-                        if (data[i].skillCandidateList[j].level !== table[0].tHead.children[0].cells[k].innerText) {
-                            tbody += "<td>-</td>";
+                        if (data[i].skillCandidateList[j].level) {
+                            if (data[i].skillCandidateList[j].level !== table[0].tHead.children[0].cells[k].innerText) {
+                                tbody += "<td>-</td>";
+                            } else {
+                                tbody += "<td>" + data[i].skillCandidateList[j].level + "</td>";
+                            }
                         } else {
-                            tbody += "<td>" + data[i].skillCandidateList[j].level + "</td>";
+                            tbody = "<p><i>Candidate has not selected any " + data[i].skillCandidateList[j].skillName + " skills</i></p>";
                         }
                     }
                 }
             } else {
-                tbody = "<p><i>Candidate has not selected any " + data[i].skillType + " skills</i></p>"
+                tbody = "<p><i>There aren't any " + data[i].skillType + " skills in the system</i></p>";
             }
             $("#" + data[i].skillType + "Table tbody").html(tbody);
         }
@@ -166,8 +188,12 @@ function drawSingleChoice(data) {
             body+="<h5>Answer option selected by candidate</h5>";
             body+="<div class='alert alert-success' role='alert'>" + data[i].selectedAnswerOptionText + "</div>";
         } else {
-            body+="<h6>Selected answer</h6>";
-            body+="<div class='alert alert-danger' role='alert'>" + data[i].selectedAnswerOptionText + "</div>";
+            if (data[i].selectedAnswerOptionText) {
+                body += "<h6>Selected answer</h6>";
+                body += "<div class='alert alert-danger' role='alert'>" + data[i].selectedAnswerOptionText + "</div>";
+            }  else {
+                body += "<h6><i>The candidate has not selected any answers</i></h6>";
+            }
         }
         body+="<h5>All answer options</h5>";
         body+="<ul class='list-group answersList'>";
@@ -193,14 +219,20 @@ function drawMultiChoice(data) {
         body+="<h4><strong>Task:</strong> " + data[i].textMultiChoiceQuestion + "</h4>";
         body+="<h6><strong>Type:</strong> Multi Choice</h6>";
         body+="<h5>Answers selected by candidate</h5>";
+        let answers = "";
         for (let j=0; j<data[i].candidateAnswerOptions.length; j++) {
             if (data[i].candidateAnswerOptions[j].selected) {
                 if (data[i].candidateAnswerOptions[j].correct) {
-                    body+="<div class='alert alert-success' role='alert'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</div>";
+                    answers+="<div class='alert alert-success' role='alert'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</div>";
                 } else {
-                    body+="<div class='alert alert-danger' role='alert'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</div>";
+                    answers+="<div class='alert alert-danger' role='alert'>" + data[i].candidateAnswerOptions[j].answerOptionText + "</div>";
                 }
             }
+        }
+        if (answers) {
+            body+=answers;
+        } else {
+            body+="<h6><i>The candidate has not provided any answers</i></h6>";
         }
         body+="<h5>All answer options</h5>";
         body+="<ul class='list-group answersList'>";
