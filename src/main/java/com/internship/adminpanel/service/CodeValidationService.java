@@ -155,7 +155,7 @@ public class CodeValidationService {
     }
     public boolean returnTypes(String ret) {
         List<String> rets = Arrays.asList("int", "double", "char", "boolean", "float", "long", "short", "byte", "Integer", "String",
-                "Double", "Char", "Float", "Long", "Short", "Byte", "Object", "Number");
+                "Double", "Character", "Float", "Long", "Short", "Byte", "Object", "Number", "Boolean");
         if (rets.contains(ret)) {
             return true;
         }

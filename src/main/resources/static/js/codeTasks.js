@@ -3,7 +3,7 @@ let keyword = "";
 let returnType = "";
 let methodName = "";
 let args = [];
-const rets = ["int", "double", "char", "Integer", "Double", "Char", "String", "Number", "Object"];
+const rets = ["int", "double", "char", "boolean", "float", "byte", "long", "short", "Integer", "Double", "Character", "String", "Number", "Object", "Boolean", "Byte", "Long", "Short", "Float"];
 let readingSignature = true;
 
 $(document).ready(function () {
