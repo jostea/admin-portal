@@ -102,7 +102,7 @@ public class CodeValidationService {
     }
     public String getTypeForSimpleGenerics(String generic) {
         List<String> genericSplitList = new LinkedList<String>(Arrays.asList(generic.split("")));
-        String finalString = "";
+        StringBuilder finalString = new StringBuilder();
         boolean concat = false;
         for (int i=0; i<genericSplitList.size(); i++) {
             if (genericSplitList.get(i).equals("<") && !concat) {
@@ -111,10 +111,10 @@ public class CodeValidationService {
                 genericSplitList.remove(i);
             }
             if (concat) {
-                finalString+=genericSplitList.get(i);
+                finalString.append(genericSplitList.get(i));
             }
         }
-        return finalString;
+        return finalString.toString();
     }
     public boolean simpleGeneric(String generic) {
         List<String> params = Arrays.asList("List", "ArrayList", "Set", "HashSet", "Collection", "TreeSet");

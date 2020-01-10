@@ -74,7 +74,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] created new task: " + task.toString());
             return new ResponseEntity<>("New task was created.", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to add new task: " + task.toString() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to add new task: " + task.toString(), e);
             return new ResponseEntity<>("Error while creating new task", HttpStatus.BAD_REQUEST);
         }
     }
@@ -86,7 +86,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] created new SQL task: " + sqlTaskInsertDTO.toString());
             return new ResponseEntity<>("New SQL task was created.", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to add new SQ: task: " + sqlTaskInsertDTO.toString() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to add new SQ: task: " + sqlTaskInsertDTO.toString(), e);
             return new ResponseEntity<>("Error while creating new SQL task", HttpStatus.BAD_REQUEST);
         }
     }
@@ -98,7 +98,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] requested a General Task to edit. Task with ID  " + id);
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
         } catch (Exception e) {
-            log.warn("Error while getting task with id: " + id);
+            log.warn("Error while getting task with id: " + id, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -110,7 +110,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] modified task with ID  " + task.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to edit General Task with ID: " + task.getId() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to edit General Task with ID: " + task.getId(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -123,19 +123,19 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] requested a SQL Task to edit. Task with ID  " + id);
             return new ResponseEntity<>(sqlTaskService.findById(id), HttpStatus.OK);
         } catch (Exception e) {
-            log.warn("Error while getting task with id: " + id);
+            log.warn("Error while getting task with id: " + id, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/editSqlTask")
     public ResponseEntity<String> editTask(@RequestBody SqlTaskEditDTO sqlTaskEditDTO, Authentication authentication) {
-        try{
+        try {
             sqlTaskService.editTask(sqlTaskEditDTO);
             log.info("[User: " + authentication.getName() + "] modified task with ID  " + sqlTaskEditDTO.getId());
             return new ResponseEntity<>("SQL Task " + sqlTaskEditDTO.getTitle() + " was successfully modified.", HttpStatus.OK);
-        } catch (Exception e){
-            log.error("[User: " + authentication.getName() + "]. Error while trying to edit SQL Task with ID: " + sqlTaskEditDTO.getId() + "\nMessage: " + e.getMessage() + "; \nStack Trace: " + e.getStackTrace());
+        } catch (Exception e) {
+            log.error("[User: " + authentication.getName() + "]. Error while trying to edit SQL Task with ID: " + sqlTaskEditDTO.getId(), e);
             return new ResponseEntity<>("Error while modifying SQL task", HttpStatus.BAD_REQUEST);
         }
     }
@@ -157,7 +157,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "] viewed task with ID  " + id);
             return new ResponseEntity<>(taskService.findById(id), HttpStatus.OK);
         } catch (Exception e) {
-            log.warn("[User: " + authentication.getName() + "]. Error while trying to view a task with ID: " + id + "; Stack Trace: " + e.getStackTrace());
+            log.warn("[User: " + authentication.getName() + "]. Error while trying to view a task with ID: " + id, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -175,7 +175,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "]" + action + "Standard Task with ID  " + taskDisableDTO.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable Standard Task with ID: " + taskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable Standard Task with ID: " + taskDisableDTO.getId(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -193,7 +193,7 @@ public class TaskRestController {
             log.info("[User: " + authentication.getName() + "]" + action + "SQL Task with ID  " + sqlTaskDisableDTO.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable SQL Task with ID: " + sqlTaskDisableDTO.getId() + "; Stack Trace: " + e.getStackTrace());
+            log.error("[User: " + authentication.getName() + "]. Error while trying to enable/disable SQL Task with ID: " + sqlTaskDisableDTO.getId(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -216,7 +216,7 @@ public class TaskRestController {
         try {
             contentType = request.getServletContext().getMimeType(resource.getURL().getFile());
         } catch (IOException ex) {
-            log.error("Could not determine file type.");
+            log.error("Could not determine file type.", ex);
         }
         if (contentType == null) {
             contentType = "application/octet-streams";
@@ -225,12 +225,12 @@ public class TaskRestController {
     }
 
     @GetMapping("/streamTypeComplexityTasks")
-    public ResponseEntity<Integer> getStreamTypeComplexityTasks(@RequestParam Long streamId, @RequestParam String taskType, @RequestParam String complexity){
-        try{
-            int number = taskService.nrStreamTasksByTypeAndComplexity(streamId,taskType,complexity);
+    public ResponseEntity<Integer> getStreamTypeComplexityTasks(@RequestParam Long streamId, @RequestParam String taskType, @RequestParam String complexity) {
+        try {
+            int number = taskService.nrStreamTasksByTypeAndComplexity(streamId, taskType, complexity);
             return new ResponseEntity<>(number, HttpStatus.OK);
-        } catch (Exception e){
-            log.warn("Error while getting stream Nr of tasks for stream id = " + streamId + ", taskType = " + taskType + ", complexity = " + complexity);
+        } catch (Exception e) {
+            log.warn("Error while getting stream Nr of tasks for stream id = " + streamId + ", taskType = " + taskType + ", complexity = " + complexity, e);
             return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
         }
     }

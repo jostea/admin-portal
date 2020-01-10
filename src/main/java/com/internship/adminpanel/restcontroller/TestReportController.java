@@ -24,7 +24,7 @@ public class TestReportController {
             log.info("Test report for candidate with id {} was provided", id);
             return new ResponseEntity<>(candidateTestReportDTO, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error while getting test results for the candidate with id {}", id);
+            log.error("Error while getting test results for the candidate with id" + id, e);
             return new ResponseEntity("Error while getting test report", HttpStatus.BAD_REQUEST);
         }
     }

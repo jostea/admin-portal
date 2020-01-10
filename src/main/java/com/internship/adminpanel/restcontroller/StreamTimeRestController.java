@@ -24,8 +24,7 @@ public class StreamTimeRestController {
             log.info("User '" + authentication.getName() + "' call stream with id '" + id + "'");
             return new ResponseEntity<>(streamTimeService.findTimeByStreamId(id), HttpStatus.OK);
         } catch (StreamNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' find stream with id '" + id + "';\nerror message: "
-                    + e.getMessage() + "\n" + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' find stream with id '" + id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -38,12 +37,10 @@ public class StreamTimeRestController {
             streamTimeService.setTimeForStreamTest(id, time);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (StreamNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' update stream with id '" + id + "';\nerror message: "
-                    + e.getMessage() + "\n" + e.getStackTrace());
+                    log.error("Error when user '" + authentication.getName() + "' update stream with id '" + id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            log.error("Error when user '" + authentication.getName() + "' update stream with id '" + id + "';\nerror message: "
-                    + e.getMessage() + "\n" + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' update stream with id '" + id, e);
             return new ResponseEntity<>("Time must be higher then 0", HttpStatus.BAD_REQUEST);
         }
     }
