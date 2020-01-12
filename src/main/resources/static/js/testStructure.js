@@ -40,6 +40,8 @@ function setTimeForTest() {
         contentType: "application/json",
         success: function () {
             getTimeForTest();
+            $("#pop-up-message").html("<p>The time has been set to " + $("#inputTimeId").val() + " minutes</p>");
+            $("#simple-pop-up").modal("show");
         }, error(response) {
             $("#alertTestStructure").html(`<div class="alert alert-danger" role="alert"><p>` + response.responseText + `</p></div>`);
         }

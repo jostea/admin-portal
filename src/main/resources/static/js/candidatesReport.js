@@ -40,7 +40,7 @@ function drawCodeQuestion(data) {
         body += "<div class='panel panel-default'>";
         body+="<div class='panel-heading'><h5>Candidate's submitted code</h5></div>";
         body+="<div class='panel-body'>";
-        body+="<h5 class='text-mute'><samp style='white-space: pre-wrap;'>" + data[i].codeProvided + "</samp></h5>";
+        body+="<h5 class='text-mute'><samp style='white-space: pre-wrap;'>" + prepareHTML(data[i].codeProvided) + "</samp></h5>";
         body+="</div>";
         body+="</div>";
         body+="<input hidden value='" + data[i].id + "'>";
@@ -53,14 +53,14 @@ function drawCodeQuestion(data) {
             body+="<h6 class='text-success'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
             body+="<h6 class='text-success'>Message: " + data[i].message + "</h6>";
         } else if (data[i].rateCorrectness > 0.6) {
-            if (data[i].rateCorrectness) {
+            if (data[i].rateCorrectness!=null) {
                 body+="<h6 class='text-warning'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
             } else {
                 body+="<h6 class='text-warning'>Rate of correctness has not been calculated</h6>";
             }
             body+="<h6 class='text-warning'>Message: " + data[i].message + "</h6>";
         } else {
-            if (data[i].rateCorrectness) {
+            if (data[i].rateCorrectness!=null) {
                 body+="<h6 class='text-danger'>Rate of correctness: " + data[i].rateCorrectness + "</h6>";
             } else {
                 body+="<h6 class='text-danger'>Rate of correctness has not been calculated</h6>";
@@ -73,6 +73,12 @@ function drawCodeQuestion(data) {
         body+="</div>";
     }
     $("#codeTask").html(body);
+}
+
+function prepareHTML(splitElement) {
+    splitElement = splitElement.replace(/>/g, '&gt');
+    splitElement = splitElement.replace(/</g, '&lt');
+    return splitElement;
 }
 
 function drawSqlQuestion(data) {
