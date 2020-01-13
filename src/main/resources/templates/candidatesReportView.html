@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/candidateReport.css}">
+</head>
+<body>
+<script th:src="@{/js/config.js}"></script>
+<div id="spinner">Please wait, this may take up to a couple seconds...</div>
+<div id="mainDiv">
+    <div th:replace="fragments/topnavbar :: navbar"></div>
+    <div class="container">
+        <div class="modal fade bs-example-modal-sm" id="confirmCustomUpdateModal" role="dialog">
+            <div class="modal-dialog modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">Is it true?</h5>
+                    </div>
+                    <div class="modal-body" id="formInModalCustom">
+                        <p>You are about to change the state of a custom task, are you sure?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="updateCustomConfirmButton" class="btn btn-default btn-sm">
+                            Confirm custom answer update
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" id="confirmSqlUpdateModal" role="dialog">
+            <div class="modal-dialog modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">Please provide a message for your edit</h5>
+                    </div>
+                    <div class="modal-body" id="formInModalSql">
+                        <div class="form-group">
+                            <label for="sqlTaskMessageProvided"></label>
+                            <div id="updateSqlMessage" class="alert alert-danger" hidden role="alert">You haven't specified a valid message</div>
+                            <input type="text" class="form-control" id="sqlTaskMessageProvided" placeholder="Your message here">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="updateSqlConfirmButton" class="btn btn-default btn-sm">
+                            Update Sql state
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" id="confirmCodeUpdateModal" role="dialog">
+            <div class="modal-dialog modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">Please provide a message for your edit</h5>
+                    </div>
+                    <div class="modal-body" id="formInModalCode">
+                        <div class="form-group">
+                            <label for="codeTaskMessageProvided"></label>
+                            <div id="updateCodeMessage" class="alert alert-danger" hidden role="alert">You haven't specified a valid message</div>
+                            <input type="text" class="form-control" id="codeTaskMessageProvided" placeholder="Your message here">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="updateCodeConfirmButton" class="btn btn-default btn-sm">
+                            Update code answer state
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Results for this internship of <span id="candidateName"></span> <button class="btn btn-success btn-xs" id="reEvaluateTest">Re-evaluate this test</button></div>
+            <div id="reEvaluateTestToken" hidden="hidden"></div>
+            <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Candidate's skills</div>
+                    <div class="panel-body">
+                        <div id="skillsDivFragment">
+                            <div>
+                                <div><h4>Candidate's technical skills</h4>
+                                </div>
+                                <div>
+                                    <table class="table" id="TechnicalTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Statements</th>
+                                            <th>Never Used</th>
+                                            <th>Elementary</th>
+                                            <th>Middle</th>
+                                            <th>Upper</th>
+                                            <th>Advanced</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbodyForTechnicalSkills"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div>
+                                <div><h4>Candidate's soft skills</h4>
+                                </div>
+                                <div>
+                                    <table class="table" id="SoftTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Statements</th>
+                                            <th>Very rarely</th>
+                                            <th>Rarely</th>
+                                            <th>SomeTimes</th>
+                                            <th>Often</th>
+                                            <th>Very Often</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbodyForSoftSkills"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div>
+                                <div><h4>Candidate's tool skills</h4>
+                                </div>
+                                <div>
+                                    <table class="table" id="ToolTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Statements</th>
+                                            <th>Never Used</th>
+                                            <th>Elementary</th>
+                                            <th>Middle</th>
+                                            <th>Upper</th>
+                                            <th>Advanced</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbodyForToolSkills"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div th:fragment="english" xmlns:th="http://www.w3.org/1999/xhtml">
+                                <div><h4>Candidate's language level</h4>
+                                </div>
+                                <div>
+                                    <table class="table" id="LanguageTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Statements</th>
+                                            <th>A1</th>
+                                            <th>A2</th>
+                                            <th>B1</th>
+                                            <th>B2</th>
+                                            <th>C1</th>
+                                            <th>C2</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbodyForLanguageSkill"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="singleTasks">
+
+                </div>
+
+                <div id="multiTask">
+
+                </div>
+
+                <div id="customTask">
+
+                </div>
+
+                <div id="sqlTask">
+
+                </div>
+
+                <div id="codeTask">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/candidatesReport.js}"></script>
+</body>
+</html>

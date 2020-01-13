@@ -13,8 +13,8 @@ import com.internship.adminpanel.repository.StreamRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +62,7 @@ public class CodeTaskService {
             }
             return taskDTOS;
         } catch (Exception e) {
-            log.warn("Could not extract tasks from db. Stack Trace: " + Arrays.toString(e.getStackTrace()));
+            log.warn("Could not extract tasks from db.", e);
             throw new Exception("Code tasks could not be loaded");
         }
     }
@@ -113,7 +113,7 @@ public class CodeTaskService {
                 throw new Exception("Task not found");
             }
         } catch (Exception e) {
-            log.warn("Code task could not be updated. Stack trace: " + Arrays.toString(e.getStackTrace()));
+            log.warn("Code task could not be updated.", e);
             throw new Exception(e.getMessage());
         }
     }
@@ -133,7 +133,7 @@ public class CodeTaskService {
                 throw new Exception("Task not found");
             }
         } catch (Exception e) {
-            log.warn("Something went wrong while updating the code task, Stack trace: " + e.getStackTrace());
+            log.warn("Something went wrong while updating the code task.", e);
             throw new Exception("Code task's activity could not be updated");
         }
     }

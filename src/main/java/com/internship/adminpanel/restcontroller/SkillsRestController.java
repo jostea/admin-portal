@@ -1,9 +1,7 @@
 package com.internship.adminpanel.restcontroller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.internship.adminpanel.exception.EmptyName;
 import com.internship.adminpanel.exception.SkillNotFound;
-import com.internship.adminpanel.model.Skill;
 import com.internship.adminpanel.model.dto.skill.SkillDTO;
 import com.internship.adminpanel.model.dto.skill.SkillDTOFromUI;
 import com.internship.adminpanel.model.dto.skill.SkillsSpecifiedByStreamDTO;
@@ -17,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -33,8 +30,7 @@ public class SkillsRestController {
         try {
             return new ResponseEntity<>(skillsService.findById(id), HttpStatus.OK);
         } catch (SkillNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' found skill with id '" + id + "'; error message: " + e.getMessage()
-                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()));
+            log.error("Error when user '" + authentication.getName() + "' found skill with id '" + id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -52,16 +48,13 @@ public class SkillsRestController {
             log.info("User '" + authentication.getName() + "' add new skill '" + skillDTOFromUI.getName() + "'");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (EmptyName e) {
-            log.error("Error when user '" + authentication.getName() + "' add skill with empty name;\nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' add skill with empty name;", e);
             return new ResponseEntity<>("Stream name is required", HttpStatus.BAD_REQUEST);
         } catch (DataIntegrityViolationException e) {
-            log.error("Error when user '" + authentication.getName() + "' add  skill; error message: " + e.getMessage()
-                    + "\nstack trace: " + Arrays.toString(e.getStackTrace()) + "\nName of Exception: " + e.getClass().getName());
+            log.error("Error when user '" + authentication.getName() + "' add  skill; error message: ", e);
             return new ResponseEntity<>("Skill '" + skillDTOFromUI.getName() + "' already exist", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            log.error("Error when user '" + authentication.getName() + "' add new skill; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' add new skill;", e);
             return new ResponseEntity<>("The specified skill cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -75,16 +68,13 @@ public class SkillsRestController {
             log.info("User '" + authentication.getName() + "' update skill with id " + id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (SkillNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "'  update skill by id " + id + " ;\nerror message:"
-                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "'  update skill by id " + id, e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EmptyName e) {
-            log.error("Error when user '" + authentication.getName() + "'  update skill by id " + id + " ;\nerror message:"
-                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "'  update skill by id " + id + " ;\nerror message:", e);
             return new ResponseEntity<>("Skill name is required", HttpStatus.BAD_REQUEST);
         } catch (TransactionSystemException e) {
-            log.error("Error when user '" + authentication.getName() + "' edit new  skill; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' edit new  skill;", e);
             return new ResponseEntity<>("The specified skill cannot be applied.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -96,8 +86,7 @@ public class SkillsRestController {
             log.info("User '" + authentication.getName() + "' deleted skill with id " + id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (SkillNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "'  delete skill by id " + id + " ;\nerror message:"
-                    + e.getMessage() + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "'  delete skill by id " + id, e);
             return new ResponseEntity<>("Couldn't delete skill", HttpStatus.NOT_FOUND);
         }
     }

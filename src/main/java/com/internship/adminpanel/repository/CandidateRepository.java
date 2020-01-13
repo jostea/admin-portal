@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     List<Candidate> findCandidateByStream(Stream stream);
+
+    List<Candidate> findCandidateByEmailContainingIgnoreCase(String email);
 }

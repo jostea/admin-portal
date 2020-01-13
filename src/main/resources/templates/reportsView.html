@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<script th:src="@{/js/config.js}"></script>
+<div th:replace="fragments/topnavbar :: navbar"></div>
+<div class="container">
+        <div>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="email-input">Email</label>
+                    <input type="text" class="form-control" name="email-input" id="email-input">
+                </div>
+                <button onclick="filterByEmail($('#email-input').val())"
+                        class="btn">Filter by email
+                </button>
+                <button class="btn btn-primary" onclick="refreshReports()">Refresh</button>
+            </form>
+            <div id="reportsDiv">
+                <table class="table table-striped" id="reportsTable">
+                    <thead>
+                    <tr>
+                        <th>Nr</th>
+                        <th>Discipline</th>
+                        <th>Stream</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyOfReports"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/navbar.js}"></script>
+<script th:src="@{/js/reports.js}"></script>
+</body>
+</html>

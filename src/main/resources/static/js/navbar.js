@@ -20,6 +20,10 @@ $("#goLogout").on("click", function () {
     })
 });
 
+$("#goReports").on("click", function () {
+    window.location.replace(gOptions.aws_path + "/reportsView/");
+});
+
 $("#goHome").on("click", function () {
     window.location.replace(gOptions.aws_path + "/landing");
 });

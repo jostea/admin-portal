@@ -3,7 +3,7 @@ let keyword = "";
 let returnType = "";
 let methodName = "";
 let args = [];
-const rets = ["int", "double", "char", "Integer", "Double", "Char", "String", "Number", "Object"];
+const rets = ["int", "double", "char", "boolean", "float", "byte", "long", "short", "Integer", "Double", "Character", "String", "Number", "Object", "Boolean", "Byte", "Long", "Short", "Float"];
 let readingSignature = true;
 
 $(document).ready(function () {
@@ -339,7 +339,7 @@ function noRepetitionForArgs(args) {
         for(var j=0; j<args.length; j++) {
             for(var k=0; k<args.length; k++) {
                 if(args[j].name === args[k].name && j!==k) {
-                    alert("Different Arguments cannot have the same name");
+                    showPopUp("Arguments Error", "Different Arguments cannot have the same name");
                     return false;
                 }
             }
@@ -388,7 +388,7 @@ function validateSignature(signature) {
             cleanParams();
         }
     }
-    alert("invalid signature");
+    showPopUp("Invalid Signature", "Method signature provided is incorrect. Please review it.")
     return false;
 }
 

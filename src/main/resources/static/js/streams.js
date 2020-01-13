@@ -88,7 +88,7 @@ function fillTable(data) {
                         onclick='saveIdStream(${data[i].id},"${data[i].name}","${data[i].disciplineName}",
                         ${data[i].disciplineId});'>Edit</button></td>`;
         tbody += `<td><button type='button' 
-                        onclick='confirmDeleteStream(${data[i].id});' class='btn' 
+                        onclick='confirmDeleteStream(${data[i].id});' class='btn btn-danger' 
                         data-target="#deleteModalStream"   data-toggle="modal">Delete</button></td>`;
         tbody += `<td><button type='button' onclick="goTestStructurePage(${data[i].id})" class='btn'>Test Structure</button></td>`;
         tbody += "</tr>";

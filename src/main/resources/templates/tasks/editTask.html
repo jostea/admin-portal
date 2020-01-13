@@ -75,7 +75,7 @@
             <div class="form-row row">
                 <label class="col-md-1 col-form-label" for="taskType">Task type</label>
                 <div class="col-md-4">
-                    <select id="taskType" class="form-control">
+                    <select id="taskType" class="form-control" readonly="readonly" disabled>
 <!--                        <option value="0">Select task type...</option>-->
                         <option th:each="typeEnum : ${task_types}" th:value="${typeEnum}"
                                 th:text="${typeEnum.getType()}"></option>

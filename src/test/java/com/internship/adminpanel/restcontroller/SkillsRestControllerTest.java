@@ -91,14 +91,6 @@ public class SkillsRestControllerTest {
     }
 
     @Test
-    public void shouldThrowExceptionSkillNotFoundWhileGetAllSkills() throws SkillNotFound {
-        doThrow(SkillNotFound.class).when(skillsService).findAll();
-        ResponseEntity<List<SkillDTO>> responseEntity = skillsRestController.findAll(authentication);
-        verify(skillsService).findAll();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     public void shouldThrowExceptionEmptyNameWhileAddSkill() throws EmptyName {
         doThrow(EmptyName.class).when(skillsService).add(createSkillDtoFromUI(""));
         ResponseEntity<String> responseEntity = skillsRestController.add(createSkillDtoFromUI(""), authentication);
