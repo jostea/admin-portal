@@ -4,7 +4,6 @@ import com.internship.adminpanel.exception.DisciplineNotFound;
 import com.internship.adminpanel.exception.EmptyName;
 import com.internship.adminpanel.model.dto.discipline.DisciplineDTO;
 import com.internship.adminpanel.service.DisciplineService;
-import com.sun.org.apache.regexp.internal.RE;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
